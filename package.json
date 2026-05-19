@@ -18,7 +18,6 @@
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
-    "@firebase/eslint-plugin-security-rules": "^0.0.2",
     "eslint": "^10.4.0",
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^7.1.1",
