@@ -1,11 +1,11 @@
 # Follow-up Issue Drafts
 
-These issues capture scoped next steps for Pink Elephant Jungle Runner. Each one should preserve the game's pink elephant jungle runner identity, its low-poly procedural look, and its lightweight browser footprint. Prefer tuning existing Three.js primitives, generated materials, canvas textures, and Web Audio patterns over introducing heavy external models, texture packs, or audio libraries.
+These issues capture scoped next steps for Pink Elephant Jungle Dash. Each one should preserve the game's pink elephant jungle dash identity, its low-poly procedural look, and its lightweight browser footprint. Prefer tuning existing Three.js primitives, generated materials, canvas textures, and Web Audio patterns over introducing heavy external models, texture packs, or audio libraries.
 
 ## Issue 1: Add local reset and pause controls polish
 
 ### Summary
-Improve the local in-game reset and pause flow so players can safely recover, replay, and pause without losing the breezy jungle-runner feel.
+Improve the local in-game reset and pause flow so players can safely recover, replay, and pause without losing the breezy jungle-dash feel.
 
 ### Goals
 - Add or refine a clearly labeled local reset action that restarts the current run without requiring a browser refresh.
@@ -16,7 +16,7 @@ Improve the local in-game reset and pause flow so players can safely recover, re
 ### Acceptance criteria
 - Resetting a run returns score, fruit, hazards, camera shake, active effects, and player position to a clean start state.
 - Pausing freezes gameplay simulation and resumes without time jumps, stuck input, or overlapping music cues.
-- The UI copy keeps the jungle breather / pink elephant runner tone.
+- The UI copy keeps the jungle breather / pink elephant dash tone.
 - The implementation remains local-only and does not require backend changes.
 
 ### Constraints
