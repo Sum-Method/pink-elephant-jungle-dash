@@ -1,5 +1,7 @@
 import { defineConfig } from "vite";
 
-export default defineConfig({
-  base: "./",
-});
+const repoName = "pink-elephant-jungle-dash";
+
+export default defineConfig(({ command }) => ({
+  base: command == "build" ? `/${repoName}/` : "/",
+}));
