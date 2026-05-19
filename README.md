@@ -90,6 +90,8 @@ Do not collect full names. The UI and database reject empty or malformed initial
 
 ## Troubleshooting
 
+If you see `Uncaught TypeError: Cannot assign to read only property 'open' of object '#<Window>'` in a sandboxed preview, treat it as a known benign iframe restriction and ignore it.
+
 If the game stays on **"Loading game…"** on GitHub Pages, it usually means JavaScript files did not load from the right URL path. This project uses a relative Vite base path (`./`) in `vite.config.js` so it works on normal GitHub Pages project URLs.
 
 ## Deployment
