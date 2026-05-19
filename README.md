@@ -87,6 +87,11 @@ VITE_SUPABASE_LEADERBOARD_TABLE=leaderboard
 
 Do not collect full names. The UI and database reject empty or malformed initials, and the client submits only the safe leaderboard fields. If those variables are missing, the same GitHub Pages game still works and saves scores only in the current browser as a fallback.
 
+
+## Troubleshooting
+
+If the game stays on **"Loading game…"** on GitHub Pages, it usually means JavaScript files did not load from the right URL path. This project uses a relative Vite base path (`./`) in `vite.config.js` so it works on normal GitHub Pages project URLs.
+
 ## Deployment
 
 Deployment is handled by `.github/workflows/deploy-pages.yml`.
