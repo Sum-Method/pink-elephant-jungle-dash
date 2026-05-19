@@ -23,7 +23,7 @@ Live playable version: https://jedbcov-coder.github.io/pink-elephant-jungle-dash
 - Seeded jungle decoration with bigger banana leaves, hanging vines, moss, rocks, ruin silhouettes, and a centralized registry for reusable procedural stone, leaf, moss, path crack, subtle stone/path normal-map, elephant skin, water, foam, and pickup glow textures.
 - Hidden development-only texture preview flag in `src/App.jsx` for checking generated texture thumbnails while keeping normal gameplay clean.
 - Stacked HUD counters for fruit, lives, next extra life progress, score, combo multiplier, timer, and crates.
-- Pause/settings overlay, local self-tests for scoring, fruit-life rewards, combos, collision helpers, and optional leaderboard support.
+- Pause/settings overlay, local self-tests for scoring, fruit-life rewards, combos, collision helpers.
 - GitHub Pages deployment through the included workflow at `.github/workflows/deploy-pages.yml`.
 
 ## Tech Stack
@@ -69,23 +69,6 @@ npm run preview
 
 This serves the already-built `dist/` folder so you can sanity-check the same static assets GitHub Pages will publish.
 
-
-## Shared Leaderboard Backend
-
-The game uses `src/game/leaderboard.js` for leaderboard access. It stores classroom-safe fields only (`initials`, `score`, `elapsedMs`, `fruit`, `crates`, `lives`, `createdAt`) and falls back to `localStorage` when the hosted backend is not configured or temporarily unavailable.
-
-For a shared leaderboard across multiple student devices, create a Supabase project and run `supabase/leaderboard.sql` in the Supabase SQL editor. The SQL enables row-level security, allows anonymous select/insert, and enforces the server-side initials rule with a database check: exactly 3 uppercase alphanumeric characters.
-
-Set these Vite environment variables before building locally, and add the same names as GitHub repository **Variables** (`Settings` → `Secrets and variables` → `Actions` → `Variables`) so the existing GitHub Pages URL can build with the shared backend enabled:
-
-```bash
-VITE_SUPABASE_URL=https://your-project.supabase.co
-VITE_SUPABASE_ANON_KEY=your-public-anon-key
-# Optional; defaults to leaderboard
-VITE_SUPABASE_LEADERBOARD_TABLE=leaderboard
-```
-
-Do not collect full names. The UI and database reject empty or malformed initials, and the client submits only the safe leaderboard fields. If those variables are missing, the same GitHub Pages game still works and saves scores only in the current browser as a fallback.
 
 
 ## Troubleshooting

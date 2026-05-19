@@ -372,8 +372,6 @@ export default function App() {
   const [sceneError, setSceneError] = useState(null);
   const testSummaryRef = useRef("Self-tests pending");
   const [finalResults, setFinalResults] = useState(null);
-  const [initials, setInitials] = useState("");
-  const [initialsError, setInitialsError] = useState("");
   const [audioState, setAudioState] = useState(readStoredAudioState);
   const [touchControlsVisible, setTouchControlsVisible] = useState(false);
 
@@ -517,11 +515,6 @@ export default function App() {
     };
   }, []);
 
-  useEffect(() => {
-    if (!finalResults) {
-      setInitialsError("");
-    }
-  }, [finalResults]);
 
   useEffect(() => {
     const mount = mountRef.current;
@@ -1677,7 +1670,6 @@ export default function App() {
       pauseStartedAtRef.current = null;
       gameStartTimeRef.current = start ? performance.now() : null;
       setFinalResults(null);
-      setInitials("");
       setStarted(start);
       setComplete(false);
       setGameOver(false);
@@ -1780,8 +1772,7 @@ export default function App() {
         const results = snapshotResults();
         setFinalResults(results);
         setPausedState(false);
-        setInitials("");
-        setGameOver(true);
+          setGameOver(true);
       }
     }
 
@@ -1806,7 +1797,6 @@ export default function App() {
       popText("JUNGLE GATE!", body.x, body.y + 3, popZ - 2, "#fff1a6");
       playTone("gate");
       setFinalResults(results);
-      setInitials("");
       setComplete(true);
     }
 
