@@ -18,6 +18,11 @@ If you still see stale files:
 - DevTools → Application → **Storage**: click **Clear site data**.
 - Reopen the game online once, then retest offline.
 
+If you still see stale files:
+- DevTools → Application → **Service Workers**: click **Unregister**.
+- DevTools → Application → **Storage**: click **Clear site data**.
+- Reopen the game online once, then retest offline.
+
 
 ## Save Data QA
 
