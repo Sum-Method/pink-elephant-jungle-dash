@@ -8,6 +8,7 @@ Pink Elephant Jungle Dash is a beginner-friendly 3D browser game where you run a
 
 ## Recent update
 
+- Fixed HUD spacing so the Energy and Charge panel no longer overlaps the top-left counters.
 - Fixed the browser tab icon (favicon) path so it loads correctly in both local development and on GitHub Pages.
 
 ## Repo safety settings (recommended)
