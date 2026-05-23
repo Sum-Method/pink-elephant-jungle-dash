@@ -52,9 +52,49 @@ createRoot(rootElement).render(
   React.createElement(React.StrictMode, null, React.createElement(AppErrorBoundary, null, React.createElement(App))),
 );
 if ("serviceWorker" in navigator) {
-  window.addEventListener("load", () => {
-    navigator.serviceWorker.register("./service-worker.js").catch((error) => {
+  let updatePromptShown = false;
+
+  window.addEventListener("load", async () => {
+    try {
+      const registration = await navigator.serviceWorker.register("./service-worker.js");
+
+      const promptForUpdate = () => {
+        if (updatePromptShown) {
+          return;
+        }
+        updatePromptShown = true;
+
+        const shouldRefresh = window.confirm(
+          "A new game update is ready. Reload now to get the latest version?",
+        );
+
+        if (shouldRefresh && registration.waiting) {
+          registration.waiting.postMessage({ type: "SKIP_WAITING" });
+        }
+      };
+
+      if (registration.waiting) {
+        promptForUpdate();
+      }
+
+      registration.addEventListener("updatefound", () => {
+        const installingWorker = registration.installing;
+        if (!installingWorker) {
+          return;
+        }
+
+        installingWorker.addEventListener("statechange", () => {
+          if (installingWorker.state === "installed" && navigator.serviceWorker.controller) {
+            promptForUpdate();
+          }
+        });
+      });
+
+      navigator.serviceWorker.addEventListener("controllerchange", () => {
+        window.location.reload();
+      });
+    } catch (error) {
       console.warn("Service worker registration failed", error);
-    });
+    }
   });
 }
