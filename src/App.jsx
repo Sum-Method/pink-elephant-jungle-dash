@@ -1372,37 +1372,49 @@ export default function App() {
       group.rotation.y = trackAngle(log.z);
 
       const trunk = new THREE.Mesh(sharedGeometries.unitBox, fallenLogBarkMat);
-      trunk.scale.set(log.width, log.height * 0.74, log.depth);
+      trunk.position.y = log.height * 0.04;
+      trunk.scale.set(log.width, log.height * 0.82, log.depth * 1.2);
       trunk.castShadow = true;
       trunk.receiveShadow = true;
       group.add(trunk);
 
       const cutFaceLeft = new THREE.Mesh(sharedGeometries.unitBox, fallenLogCoreMat);
-      cutFaceLeft.position.x = -log.width * 0.5 + 0.07;
-      cutFaceLeft.scale.set(0.16, log.height * 0.52, log.depth * 0.7);
+      cutFaceLeft.position.set(-log.width * 0.5 + 0.08, log.height * 0.02, 0);
+      cutFaceLeft.scale.set(0.16, log.height * 0.58, log.depth * 0.86);
       group.add(cutFaceLeft);
 
       const cutFaceRight = new THREE.Mesh(sharedGeometries.unitBox, fallenLogCoreMat);
-      cutFaceRight.position.x = log.width * 0.5 - 0.07;
-      cutFaceRight.scale.set(0.16, log.height * 0.52, log.depth * 0.7);
+      cutFaceRight.position.set(log.width * 0.5 - 0.08, log.height * 0.03, 0);
+      cutFaceRight.scale.set(0.16, log.height * 0.56, log.depth * 0.82);
       group.add(cutFaceRight);
 
-      [-0.34, 0.02, 0.38].forEach((yOffset, index) => {
+      [-0.44, -0.18, 0.12, 0.42].forEach((xOffset, index) => {
         const vine = new THREE.Mesh(sharedGeometries.vine, fallenLogVineMat);
-        vine.position.set((index - 1) * (log.width * 0.18), yOffset, (index % 2 === 0 ? 0.24 : -0.18) * log.depth);
-        vine.scale.set(1.2, 0.7 + index * 0.18, 1.2);
-        vine.rotation.z = (index - 1) * 0.24;
+        vine.position.set(xOffset * log.width, -log.height * 0.22 + index * 0.08, (index % 2 === 0 ? 0.3 : -0.28) * log.depth);
+        vine.scale.set(1.45, 0.88 + index * 0.12, 1.3);
+        vine.rotation.set(index * 0.14 - 0.2, index * 0.32, (index - 1.5) * 0.28);
         vine.castShadow = true;
         group.add(vine);
       });
 
-      [-0.36, -0.08, 0.24, 0.46].forEach((xOffset, index) => {
+      [-0.45, -0.2, 0.06, 0.31, 0.5].forEach((xOffset, index) => {
         const moss = new THREE.Mesh(sharedGeometries.mossClump, fallenLogMossMat);
-        moss.position.set(xOffset * log.width, log.height * 0.32 + (index % 2) * 0.04, (index % 2 === 0 ? -0.2 : 0.2) * log.depth);
-        moss.scale.set(0.28 + index * 0.03, 0.14, 0.2);
-        moss.rotation.y = index * 0.8;
+        moss.position.set(xOffset * log.width, log.height * 0.36 + (index % 2) * 0.07, (index % 2 === 0 ? -0.26 : 0.26) * log.depth);
+        moss.scale.set(0.34 + index * 0.04, 0.18, 0.26);
+        moss.rotation.set(index * 0.06, index * 0.9, 0);
+        moss.castShadow = true;
         moss.receiveShadow = true;
         group.add(moss);
+      });
+
+      [-0.36, -0.08, 0.22, 0.4].forEach((xOffset, index) => {
+        const stump = new THREE.Mesh(sharedGeometries.unitBox, fallenLogBarkMat);
+        stump.position.set(xOffset * log.width, log.height * 0.62, (index % 2 === 0 ? -0.22 : 0.22) * log.depth);
+        stump.scale.set(0.2, 0.36 + index * 0.03, 0.22);
+        stump.rotation.z = (index - 1.5) * 0.18;
+        stump.castShadow = true;
+        stump.receiveShadow = true;
+        group.add(stump);
       });
 
       scene.add(group);
