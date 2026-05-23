@@ -108,9 +108,18 @@ export function buildLevel(levelConfig) {
 
     logs.push({ localX: plan.log.localX, z: o - plan.log.z, width: plan.log.width, height: 1.15, depth: 1.25, section: LEVEL_SECTIONS.JUMP_LOG, difficulty });
 
-    // Belly-slide gate: interwoven canopy starts low enough to force a slide, extends high to block jump-over attempts,
-    // and uses a deeper collider so fast double-jump timing cannot clip through it.
-    branches.push({ localX: plan.branch.localX, z: o - plan.branch.z, width: plan.branch.width, height: 14.8, depth: 7.2, yOffset: 9.2, section: LEVEL_SECTIONS.SLIDE_BRANCH, difficulty });
+    // Belly-slide gate: lowered clearance + wider/deeper hit volume keeps center-lane runs honest
+    // and forces a true belly-slide even when entering at top speed with late jump timing.
+    branches.push({
+      localX: plan.branch.localX,
+      z: o - plan.branch.z,
+      width: plan.branch.width + 0.5, // tighter side coverage for consistent center-lane must-slide behavior
+      height: 14.8,
+      depth: 8.0, // longer front-to-back window so double-jump timing can't phase through
+      yOffset: 9.0, // slightly lower bottom edge so standing posture always catches
+      section: LEVEL_SECTIONS.SLIDE_BRANCH,
+      difficulty,
+    });
 
     plan.crates.forEach((crate) => {
       crates.push({ localX: crate.localX, z: o - crate.z, width: 2.15, height: 2.15, depth: 2.15, section: LEVEL_SECTIONS.SMASH_CRATE, difficulty });

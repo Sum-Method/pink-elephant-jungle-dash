@@ -211,6 +211,34 @@ export function runSelfTests() {
       "branch slide clearance handler avoids damage",
       !branchSlideResult.hurt && !branchSlideResult.blocked,
     );
+
+    const standingBranchCollision = handleBranchCollision({ collisionBox: standingBranchPlayerBox, obstacleAabb: representativeBranchBox });
+    assert(
+      "branch handler blocks standing player in overlap window",
+      standingBranchCollision.hurt && standingBranchCollision.blocked,
+    );
+
+    const nearFrontZ = representativeBranchPosition.z + representativeBranch.depth / 2 - (CONFIG.playerSize * CONFIG.hitboxScale) / 2;
+    const nearBackZ = representativeBranchPosition.z - representativeBranch.depth / 2 + (CONFIG.playerSize * CONFIG.hitboxScale) / 2;
+    const frontStandingPlayerBox = playerBox(representativeBranchPosition.x, CONFIG.playerSize / 2, nearFrontZ, false);
+    const backStandingPlayerBox = playerBox(representativeBranchPosition.x, CONFIG.playerSize / 2, nearBackZ, false);
+    const frontSlidingPlayerBox = playerBox(representativeBranchPosition.x, CONFIG.playerSize / 2, nearFrontZ, true);
+    const backSlidingPlayerBox = playerBox(representativeBranchPosition.x, CONFIG.playerSize / 2, nearBackZ, true);
+
+    assert(
+      "branch depth window still catches standing player at front/back edges",
+      aabb(frontStandingPlayerBox, representativeBranchBox)
+        && aabb(backStandingPlayerBox, representativeBranchBox)
+        && branchHitsPlayer(frontStandingPlayerBox, representativeBranchBox)
+        && branchHitsPlayer(backStandingPlayerBox, representativeBranchBox),
+    );
+    assert(
+      "branch depth window still clears sliding player at front/back edges",
+      !aabb(frontSlidingPlayerBox, representativeBranchBox)
+        && !aabb(backSlidingPlayerBox, representativeBranchBox)
+        && !branchHitsPlayer(frontSlidingPlayerBox, representativeBranchBox)
+        && !branchHitsPlayer(backSlidingPlayerBox, representativeBranchBox),
+    );
   }
   assert(
     "branch challenge repeats at expected z sections",

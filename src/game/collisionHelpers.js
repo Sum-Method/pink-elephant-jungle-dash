@@ -50,6 +50,7 @@ export function enemyBox(enemy, target = {}) {
 }
 
 export function branchHitsPlayer(playerAabb, branchAabb) {
+  // Branches are overhead gates: once AABB overlap exists, only vertical clearance decides hit vs clean slide.
   return playerAabb.maxY >= branchAabb.minY;
 }
 
