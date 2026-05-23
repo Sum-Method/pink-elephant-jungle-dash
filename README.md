@@ -20,6 +20,7 @@ If you publish updates and a browser shows an older cached version, follow `OFFL
 
 ## Recent update
 
+- Improved mobile immersive gameplay handling: the game now requests fullscreen on first touch/start, re-applies immersive mode after resume/app-switch/orientation changes, hides non-essential debug chrome while actively playing, and uses a safe viewport-height fallback so HUD elements stay visible on browsers that refuse full immersive mode.
 - Added a portrait fallback overlay ("Rotate your device") for phones/tablets that ignore orientation lock, while desktop windowed play remains unchanged.
 - Improved offline reliability: service worker now uses navigation fallback + broader asset caching and shows an in-app update banner so players can refresh to new deployments without being stuck on stale cache.
 - Added a professional in-game **Install Game** card on the start screen that only appears when `beforeinstallprompt` is available, hides after install or dismissal, and stores a `pwaInstallDismissed` local setting so players are not nagged.

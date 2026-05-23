@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 
 import { Icon } from "./components/Icon.jsx";
@@ -207,6 +207,7 @@ function TouchControls({ visible, onControlChange }) {
 
 
 function requestImmersiveMobileMode() {
+  // Tries browser APIs that can hide system UI on mobile during gameplay.
   if (typeof document === "undefined" || typeof window === "undefined") return;
   const root = document.documentElement;
 
@@ -227,6 +228,12 @@ function requestImmersiveMobileMode() {
   lockLandscape();
 }
 
+
+
+function getVisualViewportHeight() {
+  if (typeof window === "undefined") return null;
+  return window.visualViewport?.height ?? window.innerHeight ?? null;
+}
 function getIsPortraitViewport() {
   if (typeof window === "undefined") return false;
   const orientationType = window.screen?.orientation?.type;
@@ -396,6 +403,14 @@ export default function App() {
   const stampedeRef = useRef({ nextStepTime: 0 });
   const gameStartTimeRef = useRef(null);
   const touchInputDetectedRef = useRef(false);
+  const immersiveRequestedRef = useRef(false);
+
+  const tryImmersiveMode = useCallback(() => {
+    immersiveRequestedRef.current = true;
+    requestImmersiveMobileMode();
+    setImmersiveReady(true);
+  }, []);
+
   const pendingLevelStartRef = useRef(null);
 
   const [started, setStarted] = useState(false);
@@ -411,6 +426,8 @@ export default function App() {
   const [currentLevelId, setCurrentLevelId] = useState("level-1");
   const [deferredInstallPrompt, setDeferredInstallPrompt] = useState(null);
   const [showInstallCard, setShowInstallCard] = useState(false);
+  const [immersiveReady, setImmersiveReady] = useState(false);
+  const [viewportHeight, setViewportHeight] = useState(() => getVisualViewportHeight());
   const [showRotateOverlay, setShowRotateOverlay] = useState(false);
   const activeLevelRef = useRef(buildLevelById("level-1"));
   const currentLevelConfig = getLevelConfig(currentLevelId);
@@ -484,12 +501,9 @@ export default function App() {
   useEffect(() => {
     if (typeof window === "undefined") return undefined;
 
-    let immersiveApplied = false;
-    const tryImmersiveMode = (event) => {
-      if (immersiveApplied) return;
+    const handlePointerForImmersive = (event) => {
       if (event.pointerType && event.pointerType !== "touch" && event.pointerType !== "pen") return;
-      immersiveApplied = true;
-      requestImmersiveMobileMode();
+      if (!immersiveRequestedRef.current) tryImmersiveMode();
     };
 
     const query = window.matchMedia("(hover: none) and (pointer: coarse)");
@@ -508,17 +522,72 @@ export default function App() {
     updateVisibility();
     query.addEventListener?.("change", updateVisibility);
     window.addEventListener("pointerdown", showForTouchInput, { passive: true });
-    window.addEventListener("pointerdown", tryImmersiveMode, { passive: true });
+    window.addEventListener("pointerdown", handlePointerForImmersive, { passive: true });
     window.addEventListener("touchstart", showForTouchStart, { passive: true });
     window.addEventListener("touchstart", tryImmersiveMode, { passive: true });
 
     return () => {
       query.removeEventListener?.("change", updateVisibility);
       window.removeEventListener("pointerdown", showForTouchInput);
-      window.removeEventListener("pointerdown", tryImmersiveMode);
+      window.removeEventListener("pointerdown", handlePointerForImmersive);
       window.removeEventListener("touchstart", showForTouchStart);
       window.removeEventListener("touchstart", tryImmersiveMode);
     };
+  }, [tryImmersiveMode]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return undefined;
+
+    const refreshImmersiveMode = () => {
+      if (!immersiveRequestedRef.current || !startedRef.current || pausedRef.current || completeRef.current || gameOverRef.current) return;
+      window.setTimeout(() => {
+        tryImmersiveMode();
+      }, 120);
+    };
+
+    const updateViewportHeight = () => setViewportHeight(getVisualViewportHeight());
+
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === "visible") refreshImmersiveMode();
+      updateViewportHeight();
+    };
+
+    const viewport = window.visualViewport;
+
+    window.addEventListener("focus", refreshImmersiveMode);
+    window.addEventListener("pageshow", refreshImmersiveMode);
+    window.addEventListener("orientationchange", refreshImmersiveMode);
+    window.addEventListener("resize", updateViewportHeight);
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    viewport?.addEventListener?.("resize", updateViewportHeight);
+
+    return () => {
+      window.removeEventListener("focus", refreshImmersiveMode);
+      window.removeEventListener("pageshow", refreshImmersiveMode);
+      window.removeEventListener("orientationchange", refreshImmersiveMode);
+      window.removeEventListener("resize", updateViewportHeight);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+      viewport?.removeEventListener?.("resize", updateViewportHeight);
+    };
+  }, [tryImmersiveMode]);
+
+  useEffect(() => {
+    if (started && !paused && !complete && !gameOver) {
+      tryImmersiveMode();
+    }
+  }, [complete, gameOver, paused, started, tryImmersiveMode]);
+
+  useEffect(() => {
+    if (typeof document === "undefined") return undefined;
+    const body = document.body;
+    const isPlaying = started && !paused && !complete && !gameOver;
+    if (isPlaying) body.classList.add("immersive-playing");
+    else body.classList.remove("immersive-playing");
+    return () => body.classList.remove("immersive-playing");
+  }, [complete, gameOver, paused, started]);
+
+  useEffect(() => {
+    setViewportHeight(getVisualViewportHeight());
   }, []);
 
 
@@ -551,6 +620,26 @@ export default function App() {
       window.removeEventListener("touchstart", onTouchStart);
     };
   }, []);
+
+  useEffect(() => {
+    if (started && !paused && !complete && !gameOver && immersiveRequestedRef.current) setImmersiveReady(true);
+    if (!started || paused || complete || gameOver) setImmersiveReady(false);
+  }, [complete, gameOver, paused, started]);
+
+  useEffect(() => {
+    if (typeof document === "undefined") return undefined;
+    const mount = mountRef.current;
+    if (!mount) return undefined;
+    mount.style.minHeight = viewportHeight ? `${Math.round(viewportHeight)}px` : "100vh";
+    return undefined;
+  }, [viewportHeight]);
+
+  useEffect(() => {
+    if (!started || paused || complete || gameOver) return;
+    const reapply = () => tryImmersiveMode();
+    const timer = window.setInterval(reapply, 5000);
+    return () => window.clearInterval(timer);
+  }, [complete, gameOver, paused, started, tryImmersiveMode]);
 
   useEffect(() => {
     if (typeof window === "undefined") return undefined;
@@ -3193,7 +3282,7 @@ export default function App() {
   };
 
   return (
-    <main className="relative h-screen w-screen overflow-hidden bg-[#60b0ff] text-white" style={{ fontFamily: "system-ui, -apple-system, sans-serif" }}>
+    <main className={`relative h-screen w-screen overflow-hidden bg-[#60b0ff] text-white ${immersiveReady ? "immersive-ready" : ""}`} style={{ fontFamily: "system-ui, -apple-system, sans-serif", minHeight: viewportHeight ? `${Math.round(viewportHeight)}px` : "100vh" }}>
       <div ref={mountRef} className="absolute inset-0" />
 
       {sceneError && (
