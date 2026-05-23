@@ -3388,9 +3388,6 @@ export default function App() {
               onInstall={handleInstallGame}
               onDismiss={dismissInstallCard}
             />
-            {canShowInstallPrompt && !isGameplayActive && (
-              <PwaInstallCard onInstall={installGame} onDismiss={dismissInstallPrompt} />
-            )}
             <button onClick={startDemo}
               className="mt-7 rounded-full px-10 py-4 text-base font-black text-slate-950 transition hover:scale-105 active:scale-95"
               style={{ background: "#f472b6", boxShadow: "0 0 30px rgba(244,114,182,0.45)" }}>
