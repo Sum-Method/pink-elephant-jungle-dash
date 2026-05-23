@@ -26,6 +26,9 @@ Pink Elephant Jungle Dash is a beginner-friendly 3D browser game. You play as a 
 - Completing Level 1 now shows a clear **Level Complete** screen with a **Start Level 2** action driven by each level's `nextLevel` config
 - Level 1 keeps its original loops, hazards, speed, and collectibles, and its progression link stays `nextLevel: "level-2"`
 - Level 2 is now tuned as **Dusk Temple Run** with longer 5-loop pacing and denser late-loop hazards for a tougher finish
+- Level-specific movement and course settings are now fully wired: Level 1 max speed stays 40 at 760m, and Level 2 uses max speed 42 with a 1330m finish
+- HUD gate text now updates per level (no more hard-coded 760m), and Level 2 now renders path/decor further down the longer course
+- Dusk Temple Run now applies its own atmosphere colours (background/fog/lights/accent glow) for a safer themed Level 2 visual
 - A development-safe self-test confirms both `buildLevelById("level-1")` and `buildLevelById("level-2")` build with required sections
 - Self-tests also verify Level 2 stays registered as `"level-2"` and resolves through `getLevelConfig("level-2")`
 - Self-tests now verify Level 1 finish/gate match global values and Level 2 finish/gate match its level-specific `course` overrides after build

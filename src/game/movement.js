@@ -25,21 +25,21 @@ export function getPlayerInputIntent(body, keys, playing) {
   return { wantsReverse, wantsForward };
 }
 
-export function updatePlayerSpeed(body, dt, playing, intent) {
+export function updatePlayerSpeed(body, dt, playing, intent, speedConfig = MOVEMENT) {
   if (playing && (body.hurtTimer === 0 || intent.wantsReverse)) {
     if (intent.wantsForward) {
-      body.speed = Math.min(MOVEMENT.maxSpeed, body.speed + MOVEMENT.acceleration * dt);
+      body.speed = Math.min(speedConfig.maxSpeed, body.speed + speedConfig.acceleration * dt);
     } else if (intent.wantsReverse) {
-      body.speed = Math.max(-MOVEMENT.reverseMaxSpeed, body.speed - MOVEMENT.reverseAcceleration * dt);
+      body.speed = Math.max(-speedConfig.reverseMaxSpeed, body.speed - speedConfig.reverseAcceleration * dt);
     } else {
-      body.speed *= Math.exp(-MOVEMENT.friction * dt);
-      const idleStep = MOVEMENT.idleDeceleration * dt;
+      body.speed *= Math.exp(-speedConfig.friction * dt);
+      const idleStep = speedConfig.idleDeceleration * dt;
       body.speed = Math.abs(body.speed) <= idleStep ? 0 : body.speed - Math.sign(body.speed) * idleStep;
     }
-    if (Math.abs(body.speed) < MOVEMENT.minSpeed) body.speed = 0;
+    if (Math.abs(body.speed) < speedConfig.minSpeed) body.speed = 0;
   } else if (playing) {
-    body.speed *= Math.exp(-MOVEMENT.friction * dt);
-    if (Math.abs(body.speed) < MOVEMENT.minSpeed) body.speed = 0;
+    body.speed *= Math.exp(-speedConfig.friction * dt);
+    if (Math.abs(body.speed) < speedConfig.minSpeed) body.speed = 0;
   } else {
     body.speed = 0;
   }

@@ -16,6 +16,11 @@ function addFruitLine(fruits, startZ, endZ, count, localXFn, yFn, metadata = {})
 export function buildLevel(levelConfig) {
   const fruits = [], health = [], logs = [], crates = [], branches = [], rivers = [], enemies = [], collectibles = [];
   const { loops, loopPlans } = levelConfig;
+  const course = {
+    gateZ: levelConfig.course?.gateZ ?? CONFIG.gateZ,
+    finishLineZ: levelConfig.course?.finishLineZ ?? CONFIG.finishLineZ,
+    endOfCourseZ: levelConfig.course?.endOfCourseZ ?? CONFIG.endOfCourseZ,
+  };
 
   loops.forEach((offset, index) => {
     const o = -offset;
@@ -137,8 +142,8 @@ export function buildLevel(levelConfig) {
   // Fruit guide finale — final generated trail into the gate approach.
   addFruitLine(
     fruits,
-    -700,
-    -760,
+    Math.max(course.gateZ + 60, -700),
+    course.gateZ,
     9,
     (t) => Math.sin(t * Math.PI * 2) * 2.8,
     (t) => 1.05 + Math.sin(t * Math.PI) * 0.9,
@@ -153,8 +158,8 @@ export function buildLevel(levelConfig) {
     rivers,
     enemies,
     collectibles,
-    gate: { z: CONFIG.gateZ },
-    finish: { z: CONFIG.finishLineZ, failSafeZ: CONFIG.endOfCourseZ },
+    gate: { z: course.gateZ },
+    finish: { z: course.finishLineZ, failSafeZ: course.endOfCourseZ },
   };
 }
 
