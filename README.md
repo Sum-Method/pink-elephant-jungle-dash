@@ -9,6 +9,7 @@ Pink Elephant Jungle Dash is a beginner-friendly 3D browser game where you run a
 
 ## Recent update
 
+- Added animated danger accents to the slide branch gate (snake head bob + eye glow pulses + extra warning bark bands) and a one-time proximity warning sting when entering the slide telegraph window.
 - Updated GitHub Actions checkout step in CodeQL workflow from `actions/checkout@v4` to `actions/checkout@v5` to stay ahead of the Node.js 20 deprecation warning.
 - Fixed HUD spacing so the Energy and Charge panel no longer overlaps the top-left counters.
 - Redesigned the low jump log obstacle to look like a fallen jungle tree with thicker vines, richer moss clumps, and broken branch stubs across the path.

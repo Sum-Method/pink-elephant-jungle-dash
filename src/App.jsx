@@ -667,6 +667,8 @@ export default function App() {
     const colliders = [], pickups = [], crocs = [], particles = [], pops = [];
     const activeObstacles = [];
     const obstacleTelegraphs = [];
+    const branchHazardAccents = [];
+    const branchCueTriggered = new Set();
     const enemies = [], collectibleMeshes = [];
     const particlePool = [];
     const popPools = new Map();
@@ -1260,10 +1262,11 @@ export default function App() {
     // Gameplay still calls these smashable obstacles "crates", but they render as heavy stone blocks.
     const stoneBlockMat = makeMaterial("#8f8a71", { map: textures.stoneBlocks, normalMap: textures.stoneBlockNormal, normalScale: [0.28, 0.28], roughness: 0.94 });
     const stoneBlockBandMat = makeMaterial("#5f5b4a", { roughness: 0.98 });
-    const branchLimbMat = makeMaterial("#4a2a16", { roughness: 0.92 });
+    const branchLimbMat = makeMaterial("#392010", { roughness: 0.92 });
     const branchLeafMat = makeMaterial("#1d7a42", { map: textures.leafVeins, roughness: 0.86, emissive: "#0b351b", emissiveIntensity: 0.12 });
     const branchVineMat = makeMaterial("#2f5f2d", { roughness: 0.9 });
-    const snakeBodyMat = makeMaterial("#7b8f2b", { roughness: 0.62, emissive: "#2f3f16", emissiveIntensity: 0.2 });
+    const snakeBodyMat = makeMaterial("#708625", { roughness: 0.62, emissive: "#2f3f16", emissiveIntensity: 0.2 });
+    const branchWarningStripeMat = makeMaterial("#cab147", { roughness: 0.72, emissive: "#6f4f11", emissiveIntensity: 0.24 });
     const snakeStripeMat = makeMaterial("#1e2e12", { roughness: 0.75 });
     const cueLeafShadowMat = makeMaterial("#0b1b11", { transparent: true, opacity: 0.46, roughness: 1 });
     const cueMudMat = makeMaterial("#3f2616", { roughness: 1 });
@@ -1301,7 +1304,15 @@ export default function App() {
       });
 
       scene.add(group);
-      obstacleTelegraphs.push({ group, targetZ: z, type, materials: [ringMat, arrowMat], baseOpacity: type === "crate" ? 0.38 : 0.3 });
+      obstacleTelegraphs.push({
+        group,
+        targetZ: z,
+        type,
+        materials: [ringMat, arrowMat],
+        baseOpacity: type === "crate" ? 0.38 : 0.3,
+        cueWindowStart: type === "branch" ? z + 19 : null,
+        cueWindowEnd: type === "branch" ? z + 6 : null,
+      });
       return group;
     }
 
@@ -1539,6 +1550,7 @@ export default function App() {
         { y: branchTopY + 1.28, z: 0.78, dir: 1, scale: 1.0 },
         { y: branchTopY + 0.82, z: -0.88, dir: -1, scale: 0.82 },
       ].forEach((snake, snakeIndex) => {
+        const snakeSegments = [];
         [-0.72, -0.36, 0, 0.36, 0.72].forEach((seg, idx) => {
           const body = new THREE.Mesh(sharedGeometries.unitBox, snakeBodyMat);
           body.position.set(seg * branch.width, snake.y + (idx % 2 === 0 ? 0.1 : -0.1), snake.z + Math.sin(idx * 1.2) * 0.2);
@@ -1552,6 +1564,7 @@ export default function App() {
           stripe.scale.set(0.56, 0.14, 0.2);
           body.add(stripe);
           group.add(body);
+          snakeSegments.push({ body, idx });
         });
 
         const head = new THREE.Mesh(sharedGeometries.unitBox, snakeBodyMat);
@@ -1566,6 +1579,7 @@ export default function App() {
         eye.scale.set(0.08, 0.08, 0.06);
         head.add(eye);
         group.add(head);
+        branchHazardAccents.push({ type: "snake", snakeIndex, dir: snake.dir, head, eye, baseHeadY: head.position.y, snakeSegments });
       });
 
       // Hanging vines: visual slide zone. Bottom aligns with collider bottom edge.
@@ -1592,6 +1606,15 @@ export default function App() {
           bead.castShadow = true;
           bead.receiveShadow = true;
           group.add(bead);
+        }
+        if (i % 5 === 0) {
+          const warningBand = new THREE.Mesh(sharedGeometries.unitBox, branchWarningStripeMat);
+          warningBand.position.set(x, branchBottomY + 0.64, vine.position.z);
+          warningBand.scale.set(0.38, 0.16, 0.38);
+          warningBand.rotation.z = vine.rotation.z;
+          warningBand.castShadow = true;
+          warningBand.receiveShadow = true;
+          group.add(warningBand);
         }
       }
       scene.add(group);
@@ -2506,6 +2529,29 @@ export default function App() {
         telegraph.group.position.y = Math.sin(t * 5.5 + index) * 0.035;
         telegraph.materials.forEach((material, materialIndex) => {
           material.opacity = Math.min(materialIndex === 0 ? 0.28 : 0.46, opacity * (materialIndex === 0 ? 0.7 : 1));
+        });
+
+        if (telegraph.type === "branch" && telegraph.cueWindowStart !== null && telegraph.cueWindowEnd !== null) {
+          const inCueWindow = body.z <= telegraph.cueWindowStart && body.z >= telegraph.cueWindowEnd;
+          if (inCueWindow && !branchCueTriggered.has(index)) {
+            playTone("branchWarn");
+            branchCueTriggered.add(index);
+          }
+        }
+
+        if (telegraph.type === "branch" && body.z < telegraph.targetZ - 2) {
+          branchCueTriggered.delete(index);
+        }
+      });
+
+      branchHazardAccents.forEach((accent, index) => {
+        const eyePulse = 2.2 + Math.sin(t * 7.8 + index * 0.75) * 1.3;
+        accent.eye.material.emissiveIntensity = eyePulse;
+        accent.head.position.y = accent.baseHeadY + Math.sin(t * 3.4 + index * 0.6) * 0.08;
+        accent.head.rotation.z = Math.sin(t * 2.6 + accent.snakeIndex * 0.9) * 0.06 * accent.dir;
+        accent.snakeSegments.forEach(({ body: segment, idx: segmentIndex }) => {
+          segment.position.y += Math.sin(t * 2.7 + segmentIndex * 0.85 + accent.snakeIndex) * 0.0018;
+          segment.rotation.y += Math.sin(t * 1.6 + segmentIndex * 0.35 + accent.snakeIndex) * 0.0009;
         });
       });
 
