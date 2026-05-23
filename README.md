@@ -20,6 +20,7 @@ If you publish updates and a browser shows an older cached version, follow `OFFL
 
 ## Recent update
 
+- Moved service-worker update prompt and registration logic out of `src/main.jsx` into `src/pwa/setupServiceWorkerUpdatePrompt.js` to keep the main boot file cleaner without changing behavior.
 - Cleaned up duplicate PWA install card wiring: `App.jsx` now imports `PwaInstallCard` only once from `src/components/game-ui/PwaInstallCard.jsx`, and removed the old duplicate component file.
 - Separated PWA concerns by moving service-worker update prompt setup into `src/pwa/setupServiceWorkerUpdatePrompt.js` while keeping install-prompt hook logic in `src/hooks/usePwaInstallPrompt.js`.
 - Moved service-worker update prompt and registration logic out of `src/main.jsx` into `src/hooks/usePwaInstallPrompt.js` to keep the main boot file cleaner without changing behavior.
