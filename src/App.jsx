@@ -1384,50 +1384,53 @@ export default function App() {
       group.position.set(posOnPath.x, log.height / 2, posOnPath.z);
       group.rotation.y = trackAngle(log.z);
 
-      const trunk = new THREE.Mesh(sharedGeometries.unitBox, fallenLogBarkMat);
-      trunk.position.y = log.height * 0.04;
-      trunk.scale.set(log.width, log.height * 0.82, log.depth * 1.2);
+      const trunkRadius = Math.max(log.height * 0.44, 0.35);
+      const trunk = new THREE.Mesh(new THREE.CylinderGeometry(1, 1, 1, 14), fallenLogBarkMat);
+      trunk.rotation.z = Math.PI / 2;
+      trunk.position.y = log.height * 0.06;
+      trunk.scale.set(log.depth * 1.14, log.width, trunkRadius);
       trunk.castShadow = true;
       trunk.receiveShadow = true;
       group.add(trunk);
 
-      const cutFaceLeft = new THREE.Mesh(sharedGeometries.unitBox, fallenLogCoreMat);
-      cutFaceLeft.position.set(-log.width * 0.5 + 0.08, log.height * 0.02, 0);
-      cutFaceLeft.scale.set(0.16, log.height * 0.58, log.depth * 0.86);
-      group.add(cutFaceLeft);
+      [-1, 1].forEach((side) => {
+        const cutFace = new THREE.Mesh(new THREE.CylinderGeometry(1, 1, 0.14, 14), fallenLogCoreMat);
+        cutFace.rotation.z = Math.PI / 2;
+        cutFace.position.set(side * (log.width * 0.5 - 0.04), log.height * 0.06, 0);
+        cutFace.scale.set(log.depth * 1.03, 1, trunkRadius * 0.86);
+        cutFace.castShadow = true;
+        cutFace.receiveShadow = true;
+        group.add(cutFace);
+      });
 
-      const cutFaceRight = new THREE.Mesh(sharedGeometries.unitBox, fallenLogCoreMat);
-      cutFaceRight.position.set(log.width * 0.5 - 0.08, log.height * 0.03, 0);
-      cutFaceRight.scale.set(0.16, log.height * 0.56, log.depth * 0.82);
-      group.add(cutFaceRight);
-
-      [-0.44, -0.18, 0.12, 0.42].forEach((xOffset, index) => {
+      [-0.5, -0.24, 0.03, 0.28, 0.54].forEach((xOffset, index) => {
         const vine = new THREE.Mesh(sharedGeometries.vine, fallenLogVineMat);
-        vine.position.set(xOffset * log.width, -log.height * 0.22 + index * 0.08, (index % 2 === 0 ? 0.3 : -0.28) * log.depth);
-        vine.scale.set(1.45, 0.88 + index * 0.12, 1.3);
-        vine.rotation.set(index * 0.14 - 0.2, index * 0.32, (index - 1.5) * 0.28);
+        vine.position.set(xOffset * log.width, log.height * (0.06 - index * 0.03), (index % 2 === 0 ? 0.38 : -0.36) * log.depth);
+        vine.scale.set(1.95, 1.28 + index * 0.18, 1.72);
+        vine.rotation.set(index * 0.13 - 0.16, index * 0.52, (index - 2) * 0.38);
         vine.castShadow = true;
+        vine.receiveShadow = true;
         group.add(vine);
       });
 
-      [-0.45, -0.2, 0.06, 0.31, 0.5].forEach((xOffset, index) => {
+      [-0.52, -0.29, -0.04, 0.16, 0.36, 0.58].forEach((xOffset, index) => {
         const moss = new THREE.Mesh(sharedGeometries.mossClump, fallenLogMossMat);
-        moss.position.set(xOffset * log.width, log.height * 0.36 + (index % 2) * 0.07, (index % 2 === 0 ? -0.26 : 0.26) * log.depth);
-        moss.scale.set(0.34 + index * 0.04, 0.18, 0.26);
-        moss.rotation.set(index * 0.06, index * 0.9, 0);
+        moss.position.set(xOffset * log.width, log.height * (0.34 + (index % 2) * 0.18), (index % 2 === 0 ? -0.29 : 0.31) * log.depth);
+        moss.scale.set(0.42 + index * 0.06, 0.22 + (index % 3) * 0.04, 0.32 + (index % 2) * 0.05);
+        moss.rotation.set(index * 0.07, index * 0.82, index % 2 === 0 ? -0.08 : 0.1);
         moss.castShadow = true;
         moss.receiveShadow = true;
         group.add(moss);
       });
 
-      [-0.36, -0.08, 0.22, 0.4].forEach((xOffset, index) => {
-        const stump = new THREE.Mesh(sharedGeometries.unitBox, fallenLogBarkMat);
-        stump.position.set(xOffset * log.width, log.height * 0.62, (index % 2 === 0 ? -0.22 : 0.22) * log.depth);
-        stump.scale.set(0.2, 0.36 + index * 0.03, 0.22);
-        stump.rotation.z = (index - 1.5) * 0.18;
-        stump.castShadow = true;
-        stump.receiveShadow = true;
-        group.add(stump);
+      [-0.44, -0.15, 0.19, 0.47].forEach((xOffset, index) => {
+        const brokenBranch = new THREE.Mesh(new THREE.CylinderGeometry(1, 1, 1, 8), fallenLogBarkMat);
+        brokenBranch.position.set(xOffset * log.width, log.height * 0.58, (index % 2 === 0 ? -0.24 : 0.26) * log.depth);
+        brokenBranch.scale.set(0.12, 0.3 + index * 0.06, 0.12);
+        brokenBranch.rotation.set((index - 1.5) * 0.2, 0, (index % 2 === 0 ? -0.45 : 0.4));
+        brokenBranch.castShadow = true;
+        brokenBranch.receiveShadow = true;
+        group.add(brokenBranch);
       });
 
       scene.add(group);

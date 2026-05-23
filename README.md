@@ -8,7 +8,7 @@ Pink Elephant Jungle Dash is a beginner-friendly 3D browser game where you run a
 
 ## Recent update
 
-- Fixed the browser tab icon (favicon) path so it loads correctly in both local development and on GitHub Pages.
+- Redesigned the low jump log obstacle to look like a fallen jungle tree with thicker vines, richer moss clumps, and broken branch stubs across the path.
 
 ## Repo safety settings (recommended)
 
