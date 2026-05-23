@@ -66,7 +66,7 @@ const TOUCH_CONTROL_BUTTONS = [
   { code: "ArrowRight", label: "Right", icon: "▶", hint: "Steer" },
   { code: "Space", label: "Jump", icon: "🐘", hint: "Tap" },
   { code: "Space", label: "Slide", icon: "↧", hint: "Hold" },
-  { code: "ShiftLeft", label: "Smash", icon: "💥", hint: "Hit" },
+  { code: "KeyF", label: "Smash", icon: "💥", hint: "Hit" },
 ];
 
 
@@ -2215,7 +2215,7 @@ export default function App() {
         playTone("slideStart");
       }
 
-      if ((k.ShiftLeft || k.ShiftRight) && triggerPlayerSmash(body, playing)) {
+      if (k.KeyF && triggerPlayerSmash(body, playing)) {
         trunk.rotation.x = -0.85;
       }
 
@@ -3091,7 +3091,7 @@ export default function App() {
               Begin the Trail
             </button>
             <div className="title-primary-controls mt-6 text-left text-xs text-amber-50/70" aria-label="Primary controls">
-              {[["↑", "Build Charge"], ["← / →", "Steer"], ["Tap Space", "Jump"], ["Hold Space", "Slide"], ["Shift", "Smash"], ["M", "Mute"]].map(([key, label]) => (
+              {[["↑", "Build Charge"], ["← / →", "Steer"], ["Tap Space", "Jump"], ["Hold Space", "Slide"], ["F", "Smash"], ["M", "Mute"]].map(([key, label]) => (
                 <div key={key} className="title-primary-control flex items-center gap-2 rounded-xl px-3 py-2">
                   <span className="title-control-key shrink-0 font-black text-amber-200">{key}</span><span>{label}</span>
                 </div>
