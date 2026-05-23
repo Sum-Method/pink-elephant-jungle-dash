@@ -35,6 +35,7 @@ Pink Elephant Jungle Dash is a beginner-friendly 3D browser game where you run a
 - Hazard dodging and life-based runs
 - Fruit collection, hazard dodging, and life-based runs with fallen-tree jump obstacles wrapped in vines and moss
 - Multiple levels with increasing distance and speed
+- Level 2 now uses a warm orange sunset sky, and Level 3 (Night Run) uses the previous purple-white moonlit look
 - Keyboard and touch controls for desktop and mobile
 - Pause/settings overlay and audio controls
 
