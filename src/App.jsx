@@ -546,8 +546,16 @@ export default function App() {
     let fps = 60;
 
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color("#87c1ab");
-    scene.fog = new THREE.Fog("#87c1ab", 35, 140);
+    const activeCourse = currentLevelConfig.course ?? {};
+    const activeTheme = currentLevelConfig.theme ?? {};
+    const courseFloorLength = activeCourse.floorLength ?? CONFIG.floorLength;
+    const courseFinishZ = activeCourse.finishLineZ ?? CONFIG.finishLineZ;
+    const courseVisualEndZ = Math.min(-824, courseFinishZ - 32);
+    const levelSpeed = currentLevelConfig.speed ?? MOVEMENT;
+    const levelMaxSpeed = levelSpeed.maxSpeed ?? MOVEMENT.maxSpeed;
+    const themeBackground = activeTheme.background ?? "#87c1ab";
+    scene.background = new THREE.Color(themeBackground);
+    scene.fog = new THREE.Fog(activeTheme.fog ?? themeBackground, 35, 160);
 
     const camera = new THREE.PerspectiveCamera(CAMERA_FEEDBACK.cameraFov, mount.clientWidth / Math.max(1, mount.clientHeight), 0.1, 360);
     camera.position.set(0, 8, 16);
@@ -591,8 +599,8 @@ export default function App() {
       renderer.render(scene, camera);
     };
 
-    scene.add(new THREE.AmbientLight("#ffffff", 0.9));
-    const sun = new THREE.DirectionalLight("#fff4e6", 2.2);
+    scene.add(new THREE.AmbientLight(activeTheme.ambient ?? "#ffffff", 0.9));
+    const sun = new THREE.DirectionalLight(activeTheme.key ?? "#fff4e6", 2.2);
     sun.position.set(-8, 24, 18);
     sun.castShadow = true;
     sun.shadow.mapSize.set(1024, 1024);
@@ -606,12 +614,12 @@ export default function App() {
     const texturePreviewPanel = createTexturePreviewPanel(textures);
     if (texturePreviewPanel) mount.appendChild(texturePreviewPanel);
 
-    const jungle = new THREE.Mesh(new THREE.BoxGeometry(CONFIG.floorWidth, 1.2, CONFIG.floorLength), new THREE.MeshStandardMaterial({ map: textures.ground, roughness: 0.98 }));
-    jungle.position.set(0, -0.62, -CONFIG.floorLength / 2 + 20);
+    const jungle = new THREE.Mesh(new THREE.BoxGeometry(CONFIG.floorWidth, 1.2, courseFloorLength), new THREE.MeshStandardMaterial({ map: textures.ground, roughness: 0.98 }));
+    jungle.position.set(0, -0.62, -courseFloorLength / 2 + 20);
     jungle.receiveShadow = true;
     scene.add(jungle);
 
-    const canopyGeo = new THREE.CylinderGeometry(65, 65, CONFIG.floorLength + 100, 16, 1, true);
+    const canopyGeo = new THREE.CylinderGeometry(65, 65, courseFloorLength + 100, 16, 1, true);
     canopyGeo.rotateX(Math.PI / 2);
     const canopyMat = new THREE.MeshBasicMaterial({
       map: textures.leafVeins,
@@ -637,7 +645,7 @@ export default function App() {
     const bankMat = makeMaterial("#174026", { roughness: 1 });
     const lipMat = makeMaterial("#d5a25b", { roughness: 0.92 });
     const safeHalfWidth = CONFIG.corridorHalfWidth + 0.62;
-    const pathSurface = new THREE.Mesh(createTrackRibbonGeometry(-safeHalfWidth, safeHalfWidth, 14, -824, 3.2), pathMat);
+    const pathSurface = new THREE.Mesh(createTrackRibbonGeometry(-safeHalfWidth, safeHalfWidth, 14, courseVisualEndZ, 3.2), pathMat);
     pathSurface.position.y = 0.055;
     pathSurface.receiveShadow = true;
     pathGroup.add(pathSurface);
@@ -650,7 +658,7 @@ export default function App() {
       [-safeHalfWidth - 0.12, -safeHalfWidth + 0.08, lipMat, 0.105],
       [safeHalfWidth - 0.08, safeHalfWidth + 0.12, lipMat, 0.105],
     ].forEach(([inner, outer, material, y]) => {
-      const ribbon = new THREE.Mesh(createTrackRibbonGeometry(inner, outer, 14, -824, 3.2), material);
+      const ribbon = new THREE.Mesh(createTrackRibbonGeometry(inner, outer, 14, courseVisualEndZ, 3.2), material);
       ribbon.position.y = y;
       ribbon.receiveShadow = true;
       pathGroup.add(ribbon);
@@ -1088,7 +1096,7 @@ export default function App() {
     addEdgeGuidanceProps();
     addJungleDepthProps();
 
-    for (let z = 16; z > -824; z -= 8) {
+    for (let z = 16; z > courseVisualEndZ; z -= 8) {
       [-1, 1].forEach((side) => {
         const jitterZ = z + jungleRng() * 5 - 2.5;
         const nearTree = makeLowPolyTree(trunkMat, leafMats, sharedTreeGeometries, jungleRng, 0.95 + jungleRng() * 0.35, true, jungleMistMat);
@@ -1463,11 +1471,11 @@ export default function App() {
     const pillarR = pillarL.clone(); pillarR.position.x = 3.6;
     const lintel = new THREE.Mesh(new THREE.BoxGeometry(8.4, 1.35, 1.4), gateMat);
     lintel.position.set(0, 6.4, 0);
-    const gateGlow = new THREE.PointLight("#ffbf4a", 2.8, 28);
+    const gateGlow = new THREE.PointLight(activeTheme.accent ?? "#ffbf4a", 2.8, 28);
     gateGlow.position.set(0, 4, 2);
     const gateGlowCore = new THREE.Mesh(
       new THREE.SphereGeometry(0.42, 16, 10),
-      new THREE.MeshBasicMaterial({ color: "#ffbf4a", transparent: true, opacity: 0.72, depthWrite: false }),
+      new THREE.MeshBasicMaterial({ color: activeTheme.accent ?? "#ffbf4a", transparent: true, opacity: 0.72, depthWrite: false }),
     );
     gateGlowCore.position.copy(gateGlow.position);
     gate.add(pillarL, pillarR, lintel, gateGlow, gateGlowCore);
@@ -1940,13 +1948,13 @@ export default function App() {
     function updatePhysics(dt) {
       const k = keyRef.current;
       const playing = startedRef.current && !completeRef.current && !gameOverRef.current && !pausedRef.current && body.lives > 0;
-      const charge = clamp(body.speed / MOVEMENT.maxSpeed, 0, 1);
+      const charge = clamp(body.speed / levelMaxSpeed, 0, 1);
       const wasGrounded = body.grounded;
 
       tickPlayerTimers(body, dt);
 
       const intent = getPlayerInputIntent(body, k, playing);
-      updatePlayerSpeed(body, dt, playing, intent);
+      updatePlayerSpeed(body, dt, playing, intent, levelSpeed);
 
       let ny = body.y;
       let nz = body.z - body.speed * dt;
@@ -2130,7 +2138,7 @@ export default function App() {
       textures.waterRipples.offset.set((t * 0.045) % 1, (t * 0.16) % 1);
       textures.foam.offset.set((t * -0.08) % 1, (t * 0.24) % 1);
       updateCrocs(now);
-      const charge = clamp(body.speed / MOVEMENT.maxSpeed, 0, 1);
+      const charge = clamp(body.speed / levelMaxSpeed, 0, 1);
       const sliding = body.slideTimer > 0;
       const hurtState = body.hurtTimer > 0;
       player.position.set(body.x, body.y, body.z);
@@ -2148,7 +2156,7 @@ export default function App() {
 
       bodyMesh.scale.set(sx, sy, sz);
       head.scale.set(sx, sy, sz);
-      const legStride = body.grounded && Math.abs(body.speed) > 0.1 && !sliding ? Math.min(1, Math.abs(body.speed) / MOVEMENT.maxSpeed + 0.25) : 0;
+      const legStride = body.grounded && Math.abs(body.speed) > 0.1 && !sliding ? Math.min(1, Math.abs(body.speed) / levelMaxSpeed + 0.25) : 0;
       const legCycle = t * (6.5 + Math.abs(body.speed) * 0.72);
       legs.forEach((leg) => {
         const step = Math.sin(legCycle + leg.phase) * legStride;
@@ -2261,7 +2269,7 @@ export default function App() {
     }
 
     function updateCamera(dt) {
-      const charge = clamp(body.speed / MOVEMENT.maxSpeed, 0, 1);
+      const charge = clamp(body.speed / levelMaxSpeed, 0, 1);
       const targetFov = lerp(CAMERA_FEEDBACK.cameraFov, CAMERA_FEEDBACK.highChargeFov, charge);
       if (Math.abs(camera.fov - targetFov) > CAMERA_FEEDBACK.fovSnapEpsilon) {
         camera.fov = lerp(camera.fov, targetFov, CAMERA_FEEDBACK.fovLerp);
@@ -2506,7 +2514,7 @@ export default function App() {
     }
 
     function updateDom(now) {
-      const charge = clamp(body.speed / MOVEMENT.maxSpeed, 0, 1);
+      const charge = clamp(body.speed / levelMaxSpeed, 0, 1);
       updateHighFrequencyHud(charge);
       if (now >= hudRefresh.nextLowAt) {
         hudRefresh.nextLowAt = now + hudRefresh.lowIntervalMs;
@@ -2776,7 +2784,7 @@ export default function App() {
             <span ref={ui.distance}>0</span><span className="ml-1 text-sm text-amber-100/50">m</span>
           </div>
           <div className="mt-2 flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-amber-100/40">
-            <Icon label="🎯" size={12} /> Gate at 760 m
+            <Icon label="🎯" size={12} /> Gate at {Math.round(Math.abs(activeLevelRef.current.gate.z))} m
           </div>
         </div>
       )}

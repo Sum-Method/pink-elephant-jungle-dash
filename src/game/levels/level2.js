@@ -12,7 +12,7 @@ export const LEVEL_2 = {
     accent: "#b58bff",
     uiGlow: "#ffb574",
   },
-  speed: { ...MOVEMENT, maxSpeed: MOVEMENT.maxSpeed * 1.05 },
+  speed: { ...MOVEMENT, maxSpeed: 42 },
   course: {
     floorLength: 1500,
     gateZ: -1330,
@@ -188,7 +188,7 @@ export const LEVEL_2 = {
       ],
     },
   ],
-  goalDistance: CONFIG.finishLineZ,
+  goalDistance: Math.abs(-1330),
   music: "main-theme",
   nextLevel: null,
 };
