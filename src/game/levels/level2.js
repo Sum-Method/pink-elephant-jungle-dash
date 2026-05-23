@@ -1,16 +1,14 @@
 import { CONFIG, MOVEMENT } from "../config.js";
 
-// Add Level 2 by creating `level2.js` with the same shape.
-// Keep gameplay identical by reusing the same keys and units.
-export const LEVEL_1 = {
-  id: "level-1",
-  name: "Level 1",
-  background: "jungle-day",
+export const LEVEL_2 = {
+  id: "level-2",
+  name: "Level 2",
+  background: "jungle-dusk",
   speed: { ...MOVEMENT },
   loops: [0, 245, 490],
   loopPlans: [
     {
-      swayWidth: 1.45,
+      swayWidth: 1.7,
       guideX: 0,
       guideCount: 8,
       swayCount: 6,
@@ -36,7 +34,7 @@ export const LEVEL_1 = {
       pineapples: [{ localX: 3.65, z: 90, y: 1.35 }],
     },
     {
-      swayWidth: 2.65,
+      swayWidth: 2.95,
       guideX: 0,
       guideCount: 8,
       swayCount: 8,
@@ -62,7 +60,7 @@ export const LEVEL_1 = {
       pineapples: [{ localX: -3.75, z: 72, y: 1.55 }, { localX: 3.6, z: 166, y: 3.15 }],
     },
     {
-      swayWidth: 2.95,
+      swayWidth: 3.25,
       guideX: -0.45,
       guideCount: 7,
       swayCount: 9,
@@ -77,7 +75,7 @@ export const LEVEL_1 = {
       crateFruitEndX: 2.6,
       log: { localX: 1.05, z: 108, width: 10.05 },
       branch: { localX: -1.35, z: 148, width: 11.05 },
-      crates: [{ localX: 0, z: 184 }, { localX: -3.05, z: 184 }, { localX: 3.05, z: 184 }],
+      crates: [{ localX: 0, z: 184 }, { localX: -3.05, z: 184 }, { localX: 3.05, z: 184 }, { localX: 1.55, z: 198 }],
       river: {
         z: 228,
         depth: 13.35,
@@ -90,7 +88,7 @@ export const LEVEL_1 = {
   ],
   goalDistance: CONFIG.finishLineZ,
   music: "main-theme",
-  nextLevel: "level-2",
+  nextLevel: null,
 };
 
-export default LEVEL_1;
+export default LEVEL_2;
