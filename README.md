@@ -16,11 +16,15 @@ This game can now be installed from Chrome/Edge using the browser install button
 - Service worker: `service-worker.js`
 - Install icons: all manifest icon entries now reuse the existing `favicon.png` file (no extra image files needed)
 
-If you publish updates and a browser shows an older cached version, follow `PWA_TESTING.md` to clear cache/service worker data.
+If you publish updates and a browser shows an older cached version, follow `OFFLINE_TESTING.md` for the exact reset and verification steps.
 
 ## Recent update
 
 - Split recurring level-element data into dedicated preset files (`obstacle-presets.js`, `enemy-presets.js`, `collectible-presets.js`) so crocodile rivers, low vine gates, fallen logs, monkeys, and fruit pickup layouts can be edited locally without touching large mixed level files.
+- Upgraded offline mode so the service worker automatically caches Vite build assets from `.vite/manifest.json`, keeps GitHub Pages subfolder paths working, and prompts players to reload when a new version is ready.
+- Added an in-app **Update available** banner with **Refresh** or **Later**, so players can safely move to new deployments without being stuck on old cached files.
+- Added a short `OFFLINE_TESTING.md` checklist for verifying install, offline play, and update behavior.
+
 - Simplified PWA icon setup to reuse the existing `public/favicon.png` directly in the manifest and service worker cache, so no generated PNG files are required in Codex workflows.
 - Added a shared level theme constant for the “sunset-temple-run” palette and wired Levels 2 and 3 to reuse it, keeping gameplay behavior unchanged.
 - Reworked the in-game side HUD into one responsive row that wraps safely and stacks on smaller screens, so Energy and Trail Depth cards stay readable and never overlap Time/Score center HUD elements.

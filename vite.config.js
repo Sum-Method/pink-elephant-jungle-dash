@@ -1,5 +1,10 @@
 import { defineConfig } from "vite";
 
+const base = "/pink-elephant-jungle-dash/";
+
 export default defineConfig({
-  base: "/pink-elephant-jungle-dash/",
+  base,
+  build: {
+    manifest: true,
+  },
 });
