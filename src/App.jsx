@@ -76,24 +76,24 @@ const AUDIO_PREFS_KEY = "pink-elephant-audio-state";
 
 function requestImmersiveMobileMode() {
   // Tries browser APIs that can hide system UI on mobile during gameplay.
+  // Browsers may block these APIs without warning, so gameplay must not depend on them.
   if (typeof document === "undefined" || typeof window === "undefined") return;
   const root = document.documentElement;
 
   const requestFullscreen = async () => {
     if (!document.fullscreenElement && root.requestFullscreen) {
-      await root.requestFullscreen({ navigationUI: "hide" }).catch(() => {});
+      await root.requestFullscreen({ navigationUI: "hide" });
     }
   };
 
   const lockLandscape = async () => {
     const orientation = window.screen?.orientation;
     if (orientation?.lock) {
-      await orientation.lock("landscape").catch(() => {});
+      await orientation.lock("landscape");
     }
   };
 
-  requestFullscreen();
-  lockLandscape();
+  Promise.allSettled([requestFullscreen(), lockLandscape()]);
 }
 
 
