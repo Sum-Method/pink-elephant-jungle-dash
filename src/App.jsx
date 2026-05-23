@@ -6,6 +6,8 @@ import { PwaInstallCard } from "./components/game-ui/PwaInstallCard.jsx";
 import { RotateOverlay } from "./components/game-ui/RotateOverlay.jsx";
 import { SaveDebugTools } from "./components/game-ui/SaveDebugTools.jsx";
 import { TouchControls } from "./components/game-ui/TouchControls.jsx";
+import { PwaInstallCard } from "./components/PwaInstallCard.jsx";
+import { usePwaInstallPrompt } from "./hooks/usePwaInstallPrompt.js";
 import { CAMERA_FEEDBACK, CONFIG, HUD_TIMING, MOVEMENT, PARTICLES, PICKUPS, SCORING } from "./game/config.js";
 import {
   canRetreatFromObstacle,
@@ -70,8 +72,6 @@ const SHOW_TEXTURE_PREVIEW = false;
 const JUNGLE_LAYOUT_SEED = 0x5eed2026;
 
 const AUDIO_PREFS_KEY = "pink-elephant-audio-state";
-const PWA_INSTALL_DISMISSED_KEY = "pwaInstallDismissed";
-
 // Before adding Level 2, ensure Level 1 is loaded from level config (this is that checkpoint).
 
 function requestImmersiveMobileMode() {
@@ -300,8 +300,6 @@ export default function App() {
   const [audioState, setAudioState] = useState(readStoredAudioState);
   const [touchControlsVisible, setTouchControlsVisible] = useState(false);
   const [currentLevelId, setCurrentLevelId] = useState("level-1");
-  const [deferredInstallPrompt, setDeferredInstallPrompt] = useState(null);
-  const [showInstallCard, setShowInstallCard] = useState(false);
   const [immersiveReady, setImmersiveReady] = useState(false);
   const [viewportHeight, setViewportHeight] = useState(() => getVisualViewportHeight());
   const [showRotateOverlay, setShowRotateOverlay] = useState(false);
@@ -313,6 +311,7 @@ export default function App() {
   const nextLevelId = currentLevelConfig.nextLevel;
   const nextLevelConfig = nextLevelId ? getLevelConfig(nextLevelId) : null;
   const isGameplayActive = started && !paused && !complete && !gameOver;
+  const { canShowInstallPrompt, installGame, dismissInstallPrompt } = usePwaInstallPrompt();
 
   const ui = {
     health: useRef(null),
@@ -596,58 +595,6 @@ export default function App() {
     const timer = window.setInterval(reapply, 5000);
     return () => window.clearInterval(timer);
   }, [complete, gameOver, paused, started, tryImmersiveMode]);
-
-  useEffect(() => {
-    if (typeof window === "undefined") return undefined;
-    const isStandalone = window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true;
-    if (isStandalone) {
-      setShowInstallCard(false);
-      return undefined;
-    }
-
-    const wasDismissed = window.localStorage.getItem(PWA_INSTALL_DISMISSED_KEY) === "true";
-    if (wasDismissed) setShowInstallCard(false);
-
-    // Save the browser install event so our custom UI can trigger it later.
-    const handleBeforeInstallPrompt = (event) => {
-      event.preventDefault();
-      if (window.localStorage.getItem(PWA_INSTALL_DISMISSED_KEY) === "true") return;
-      setDeferredInstallPrompt(event);
-      setShowInstallCard(true);
-    };
-
-    // Hide custom install UI once installation succeeds.
-    const handleAppInstalled = () => {
-      setDeferredInstallPrompt(null);
-      setShowInstallCard(false);
-    };
-
-    window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
-    window.addEventListener("appinstalled", handleAppInstalled);
-    return () => {
-      window.removeEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
-      window.removeEventListener("appinstalled", handleAppInstalled);
-    };
-  }, []);
-
-  const dismissInstallCard = () => {
-    if (typeof window !== "undefined") {
-      window.localStorage.setItem(PWA_INSTALL_DISMISSED_KEY, "true");
-    }
-    setShowInstallCard(false);
-    setDeferredInstallPrompt(null);
-  };
-
-  const handleInstallGame = async () => {
-    if (!deferredInstallPrompt) return;
-    deferredInstallPrompt.prompt();
-    const result = await deferredInstallPrompt.userChoice;
-    setDeferredInstallPrompt(null);
-    setShowInstallCard(false);
-    if (result?.outcome === "dismissed" && typeof window !== "undefined") {
-      window.localStorage.setItem(PWA_INSTALL_DISMISSED_KEY, "true");
-    }
-  };
 
   function handleTouchControlChange(code, isPressed) {
     if (pausedRef.current || completeRef.current || gameOverRef.current) {
@@ -3442,6 +3389,9 @@ export default function App() {
               onInstall={handleInstallGame}
               onDismiss={dismissInstallCard}
             />
+            {canShowInstallPrompt && !isGameplayActive && (
+              <PwaInstallCard onInstall={installGame} onDismiss={dismissInstallPrompt} />
+            )}
             <button onClick={startDemo}
               className="mt-7 rounded-full px-10 py-4 text-base font-black text-slate-950 transition hover:scale-105 active:scale-95"
               style={{ background: "#f472b6", boxShadow: "0 0 30px rgba(244,114,182,0.45)" }}>
