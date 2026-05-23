@@ -1267,6 +1267,8 @@ export default function App() {
     const branchVineMat = makeMaterial("#2f5f2d", { roughness: 0.9 });
     const snakeBodyMat = makeMaterial("#708625", { roughness: 0.62, emissive: "#2f3f16", emissiveIntensity: 0.2 });
     const branchWarningStripeMat = makeMaterial("#cab147", { roughness: 0.72, emissive: "#6f4f11", emissiveIntensity: 0.24 });
+    const snakeBellyMat = makeMaterial("#c9ab63", { roughness: 0.68, emissive: "#4b3f1f", emissiveIntensity: 0.12 });
+    const snakeTongueMat = new THREE.MeshStandardMaterial({ color: "#ff4b7a", emissive: "#cc2d56", emissiveIntensity: 0.5 });
     const snakeStripeMat = makeMaterial("#1e2e12", { roughness: 0.75 });
     const cueLeafShadowMat = makeMaterial("#0b1b11", { transparent: true, opacity: 0.46, roughness: 1 });
     const cueMudMat = makeMaterial("#3f2616", { roughness: 1 });
@@ -1563,6 +1565,11 @@ export default function App() {
           stripe.position.set(0, 0.08, 0.24);
           stripe.scale.set(0.56, 0.14, 0.2);
           body.add(stripe);
+
+          const belly = new THREE.Mesh(sharedGeometries.unitBox, snakeBellyMat);
+          belly.position.set(0, -0.12, 0);
+          belly.scale.set(0.62, 0.16, 0.44);
+          body.add(belly);
           group.add(body);
           snakeSegments.push({ body, idx });
         });
@@ -1578,12 +1585,27 @@ export default function App() {
         eye.position.set(snake.dir * 0.2, 0.1, 0.28);
         eye.scale.set(0.08, 0.08, 0.06);
         head.add(eye);
+
+        const tongue = new THREE.Mesh(sharedGeometries.unitBox, snakeTongueMat);
+        tongue.position.set(snake.dir * 0.54, -0.08, 0.3);
+        tongue.scale.set(0.18, 0.04, 0.03);
+        head.add(tongue);
         group.add(head);
+        branchHazardAccents.push({
+          type: "snake",
+          snakeIndex,
+          dir: snake.dir,
+          head,
+          eye,
+          tongue,
+          baseHeadY: head.position.y,
+          snakeSegments,
+        });
         branchHazardAccents.push({ type: "snake", snakeIndex, dir: snake.dir, head, eye, baseHeadY: head.position.y, snakeSegments });
       });
 
       // Hanging vines: visual slide zone. Bottom aligns with collider bottom edge.
-      const hangCount = 15;
+      const hangCount = 21;
       const hangingTopY = branchTopY - 0.25;
       for (let i = 0; i < hangCount; i += 1) {
         const t = i / (hangCount - 1);
@@ -1615,6 +1637,15 @@ export default function App() {
           warningBand.castShadow = true;
           warningBand.receiveShadow = true;
           group.add(warningBand);
+        }
+        if (i % 4 === 1) {
+          const sideShoot = new THREE.Mesh(sharedGeometries.unitBox, branchVineMat);
+          sideShoot.position.set(x + (i % 2 === 0 ? 0.2 : -0.2), vine.position.y + 0.22, vine.position.z + (i % 2 === 0 ? -0.2 : 0.2));
+          sideShoot.scale.set(0.14, Math.max(0.48, vineLength * 0.22), 0.14);
+          sideShoot.rotation.z = vine.rotation.z + (i % 2 === 0 ? 0.8 : -0.8);
+          sideShoot.castShadow = true;
+          sideShoot.receiveShadow = true;
+          group.add(sideShoot);
         }
       }
       scene.add(group);
@@ -2549,6 +2580,8 @@ export default function App() {
         accent.eye.material.emissiveIntensity = eyePulse;
         accent.head.position.y = accent.baseHeadY + Math.sin(t * 3.4 + index * 0.6) * 0.08;
         accent.head.rotation.z = Math.sin(t * 2.6 + accent.snakeIndex * 0.9) * 0.06 * accent.dir;
+        const tongueScale = 0.12 + Math.max(0, Math.sin(t * 12.5 + index * 0.7)) * 0.16;
+        accent.tongue.scale.x = tongueScale;
         accent.snakeSegments.forEach(({ body: segment, idx: segmentIndex }) => {
           segment.position.y += Math.sin(t * 2.7 + segmentIndex * 0.85 + accent.snakeIndex) * 0.0018;
           segment.rotation.y += Math.sin(t * 1.6 + segmentIndex * 0.35 + accent.snakeIndex) * 0.0009;
