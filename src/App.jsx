@@ -58,7 +58,6 @@ const JUNGLE_LAYOUT_SEED = 0x5eed2026;
 const AUDIO_PREFS_KEY = "pink-elephant-audio-state";
 
 // Before adding Level 2, ensure Level 1 is loaded from level config (this is that checkpoint).
-const LEVEL = buildLevelById("level-1");
 
 const TOUCH_CONTROL_BUTTONS = [
   { code: "ArrowUp", label: "Charge", icon: "⬆", hint: "Hold" },
@@ -377,6 +376,8 @@ export default function App() {
   const [finalResults, setFinalResults] = useState(null);
   const [audioState, setAudioState] = useState(readStoredAudioState);
   const [touchControlsVisible, setTouchControlsVisible] = useState(false);
+  const [currentLevelId, setCurrentLevelId] = useState("level-1");
+  const activeLevelRef = useRef(buildLevelById("level-1"));
 
   const ui = {
     health: useRef(null),
@@ -433,6 +434,10 @@ export default function App() {
     return audioManagerRef.current?.startAudio() ?? null;
   }
 
+
+  useEffect(() => {
+    activeLevelRef.current = buildLevelById(currentLevelId);
+  }, [currentLevelId]);
   useEffect(() => {
     if (typeof window === "undefined") return undefined;
 
@@ -753,7 +758,7 @@ export default function App() {
       side: THREE.DoubleSide,
     });
     const riverStoneMat = makeMaterial("#817e68", { map: textures.stoneBlocks, normalMap: textures.stoneBlockNormal, normalScale: [0.28, 0.28], roughness: 0.94 });
-    LEVEL.rivers.forEach((river, riverIndex) => {
+    activeLevelRef.current.rivers.forEach((river, riverIndex) => {
       const cx = trackCenter(river.z);
       const riverGroup = new THREE.Group();
       riverGroup.position.set(cx, 0, river.z);
@@ -871,7 +876,7 @@ export default function App() {
     }
 
     function nearestRiverApproachDistance(z) {
-      return LEVEL.rivers.reduce((nearest, river) => {
+      return activeLevelRef.current.rivers.reduce((nearest, river) => {
         const approachDistance = z - river.z;
         if (approachDistance < 8 || approachDistance > 74) return nearest;
         return Math.min(nearest, approachDistance);
@@ -1108,7 +1113,7 @@ export default function App() {
     }
 
     const fruitMat = makeMaterial("#ffd34a", { map: textures.collectibleGlow, roughness: 0.34, metalness: 0.15, emissive: "#ffd34a", emissiveIntensity: 0.82, envMapIntensity: 1.25 });
-    LEVEL.fruits.forEach((pos) => {
+    activeLevelRef.current.fruits.forEach((pos) => {
       const posOnPath = worldPosition(pos.localX, pos.z);
       const fruit = new THREE.Mesh(sharedGeometries.fruit, fruitMat);
       fruit.position.set(posOnPath.x, pos.y || 1.05, posOnPath.z);
@@ -1118,7 +1123,7 @@ export default function App() {
     });
 
     const caneMat = new THREE.MeshStandardMaterial({ color: "#52e879", roughness: 0.45, emissive: "#154d24", emissiveIntensity: 0.7 });
-    LEVEL.health.forEach((pos) => {
+    activeLevelRef.current.health.forEach((pos) => {
       const posOnPath = worldPosition(pos.localX, pos.z);
       const group = new THREE.Group();
       group.position.set(posOnPath.x, 1.25, posOnPath.z);
@@ -1255,12 +1260,12 @@ export default function App() {
       cue.add(glow);
     }
 
-    LEVEL.rivers.forEach((river) => {
+    activeLevelRef.current.rivers.forEach((river) => {
       addRippleCue(river);
       registerObstacleTelegraph({ localX: 0, z: river.z, type: "river", distance: 11, width: river.width });
     });
 
-    LEVEL.logs.forEach((log) => {
+    activeLevelRef.current.logs.forEach((log) => {
       addMudSkidCue(log);
       registerObstacleTelegraph({ localX: log.localX, z: log.z, type: "log", distance: 8.8, width: log.width });
       const posOnPath = worldPosition(log.localX, log.z);
@@ -1273,7 +1278,7 @@ export default function App() {
       colliders.push({ type: "log", active: true, mesh, x: posOnPath.x, y: log.height / 2, z: posOnPath.z, w: log.width, h: log.height, d: log.depth });
     });
 
-    LEVEL.crates.forEach((crate) => {
+    activeLevelRef.current.crates.forEach((crate) => {
       addStoneBlockMarkerCue(crate);
       registerObstacleTelegraph({ localX: crate.localX, z: crate.z, type: "crate", distance: 8.4, width: crate.width });
       const posOnPath = worldPosition(crate.localX, crate.z);
@@ -1291,7 +1296,7 @@ export default function App() {
       colliders.push({ type: "crate", active: true, mesh: group, x: posOnPath.x, y: crate.height / 2, z: posOnPath.z, w: crate.width, h: crate.height, d: crate.depth });
     });
 
-    LEVEL.branches.forEach((branch) => {
+    activeLevelRef.current.branches.forEach((branch) => {
       addLeafShadowCue(branch);
       registerObstacleTelegraph({ localX: branch.localX, z: branch.z, type: "branch", distance: 7.8, width: branch.width });
       const posOnPath = worldPosition(branch.localX, branch.z);
@@ -1369,7 +1374,7 @@ export default function App() {
       });
     }
 
-    LEVEL.enemies.forEach((en) => {
+    activeLevelRef.current.enemies.forEach((en) => {
       addMonkeyEyeCue(en);
       const group = new THREE.Group();
       const posOnPath = worldPosition(en.baseLocalX, en.z);
@@ -1427,7 +1432,7 @@ export default function App() {
 
     // Golden pineapple collectibles — torus knot shape, orange glow
     const pineappleMat = makeMaterial("#f5a623", { map: textures.collectibleGlow, emissive: "#f5a623", emissiveIntensity: 1.35, metalness: 0.8, roughness: 0.12, envMapIntensity: 1.35 });
-    LEVEL.collectibles.forEach((col) => {
+    activeLevelRef.current.collectibles.forEach((col) => {
       const posOnPath = worldPosition(col.localX, col.z);
       const group = new THREE.Group();
       group.position.set(posOnPath.x, col.y, posOnPath.z);
@@ -1440,8 +1445,8 @@ export default function App() {
       collectibleMeshes.push({ mesh: group, knot, active: true, x: posOnPath.x, y: col.y, z: posOnPath.z, radius: PICKUPS.pineappleRadius });
     });
 
-    gate.position.set(trackCenter(LEVEL.gate.z), 0, LEVEL.gate.z);
-    gate.rotation.y = trackAngle(LEVEL.gate.z);
+    gate.position.set(trackCenter(activeLevelRef.current.gate.z), 0, activeLevelRef.current.gate.z);
+    gate.rotation.y = trackAngle(activeLevelRef.current.gate.z);
     const gateMat = makeMaterial("#d9b863", { map: textures.stoneBlocks, normalMap: textures.stoneBlockNormal, normalScale: [0.28, 0.28], roughness: 0.55, emissive: "#4d2f05", emissiveIntensity: 0.2, envMapIntensity: 1.15 });
     const pillarL = new THREE.Mesh(new THREE.BoxGeometry(1, 6, 1.2), gateMat);
     pillarL.position.set(-3.6, 3, 0);
@@ -1457,7 +1462,7 @@ export default function App() {
     gateGlowCore.position.copy(gateGlow.position);
     gate.add(pillarL, pillarR, lintel, gateGlow, gateGlowCore);
     scene.add(gate);
-    colliders.push({ type: "gate", active: true, mesh: gate, x: trackCenter(LEVEL.gate.z), y: 3, z: LEVEL.gate.z, w: CONFIG.corridorHalfWidth * 2 + 6, h: 6, d: CONFIG.finishTriggerDepth });
+    colliders.push({ type: "gate", active: true, mesh: gate, x: trackCenter(activeLevelRef.current.gate.z), y: 3, z: activeLevelRef.current.gate.z, w: CONFIG.corridorHalfWidth * 2 + 6, h: 6, d: CONFIG.finishTriggerDepth });
 
     const player = new THREE.Group();
     player.scale.set(1.035, 1.035, 1.035);
@@ -2073,8 +2078,8 @@ export default function App() {
         }
       }
 
-      if (handleGateCollision({ playing, complete: completeRef.current, currentZ: body.z, nextZ: nz, finishZ: LEVEL.finish.z, failSafeZ: LEVEL.finish.failSafeZ })) {
-        nz = LEVEL.finish.z;
+      if (handleGateCollision({ playing, complete: completeRef.current, currentZ: body.z, nextZ: nz, finishZ: activeLevelRef.current.finish.z, failSafeZ: activeLevelRef.current.finish.failSafeZ })) {
+        nz = activeLevelRef.current.finish.z;
         nx = worldX(nextLocalX, nz);
         body.localX = nextLocalX;
         body.x = nx;
@@ -2166,7 +2171,7 @@ export default function App() {
         item.mesh.rotation.y += dt * 2.2;
         item.mesh.position.y = item.y + Math.sin(t * 3 + index) * 0.16;
       });
-      gate.rotation.y = trackAngle(LEVEL.gate.z) + Math.sin(t * 0.7) * 0.02;
+      gate.rotation.y = trackAngle(activeLevelRef.current.gate.z) + Math.sin(t * 0.7) * 0.02;
 
       obstacleTelegraphs.forEach((telegraph, index) => {
         const distanceAhead = body.z - telegraph.targetZ;
@@ -2589,10 +2594,15 @@ export default function App() {
     };
   }, []);
 
-  const startDemo = () => {
+  const startNewGame = () => {
+    setCurrentLevelId("level-1");
     stopTitleTheme(0.18);
     startAudio();
     resetGameRef.current?.({ start: true });
+  };
+
+  const startDemo = () => {
+    startNewGame();
   };
 
   return (
