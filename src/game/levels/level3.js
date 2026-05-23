@@ -1,17 +1,16 @@
 import { CONFIG, MOVEMENT } from "../config.js";
 
-export const LEVEL_2 = {
-  id: "level-2",
-  name: "Sunset Temple Run",
-  background: "sunset-temple-run",
+export const LEVEL_3 = {
+  id: "level-3",
+  name: "Night Run",
+  background: "dusk-temple-run",
   theme: {
-    background: "#ff8a3d",
-    fog: "#ff9a4e",
-    ambient: "#ffbf7a",
-    key: "#ff6fb4",
-    fill: "#ff9ccf",
-    accent: "#ffd2eb",
-    uiGlow: "#ff8fc4",
+    fog: "#2a1638",
+    ambient: "#5a2a74",
+    key: "#ff9d57",
+    fill: "#ff6fa8",
+    accent: "#b58bff",
+    uiGlow: "#ffb574",
   },
   speed: { ...MOVEMENT, maxSpeed: 42 },
   course: {
@@ -191,7 +190,7 @@ export const LEVEL_2 = {
   ],
   goalDistance: Math.abs(-1330),
   music: "main-theme",
-  nextLevel: "level-3",
+  nextLevel: null,
 };
 
-export default LEVEL_2;
+export default LEVEL_3;
