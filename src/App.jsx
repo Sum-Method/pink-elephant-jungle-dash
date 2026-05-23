@@ -1601,6 +1601,7 @@ export default function App() {
           baseHeadY: head.position.y,
           snakeSegments,
         });
+        branchHazardAccents.push({ type: "snake", snakeIndex, dir: snake.dir, head, eye, baseHeadY: head.position.y, snakeSegments });
       });
 
       // Hanging vines: visual slide zone. Bottom aligns with collider bottom edge.
