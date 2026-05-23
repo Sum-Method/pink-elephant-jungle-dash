@@ -6,7 +6,6 @@ import { PwaInstallCard } from "./components/game-ui/PwaInstallCard.jsx";
 import { RotateOverlay } from "./components/game-ui/RotateOverlay.jsx";
 import { SaveDebugTools } from "./components/game-ui/SaveDebugTools.jsx";
 import { TouchControls } from "./components/game-ui/TouchControls.jsx";
-import { PwaInstallCard } from "./components/PwaInstallCard.jsx";
 import { usePwaInstallPrompt } from "./hooks/usePwaInstallPrompt.js";
 import { CAMERA_FEEDBACK, CONFIG, HUD_TIMING, MOVEMENT, PARTICLES, PICKUPS, SCORING } from "./game/config.js";
 import {
