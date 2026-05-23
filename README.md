@@ -70,6 +70,18 @@ If you publish updates and a browser shows an older cached version, follow `OFFL
 
 ## Mobile touch regression checklist
 
+
+## Save Data QA
+
+Quick beginner-friendly checks for save persistence:
+
+1. Start the game, change one setting, refresh the page, and confirm the setting stayed changed.
+2. Finish a run, refresh the page, and confirm your best score is still there.
+3. Unlock a skin, refresh the page, and confirm the skin is still unlocked and still selected.
+4. Trigger an achievement, refresh the page, and confirm the achievement still appears.
+5. Use the reset/clear save utility, then confirm the game returns to default settings and default progress.
+6. Repeat one quick save test in a browser private/incognito window and note that storage can be limited by browser rules.
+
 Use this quick checklist after gameplay input changes:
 
 - Tap controls: each touch button responds instantly.
