@@ -19,6 +19,7 @@ import {
 } from "./game/collisionHelpers.js";
 import { createKeys, isAllowedKey, setKeyState } from "./game/input.js";
 import { buildLevelById } from "./game/level.js";
+import { getLevelConfig } from "./game/levels/index.js";
 import { promptForZ } from "./game/prompts.js";
 import { aabb, clamp, createSeededRandom, lerp } from "./game/math.js";
 import { DEFAULT_AUDIO_STATE, createAudioManager, normalizeAudioState } from "./game/audio/audioManager.js";
@@ -378,6 +379,9 @@ export default function App() {
   const [touchControlsVisible, setTouchControlsVisible] = useState(false);
   const [currentLevelId, setCurrentLevelId] = useState("level-1");
   const activeLevelRef = useRef(buildLevelById("level-1"));
+  const currentLevelConfig = getLevelConfig(currentLevelId);
+  const nextLevelId = currentLevelConfig.nextLevel;
+  const nextLevelConfig = nextLevelId ? getLevelConfig(nextLevelId) : null;
 
   const ui = {
     health: useRef(null),
@@ -2605,6 +2609,14 @@ export default function App() {
     startNewGame();
   };
 
+  const startLevelById = (levelId) => {
+    if (!levelId) return;
+    setCurrentLevelId(levelId);
+    stopTitleTheme(0.18);
+    startAudio();
+    resetGameRef.current?.({ start: true });
+  };
+
   return (
     <main className="relative h-screen w-screen overflow-hidden bg-[#60b0ff] text-white" style={{ fontFamily: "system-ui, -apple-system, sans-serif" }}>
       <div ref={mountRef} className="absolute inset-0" />
@@ -2824,9 +2836,13 @@ export default function App() {
           <div className="rounded-[2rem] p-10 text-center"
             style={{ background: "rgba(12,20,10,0.88)", border: "1px solid rgba(255,200,80,0.35)", boxShadow: "0 0 65px rgba(255,190,80,0.22)", maxHeight: "92vh", overflowY: "auto" }}>
             <div className="mb-4 text-6xl">🏆</div>
-            <h2 className="display-title text-4xl font-black text-amber-200">Jungle Gate Reached!</h2>
+            <h2 className="display-title text-4xl font-black text-amber-200">
+              {nextLevelId ? `${currentLevelConfig.name} Complete!` : "Jungle Gate Reached!"}
+            </h2>
             <p className="mt-3 max-w-sm text-sm leading-relaxed text-amber-50/70">
-              The herd made it through. The jungle is yours.
+              {nextLevelId
+                ? `Great run! You're ready for ${nextLevelConfig?.name ?? "the next level"}.`
+                : "The herd made it through. The jungle is yours."}
             </p>
             <div className="mt-5 grid grid-cols-2 gap-3 text-left text-sm font-black text-amber-100 sm:grid-cols-3">
               <span className="rounded-2xl bg-white/5 px-3 py-2">🍋 Fruit <span>{finalResults?.fruit ?? 0}</span></span>
@@ -2837,10 +2853,23 @@ export default function App() {
               <span className="rounded-2xl bg-white/5 px-3 py-2">⏱ Time <span>{formatElapsed(finalResults?.elapsedMs ?? 0)}</span></span>
               <span className="rounded-2xl bg-white/5 px-3 py-2 sm:col-span-3">🌿 Distance <span>{Math.round(finalResults?.distance ?? 0)}</span>m</span>
             </div>
-            <button onClick={startDemo}
-              className="mt-8 rounded-full bg-amber-200 px-8 py-3 font-black text-slate-950 transition hover:scale-105 active:scale-95">
-              Restart Trail
-            </button>
+            <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+              {nextLevelId ? (
+                <button onClick={() => startLevelById(nextLevelId)}
+                  className="rounded-full bg-emerald-200 px-8 py-3 font-black text-emerald-950 transition hover:scale-105 active:scale-95">
+                  Start {nextLevelConfig?.name ?? "Next Level"}
+                </button>
+              ) : (
+                <button onClick={startDemo}
+                  className="rounded-full bg-amber-200 px-8 py-3 font-black text-slate-950 transition hover:scale-105 active:scale-95">
+                  Restart Trail
+                </button>
+              )}
+              <button onClick={() => startLevelById(currentLevelId)}
+                className="rounded-full bg-amber-200 px-8 py-3 font-black text-slate-950 transition hover:scale-105 active:scale-95">
+                Restart {currentLevelConfig.name}
+              </button>
+            </div>
           </div>
         </section>
       )}
