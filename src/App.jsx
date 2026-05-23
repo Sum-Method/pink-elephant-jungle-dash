@@ -2229,6 +2229,7 @@ export default function App() {
       const currentBox = playerBox(body.x, body.y, body.z, body.slideTimer > 0, currentAabb);
       const isReversing = playing && body.speed < 0 && nz > body.z;
       let blocked = false;
+      let shouldForceGroundReset = false;
 
       if (body.smashActionTimer > 0) {
         smashBox(nx, ny, nz, smashAabb);
@@ -2263,6 +2264,7 @@ export default function App() {
           const result = handleLogCollision({ collisionBox, obstacleAabb: oBox, canRetreat });
           if (result.hurt) hurt(false);
           blocked ||= result.blocked;
+          if (result.blocked && body.y <= oBox.maxY + 0.2) shouldForceGroundReset = true;
         } else if (obs.type === "branch") {
           const result = handleBranchCollision({ collisionBox, obstacleAabb: oBox, canRetreat });
           if (result.hurt) hurt(false);
@@ -2276,6 +2278,7 @@ export default function App() {
           if (result.breakCrate) breakCrate(obs);
           else if (result.hurt) hurt(false);
           blocked ||= result.blocked;
+          if (result.blocked && body.y <= oBox.maxY + 0.2) shouldForceGroundReset = true;
         }
       }
 
@@ -2345,9 +2348,11 @@ export default function App() {
 
       if (!blocked) {
         body.localX = nextLocalX; body.x = nx; body.y = ny; body.z = nz;
-      } else if (body.grounded) {
+      } else if (body.grounded || shouldForceGroundReset) {
         body.y = groundY;
+        body.grounded = true;
         body.yVelocity = 0;
+        body.doubleUsed = false;
       }
       if (wasGrounded && !body.grounded && body.yVelocity <= 0) body.coyoteTimer = MOVEMENT.coyoteTime;
 
