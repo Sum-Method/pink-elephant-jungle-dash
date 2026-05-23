@@ -85,42 +85,28 @@ npm run build
 
 This creates a production-ready `dist/` folder.
 
-## Build for GitHub Pages (`/docs`)
+## Build for GitHub Pages
 
 ```bash
-npm run build:pages
+npm run build
 ```
 
-This creates a static `docs/` folder that is ready for GitHub Pages branch deployment.
-
-## GitHub Pages publishing (manual)
-
-This project publishes to **GitHub Pages from `main` / `docs`**.
-
-1. Run `npm run build:pages`
-2. Commit the updated `docs` folder
-3. Push to `main`
+This creates a static `dist/` folder. The GitHub Actions workflow uploads this folder and deploys it to GitHub Pages.
 
 ## Deployment notes
 
-> Note: In restricted environments where npm packages cannot be installed, `docs/index.html` may be a temporary placeholder until `npm run build:pages` can run with dependencies available.
+> Note: In restricted environments where npm packages cannot be installed, production assets may be stale until `npm run build` can run with dependencies available.
 
-- This repo uses **GitHub Pages** with **Deploy from a branch**.
-- In GitHub repository settings, choose:
-  - **Source:** Deploy from a branch
-  - **Branch:** `main`
-  - **Folder:** `/docs`
+- This repo uses **GitHub Pages GitHub Actions deployment** (`.github/workflows/deploy-pages.yml`).
+- The workflow runs `npm run build`, uploads `dist/`, then deploys with `actions/deploy-pages`.
 - Vite is configured with the GitHub Pages base path (`/pink-elephant-jungle-dash/`) in `vite.config.js`.
-- The `docs/index.html` file is built output (not raw source), and references bundled assets under `/pink-elephant-jungle-dash/assets/`.
-- Add and keep `docs/.nojekyll` so GitHub Pages serves the built files directly.
+- Built output references bundled assets under `/pink-elephant-jungle-dash/assets/`.
 - The known sandbox preview error below is benign and can be ignored:
   - `Uncaught TypeError: Cannot assign to read only property 'open' of object '#<Window>'`
 
 
 ## Deployment
 
-- GitHub Pages deploys from **`main` branch / `docs` folder**.
-- To publish changes, run `npm run build:pages`.
-- Commit and push the updated `docs` folder.
-- `.github/workflows/static.yml` was removed because this repo blocks external GitHub Actions.
-- `docs/.nojekyll` must remain present so Pages serves Vite files directly.
+- GitHub Pages deploys from the **Deploy to GitHub Pages** workflow.
+- To publish changes, push to `main` (or run the workflow manually from the Actions tab).
+- The workflow installs dependencies, runs `npm run build`, uploads `dist`, and deploys it to Pages.
