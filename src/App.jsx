@@ -1464,10 +1464,10 @@ export default function App() {
       group.position.set(posOnPath.x, branch.yOffset, posOnPath.z);
       group.rotation.y = trackAngle(branch.z);
 
-      const trunkHeight = 10.2;
-      const trunkWidth = 2.9;
-      const trunkDepth = 2.6;
-      const trunkOffset = branch.width * 0.5 + 1.35;
+      const trunkHeight = 12.8;
+      const trunkWidth = 3.35;
+      const trunkDepth = 3.1;
+      const trunkOffset = branch.width * 0.5 + 1.95;
       const trunkBaseY = -(branch.height * 0.5) + trunkHeight * 0.5;
 
       const leftTrunk = new THREE.Mesh(sharedGeometries.unitBox, branchLimbMat);
@@ -1485,41 +1485,41 @@ export default function App() {
         group.add(mesh);
       });
 
-      const canopyBranchOffsets = [-0.42, -0.22, 0, 0.23, 0.44];
+      const canopyBranchOffsets = [-0.48, -0.3, -0.12, 0.08, 0.28, 0.46];
       canopyBranchOffsets.forEach((offset, index) => {
         const beam = new THREE.Mesh(sharedGeometries.unitBox, branchLimbMat);
-        beam.position.set(offset * branch.width * 0.92, branch.height * 0.5 - (index % 2 === 0 ? 0.16 : 0.42), (index % 2 === 0 ? -0.3 : 0.34));
-        beam.scale.set(branch.width + 2.95 - index * 0.35, 0.7 + (index % 2) * 0.16, 0.86);
-        beam.rotation.z = offset * 0.5;
-        beam.rotation.x = (index - 2) * 0.05;
+        beam.position.set(offset * branch.width * 0.9, branch.height * 0.5 - 0.3 - (index % 2 === 0 ? 0.14 : 0.52), (index % 2 === 0 ? -0.9 : 0.9));
+        beam.scale.set(branch.width + 5.1 - index * 0.26, 0.84 + (index % 2) * 0.15, 1.2);
+        beam.rotation.z = offset * 0.75;
+        beam.rotation.x = (index - 2.5) * 0.08;
         beam.castShadow = true;
         beam.receiveShadow = true;
         group.add(beam);
       });
 
       const canopyLeaves = new THREE.Mesh(sharedGeometries.unitBox, branchLeafMat);
-      canopyLeaves.position.set(0, branch.height * 0.5 + 0.54, 0.1);
-      canopyLeaves.scale.set(branch.width + 4.2, 1.62, 2.9);
+      canopyLeaves.position.set(0, branch.height * 0.5 + 0.6, 0);
+      canopyLeaves.scale.set(branch.width + 5.6, 1.9, 4.6);
       canopyLeaves.castShadow = true;
       canopyLeaves.receiveShadow = true;
       group.add(canopyLeaves);
 
-      for (let i = 0; i < 7; i += 1) {
-        const x = -branch.width * 0.42 + i * (branch.width * 0.14);
-        const vineLength = 3.3 + (i % 3) * 0.55;
+      for (let i = 0; i < 9; i += 1) {
+        const x = -branch.width * 0.5 + i * (branch.width * 0.125);
+        const vineLength = 3.6 + (i % 4) * 0.75;
         const vine = new THREE.Mesh(sharedGeometries.unitBox, branchVineMat);
-        vine.position.set(x, 0.24 - vineLength * 0.5, (i % 2 === 0 ? 1 : -1) * 0.58);
-        vine.scale.set(0.28, vineLength, 0.28);
-        vine.rotation.z = (i - 3) * 0.08;
+        vine.position.set(x, 0.52 - vineLength * 0.5, (i % 2 === 0 ? 1 : -1) * 0.76);
+        vine.scale.set(0.34, vineLength, 0.34);
+        vine.rotation.z = (i - 4) * 0.11;
         vine.castShadow = true;
         vine.receiveShadow = true;
         group.add(vine);
 
-        if (i % 2 === 1) {
+        if (i % 3 !== 0) {
           const snakeBody = new THREE.Mesh(sharedGeometries.unitBox, snakeBodyMat);
-          snakeBody.position.set(x + 0.08, vine.position.y - 0.3, vine.position.z + 0.16);
-          snakeBody.scale.set(0.4, 0.9, 0.4);
-          snakeBody.rotation.z = (i - 3) * 0.14;
+          snakeBody.position.set(x + 0.08, vine.position.y - 0.38, vine.position.z + 0.2);
+          snakeBody.scale.set(0.48, 1.18, 0.48);
+          snakeBody.rotation.z = (i - 4) * 0.18;
           snakeBody.castShadow = true;
           snakeBody.receiveShadow = true;
 
