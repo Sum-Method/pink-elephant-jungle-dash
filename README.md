@@ -34,6 +34,7 @@ Pink Elephant Jungle Dash is a beginner-friendly 3D browser game where you run a
 - Softer monkey enemy look (removed banana-like hand shapes for a friendlier silhouette)
 - Animated crocodiles that snap open and closed with visible white teeth when you get close
 - HUD polish to keep energy/charge labels and bars readable on smaller screens
+- Refined menu logo glow and in-game charge badge styling for cleaner readability
 - Fruit collection, hazard dodging, and life-based runs
 - Belly-slide tree gate obstacles with interwoven branches, hanging vines, and snakes
 - Fruit collection with redesigned edible-looking peaches, sugar cane, and golden pineapples
