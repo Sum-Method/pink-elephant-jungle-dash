@@ -1490,6 +1490,7 @@ export default function App() {
 
       const branchBottomY = -(branch.height * 0.5);
       const branchTopY = branch.height * 0.5;
+      const visualHazardDrop = 0.22;
 
       // Side supports: thick twisted trunks framing the tunnel.
       const supportHeight = branch.height + 4.8;
@@ -1549,8 +1550,8 @@ export default function App() {
 
       // Snake silhouettes across the top to match the "Snake Gate" concept.
       [
-        { y: branchTopY + 1.28, z: 0.78, dir: 1, scale: 1.0 },
-        { y: branchTopY + 0.82, z: -0.88, dir: -1, scale: 0.82 },
+        { y: branchTopY + 1.28 - visualHazardDrop, z: 0.78, dir: 1, scale: 1.0 },
+        { y: branchTopY + 0.82 - visualHazardDrop, z: -0.88, dir: -1, scale: 0.82 },
       ].forEach((snake, snakeIndex) => {
         const snakeSegments = [];
         [-0.72, -0.36, 0, 0.36, 0.72].forEach((seg, idx) => {
@@ -1605,7 +1606,7 @@ export default function App() {
 
       // Hanging vines: visual slide zone. Bottom aligns with collider bottom edge.
       const hangCount = 21;
-      const hangingTopY = branchTopY - 0.25;
+      const hangingTopY = branchTopY - 0.25 - visualHazardDrop;
       for (let i = 0; i < hangCount; i += 1) {
         const t = i / (hangCount - 1);
         const x = -branch.width * 0.52 + t * (branch.width * 1.04);
@@ -1622,7 +1623,7 @@ export default function App() {
 
         if (i % 2 === 0) {
           const bead = new THREE.Mesh(sharedGeometries.unitBox, snakeBodyMat);
-          bead.position.set(x, branchBottomY + 0.3 + (i % 4) * 0.08, vine.position.z + 0.08);
+          bead.position.set(x, branchBottomY + 0.2 + (i % 4) * 0.08, vine.position.z + 0.08);
           bead.scale.set(0.28, 0.34, 0.24);
           bead.castShadow = true;
           bead.receiveShadow = true;
@@ -1630,7 +1631,7 @@ export default function App() {
         }
         if (i % 5 === 0) {
           const warningBand = new THREE.Mesh(sharedGeometries.unitBox, branchWarningStripeMat);
-          warningBand.position.set(x, branchBottomY + 0.64, vine.position.z);
+          warningBand.position.set(x, branchBottomY + 0.54, vine.position.z);
           warningBand.scale.set(0.38, 0.16, 0.38);
           warningBand.rotation.z = vine.rotation.z;
           warningBand.castShadow = true;
