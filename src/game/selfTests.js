@@ -16,7 +16,7 @@ import { isAudioCategoryMuted, normalizeAudioState, resolveTonePlayback } from "
 import { TITLE_THEME, noteNameToFrequency } from "./audio/titleTheme.js";
 import { trackAngle, trackCenter, worldPosition, worldX } from "./track.js";
 import { CONFIG, MOVEMENT, PICKUPS, SCORING } from "./config.js";
-import { LEVEL } from "./level.js";
+import { buildLevelById, LEVEL } from "./level.js";
 import { LOOP_DIFFICULTIES, LOOP_PROMPT_PLANS, LEVEL_SECTIONS, promptPlanHasCue, sectionDifficulty, sectionMetadata } from "./levelPromptMetadata.js";
 import { LEVEL_PROMPTS, promptForZ } from "./prompts.js";
 import {
@@ -93,6 +93,31 @@ export function runSelfTests() {
 
   assert("level finish plane matches configured finish line", LEVEL.finish.z === CONFIG.finishLineZ && CONFIG.finishLineZ === CONFIG.gateZ);
   assert("level finish failsafe is beyond the gate", LEVEL.finish.failSafeZ < LEVEL.finish.z);
+
+
+  ["level-1", "level-2"].forEach((levelId) => {
+    const builtLevel = buildLevelById(levelId);
+    const requiredSections = [
+      "fruits",
+      "logs",
+      "crates",
+      "branches",
+      "rivers",
+      "enemies",
+      "collectibles",
+      "gate",
+      "finish",
+    ];
+
+    requiredSections.forEach((section) => {
+      const hasSection = builtLevel[section] !== undefined;
+      const hasEntries = ["gate", "finish"].includes(section)
+        ? Boolean(builtLevel[section])
+        : Array.isArray(builtLevel[section]) && builtLevel[section].length > 0;
+
+      assert(`level ${levelId} builds with ${section}`, hasSection && hasEntries);
+    });
+  });
 
   const representativeLog = LEVEL.logs[0];
   assert("level has at least one log obstacle", Boolean(representativeLog));
