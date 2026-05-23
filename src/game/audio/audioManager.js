@@ -42,6 +42,7 @@ const TONE_SETTINGS = {
   life: [420, 980, 0.35, "triangle", 0.1, "pickups"],
   croc: [70, 45, 0.18, "sawtooth", 0.11, "impacts"],
   thump: [62, 30, 0.16, "sine", 0.08, "impacts"],
+  branchWarn: [780, 520, 0.09, "triangle", 0.055, "ui"],
 };
 
 const REPEAT_RULES = {
