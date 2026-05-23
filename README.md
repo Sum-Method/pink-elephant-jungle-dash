@@ -8,7 +8,7 @@ Pink Elephant Jungle Dash is a beginner-friendly 3D browser game where you run a
 
 ## Recent update
 
-- Fixed the browser tab icon (favicon) path so it loads correctly in both local development and on GitHub Pages.
+- Refreshed monkey enemy hands/arms to remove banana-like shapes that looked like fangs, so monkeys read friendlier during gameplay.
 
 ## Repo safety settings (recommended)
 
