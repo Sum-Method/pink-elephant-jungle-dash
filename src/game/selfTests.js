@@ -17,6 +17,8 @@ import { TITLE_THEME, noteNameToFrequency } from "./audio/titleTheme.js";
 import { trackAngle, trackCenter, worldPosition, worldX } from "./track.js";
 import { CONFIG, MOVEMENT, PICKUPS, SCORING } from "./config.js";
 import { buildLevelById, LEVEL } from "./level.js";
+import { getLevelConfig } from "./levels/index.js";
+import level2 from "./levels/level2.js";
 import { LOOP_DIFFICULTIES, LOOP_PROMPT_PLANS, LEVEL_SECTIONS, promptPlanHasCue, sectionDifficulty, sectionMetadata } from "./levelPromptMetadata.js";
 import { LEVEL_PROMPTS, promptForZ } from "./prompts.js";
 import {
@@ -94,6 +96,8 @@ export function runSelfTests() {
   assert("level finish plane matches configured finish line", LEVEL.finish.z === CONFIG.finishLineZ && CONFIG.finishLineZ === CONFIG.gateZ);
   assert("level finish failsafe is beyond the gate", LEVEL.finish.failSafeZ < LEVEL.finish.z);
 
+  assert("level 2 id stays level-2", level2.id === "level-2");
+  assert("getLevelConfig resolves level-2", getLevelConfig("level-2")?.id === "level-2");
 
   ["level-1", "level-2"].forEach((levelId) => {
     const builtLevel = buildLevelById(levelId);
