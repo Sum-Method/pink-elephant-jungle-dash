@@ -3018,8 +3018,8 @@ export default function App() {
                 <span className="title-elephant-crown" />
               </span>
             </div>
-            <h1 className="display-title text-5xl font-black leading-tight text-pink-300 drop-shadow" style={{ letterSpacing: "0.01em" }}>Pink Elephant</h1>
-            <h2 className="display-title mt-1 text-3xl font-black text-amber-100" style={{ letterSpacing: "0.05em" }}>Jungle Dash</h2>
+            <h1 className="display-title title-logo-main text-5xl font-black leading-tight text-pink-300 drop-shadow" style={{ letterSpacing: "0.015em" }}>Pink Elephant</h1>
+            <h2 className="display-title title-logo-sub mt-1 text-3xl font-black text-amber-100" style={{ letterSpacing: "0.06em" }}>Jungle Dash</h2>
             <p className="mx-auto mt-4 max-w-sm text-sm leading-relaxed text-amber-50/75">
               Charge, jump, slide, and smash through a low-poly jungle course. Look for small trail telegraphs before obstacles, then chase fruit, crates, and bonus score.
             </p>
