@@ -842,6 +842,9 @@ export default function App() {
         const mouthMat = makeMaterial("#f8f1cc");
         const toothMat = makeMaterial("#ffffff", { roughness: 0.3, metalness: 0.05, emissive: "#3a3a3a", emissiveIntensity: 0.08 });
         const crocBody = new THREE.Mesh(new THREE.BoxGeometry(2.4, 0.55, 1.15), crocMat);
+        const tail = new THREE.Mesh(new THREE.ConeGeometry(0.17, 0.95, 8), crocMat);
+        tail.rotation.x = Math.PI / 2;
+        tail.position.set(0, 0.02, 0.95);
 
         const lowerJaw = new THREE.Group();
         const lowerSnout = new THREE.Mesh(new THREE.BoxGeometry(1.1, 0.22, 0.9), crocMat);
@@ -851,9 +854,9 @@ export default function App() {
         const lowerTeeth = new THREE.Mesh(new THREE.BoxGeometry(0.9, 0.1, 0.12), toothMat);
         lowerTeeth.position.set(0, 0.16, -1.27);
         lowerJaw.add(lowerSnout, lowerMouth, lowerTeeth);
-        for (let toothIndex = 0; toothIndex < 6; toothIndex += 1) {
-          const localX = -0.36 + toothIndex * 0.145;
-          const bottomTooth = new THREE.Mesh(new THREE.ConeGeometry(0.035, 0.14, 6), toothMat);
+        for (let toothIndex = 0; toothIndex < 8; toothIndex += 1) {
+          const localX = -0.42 + toothIndex * 0.12;
+          const bottomTooth = new THREE.Mesh(new THREE.ConeGeometry(0.03, 0.16, 6), toothMat);
           bottomTooth.rotation.x = Math.PI;
           bottomTooth.position.set(localX, 0.18, -1.17);
           lowerJaw.add(bottomTooth);
@@ -870,15 +873,15 @@ export default function App() {
         const upperTeeth = new THREE.Mesh(new THREE.BoxGeometry(0.9, 0.1, 0.12), toothMat);
         upperTeeth.position.set(0, -0.1, -0.78);
         upperJaw.add(upperSnout, upperMouth, upperTeeth);
-        for (let toothIndex = 0; toothIndex < 6; toothIndex += 1) {
-          const localX = -0.36 + toothIndex * 0.145;
-          const topTooth = new THREE.Mesh(new THREE.ConeGeometry(0.035, 0.14, 6), toothMat);
+        for (let toothIndex = 0; toothIndex < 8; toothIndex += 1) {
+          const localX = -0.42 + toothIndex * 0.12;
+          const topTooth = new THREE.Mesh(new THREE.ConeGeometry(0.03, 0.16, 6), toothMat);
           topTooth.position.set(localX, -0.12, -0.67);
           upperJaw.add(topTooth);
         }
         upperJawPivot.add(upperJaw);
 
-        group.add(crocBody, lowerJaw, upperJawPivot);
+        group.add(crocBody, tail, lowerJaw, upperJawPivot);
         const startZ = river.z + Math.sin(croc.phase) * 5;
         const startPos = worldPosition(croc.localX, startZ);
         group.position.set(startPos.x, 0.48, startPos.z);
@@ -887,6 +890,7 @@ export default function App() {
           type: "croc",
           mesh: group,
           upperJawPivot,
+          tail,
           riverZ: river.z,
           baseLocalX: croc.localX,
           phase: croc.phase,
@@ -2126,17 +2130,19 @@ export default function App() {
         const xMove = Math.sin(t * 1.2 + croc.phase) * 1.2;
         croc.z = croc.riverZ + zMove;
         croc.x = worldX(croc.baseLocalX + xMove, croc.z);
-        croc.mesh.position.set(croc.x, 0.48 + Math.sin(t * 4 + croc.phase) * 0.08, croc.z);
+        const bodyBob = Math.sin(t * 4 + croc.phase) * 0.08;
+        croc.mesh.position.set(croc.x, 0.48 + bodyBob, croc.z);
         croc.mesh.rotation.y = trackAngle(croc.z) + Math.sin(t + croc.phase) * 0.35;
 
         const distanceToPlayer = Math.hypot(body.x - croc.x, body.z - croc.z);
         const closeFactor = clamp(1 - (distanceToPlayer - 2.2) / 9.5, 0, 1);
         const isThreatened = closeFactor > 0.14;
-        const snapCycle = Math.sin(t * (7.4 + closeFactor * 11.5) + croc.phase * 2.7) > 0 ? 1 : 0;
-        const snapOpen = isThreatened ? snapCycle * closeFactor : 0;
-        const idleOpen = (1 - closeFactor) * (0.06 + Math.sin(t * 2.8 + croc.phase) * 0.025);
+        const snapCycle = Math.sin(t * (7.8 + closeFactor * 13.5) + croc.phase * 2.7) > 0 ? 1 : 0;
+        const snapOpen = isThreatened ? snapCycle * (0.25 + closeFactor * 0.75) : 0;
+        const idleOpen = (1 - closeFactor) * (0.08 + Math.sin(t * 2.8 + croc.phase) * 0.03);
         const jawOpen = Math.max(0, snapOpen + idleOpen);
-        croc.upperJawPivot.rotation.x = -jawOpen * 1.05;
+        croc.upperJawPivot.rotation.x = -jawOpen * 1.15;
+        croc.tail.rotation.y = Math.sin(t * (4.8 + closeFactor * 4.2) + croc.phase * 1.7) * (0.2 + closeFactor * 0.38);
       });
     }
 
