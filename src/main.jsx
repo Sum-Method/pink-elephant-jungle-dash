@@ -129,6 +129,18 @@ if ("serviceWorker" in navigator) {
             registration.waiting.postMessage({ type: "SKIP_WAITING" });
           }
         });
+        if (updatePromptShown) {
+          return;
+        }
+        updatePromptShown = true;
+
+        const shouldRefresh = window.confirm(
+          "A new game update is ready. Reload now to get the latest version?",
+        );
+
+        if (shouldRefresh && registration.waiting) {
+          registration.waiting.postMessage({ type: "SKIP_WAITING" });
+        }
       };
 
       if (registration.waiting) {

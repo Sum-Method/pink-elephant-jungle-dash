@@ -42,6 +42,7 @@ self.addEventListener("install", (event) => {
       console.warn("Offline asset pre-cache failed; fallback cache remains active.", error);
     }
 
+    await self.skipWaiting();
   })());
 });
 
