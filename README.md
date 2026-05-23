@@ -9,6 +9,8 @@ Pink Elephant Jungle Dash is a beginner-friendly 3D browser game where you run a
 ## Recent update
 
 - Refreshed monkey enemy hands/arms to remove banana-like shapes that looked like fangs, so monkeys read friendlier during gameplay.
+- Fixed the browser tab icon (favicon) path so it loads correctly in both local development and on GitHub Pages.
+- Added a safety ground reset after low-obstacle bump collisions so the elephant always drops back to normal ground height instead of floating at obstacle height.
 
 ## Repo safety settings (recommended)
 
@@ -25,7 +27,8 @@ Pink Elephant Jungle Dash is a beginner-friendly 3D browser game where you run a
 - **Run faster (charge):** hold `W` or `↑`
 - **Jump:** tap `Space`
 - **Slide:** hold `Space`
-- **Smash/Spin (when available):** `Z` or `E`
+- **Smash:** `Shift`
+- **Spin (when available):** `E`
 - **Touch devices:** use the on-screen control buttons
 
 ## Main features
