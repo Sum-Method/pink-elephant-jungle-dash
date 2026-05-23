@@ -85,6 +85,60 @@ UI readability and comfort playtest sizes:
 - Large phone (example width: ~414px)
 - Tablet (example width: ~768px)
 
+
+## Mobile Experience
+
+This section is the release checklist for mobile quality. Use it before publishing updates.
+
+### Short checklist
+
+- [ ] Orientation: game is playable in landscape, and portrait shows the rotate-device helper when needed.
+- [ ] Fullscreen persistence: immersive/fullscreen mode returns after app switching, notifications, or resume.
+- [ ] Touch reliability: taps, holds, and multi-touch combos are stable with no stuck inputs.
+- [ ] Notch safety: HUD and controls stay inside safe areas on cutout/notch devices.
+- [ ] UI readability: score, energy, and control labels are readable on small phone, large phone, and tablet sizes.
+
+### Key flow test sequence
+
+Run this exact flow on each test device:
+
+1. Cold launch the game from a closed state.
+2. Start a run and restart the level.
+3. Put the app/browser in background, then return to foreground.
+4. Rotate the device (landscape-left and landscape-right).
+5. Receive a notification while the game is open (or simulate interruption), then return to the game.
+6. Confirm controls still respond correctly and HUD is still visible/readable.
+
+### Glitch log format (required)
+
+Log every visual or input glitch in this format:
+
+- Device model:
+- OS version:
+- Browser or app-wrapper version (for example: Chrome 125, Safari 18, WebView build):
+- Flow step where issue happened:
+- What happened:
+- How often (always / sometimes / once):
+- Screenshot or short recording captured: yes/no
+
+### Fix order (priority)
+
+Fix items in this order:
+
+1. Input mistakes (missed taps, stuck buttons, wrong action triggers).
+2. Hidden or blocked controls/HUD (safe-area or overlap issues).
+3. Fullscreen/orientation recovery issues.
+4. Cosmetic polish (spacing, non-blocking visual tweaks).
+
+### Re-test gate before release
+
+Before release, re-test every fixed mobile issue on at least **two real devices** (not only desktop emulation), then confirm no regressions in the key flow sequence above.
+
+### Known mobile limits
+
+- Some browsers can ignore fullscreen or orientation lock requests because of platform policy; the game falls back to a safe in-game layout and rotate guidance when needed.
+- Small UI differences can happen between standalone PWA mode and normal browser-tab mode.
+
 ## Repo safety settings (recommended)
 
 - GitHub Pages: deploy from `main` branch and `/docs` folder
