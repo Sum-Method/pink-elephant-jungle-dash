@@ -19,7 +19,7 @@ Pink Elephant Jungle Dash is a beginner-friendly 3D browser game. You play as a 
 ## Main features
 
 - Browser tab now shows a simple embedded PNG favicon for easier game tab recognition (no separate binary file needed)
-- Gameplay progression now uses each level's `nextLevel`: finishing Level 1 offers Level 2, and finishing Level 2 shows the final win screen
+- Gameplay progression now uses each level's `nextLevel`: finishing Level 1 offers Level 2, and finishing Level 2 now offers Level 3 (Night Run)
 - Restart now always restarts the current level, while New Game always returns to Level 1
 - Level switching now fully resets run state (pickups, hazards, player state/position/speed, timers, and finish state) so each level starts clean
 - Playable low-poly 3D jungle runner with a pink elephant character
@@ -27,12 +27,12 @@ Pink Elephant Jungle Dash is a beginner-friendly 3D browser game. You play as a 
 - Runtime level data now uses `currentLevelId` state and `buildLevelById(currentLevelId)`, starting on Level 1 exactly as before
 - Completing Level 1 now shows a clear **Level Complete** screen with a **Start Level 2** action driven by each level's `nextLevel` config
 - Level 1 keeps its original loops, hazards, speed, and collectibles, and its progression link stays `nextLevel: "level-2"`
-- Level 2 is now tuned as **Dusk Temple Run** with longer 5-loop pacing and denser late-loop hazards for a tougher finish
+- Level 2 is now tuned as **Sunset Temple Run** with an orange sky and pink sunset orb, while Level 3 is the **Night Run** layout using the previous purple/moon-like dusk palette
 - Level-specific movement and course settings are now fully wired: Level 1 max speed stays 40 at 760m, and Level 2 uses max speed 42 with a 1330m finish
 - HUD gate text now updates per level (no more hard-coded 760m), and Level 2 now renders path/decor further down the longer course
 - Dusk Temple Run now applies its own atmosphere colours (background/fog/lights/accent glow) for a safer themed Level 2 visual
 - A development-safe self-test confirms both `buildLevelById("level-1")` and `buildLevelById("level-2")` build with required sections
-- Self-tests also verify Level 2 stays registered as `"level-2"` and resolves through `getLevelConfig("level-2")`
+- Self-tests now verify both Level 2 and Level 3 stay registered as `"level-2"` / `"level-3"` and resolve through `getLevelConfig(...)`
 - Self-tests now verify Level 1 finish/gate match global values and Level 2 finish/gate match its level-specific `course` overrides after build
 - Fruit collection, obstacle dodging, and life-based gameplay
 - Keyboard and touch controls for desktop and mobile play

@@ -19,6 +19,7 @@ import { CONFIG, MOVEMENT, PICKUPS, SCORING } from "./config.js";
 import { buildLevelById, LEVEL } from "./level.js";
 import { getLevelConfig } from "./levels/index.js";
 import level2 from "./levels/level2.js";
+import level3 from "./levels/level3.js";
 import { LOOP_DIFFICULTIES, LOOP_PROMPT_PLANS, LEVEL_SECTIONS, promptPlanHasCue, sectionDifficulty, sectionMetadata } from "./levelPromptMetadata.js";
 import { LEVEL_PROMPTS, promptForZ } from "./prompts.js";
 import {
@@ -95,6 +96,7 @@ export function runSelfTests() {
 
   const builtLevel1 = buildLevelById("level-1");
   const builtLevel2 = buildLevelById("level-2");
+  const builtLevel3 = buildLevelById("level-3");
 
   assert(
     "level 1 finish/gate match configured globals",
@@ -112,8 +114,11 @@ export function runSelfTests() {
 
   assert("level 2 id stays level-2", level2.id === "level-2");
   assert("getLevelConfig resolves level-2", getLevelConfig("level-2")?.id === "level-2");
+  assert("level 3 id stays level-3", level3.id === "level-3");
+  assert("level 3 finish/gate use level overrides after build", builtLevel3.finish.z === level3.course.finishLineZ && builtLevel3.gate.z === level3.course.gateZ && builtLevel3.finish.z === builtLevel3.gate.z);
+  assert("getLevelConfig resolves level-3", getLevelConfig("level-3")?.id === "level-3");
 
-  ["level-1", "level-2"].forEach((levelId) => {
+  ["level-1", "level-2", "level-3"].forEach((levelId) => {
     const builtLevel = buildLevelById(levelId);
     const requiredSections = [
       "fruits",
