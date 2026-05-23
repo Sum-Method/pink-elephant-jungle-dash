@@ -1,6 +1,7 @@
 # Pink Elephant Jungle Dash
 
 ## Play the game
+<img width="1774" height="887" alt="pe-jungledash" src="https://github.com/user-attachments/assets/55be6aa3-74ab-412a-be98-e74b854bae1b" />
 
 Live playable version: https://jedbcov-coder.github.io/pink-elephant-jungle-dash/
 
