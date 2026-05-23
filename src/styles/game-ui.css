@@ -797,7 +797,7 @@ button:disabled {
     0 0 28px rgba(236, 72, 153, 0.12),
     inset 0 1px 0 rgba(255, 255, 255, 0.10);
   padding: 0.95rem 1.05rem;
-  top: 10rem;
+  top: 11.2rem;
 }
 
 .hud-primary-panel .h-3 {
@@ -811,7 +811,7 @@ button:disabled {
   color: rgba(255, 251, 235, 0.66);
   opacity: 0.76;
   padding: 0.72rem 0.85rem;
-  top: 10.4rem;
+  top: 11.6rem;
 }
 
 .hud-secondary-panel .text-2xl {
@@ -877,14 +877,14 @@ button:disabled {
 
   .hud-primary-panel {
     left: 0.6rem;
-    top: 8.4rem;
+    top: 9.2rem;
     width: min(12.25rem, 52vw);
     padding: 0.72rem 0.78rem;
   }
 
   .hud-secondary-panel {
     right: 0.6rem;
-    top: 8.8rem;
+    top: 9.6rem;
     width: min(10rem, 42vw);
     padding: 0.55rem 0.65rem;
   }
@@ -933,11 +933,11 @@ button:disabled {
   }
 
   .hud-primary-panel {
-    top: 8rem;
+    top: 8.8rem;
   }
 
   .hud-secondary-panel {
-    top: 8.2rem;
+    top: 9rem;
   }
 }
 
