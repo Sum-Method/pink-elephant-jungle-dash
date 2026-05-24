@@ -1568,3 +1568,50 @@ button:disabled {
   opacity: 0;
   pointer-events: none;
 }
+
+@media (max-width: 900px) and (orientation: landscape) {
+  .desktop-controls,
+  .control-tutorial,
+  .keyboard-help,
+  .large-control-overlay {
+    display: none !important;
+  }
+
+  .mobile-controls {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 30;
+  }
+
+  .mobile-controls button {
+    pointer-events: auto;
+    touch-action: none;
+    user-select: none;
+    width: clamp(52px, 8vw, 76px);
+    height: clamp(52px, 8vw, 76px);
+    border-radius: 18px;
+    font-size: clamp(0.7rem, 1.6vw, 1rem);
+  }
+
+  .mobile-run-control {
+    position: absolute;
+    left: max(14px, env(safe-area-inset-left, 0px));
+    bottom: max(14px, env(safe-area-inset-bottom, 0px));
+  }
+
+  .mobile-run-control button {
+    width: clamp(72px, 11vw, 96px);
+    height: clamp(72px, 11vw, 96px);
+    border-radius: 24px;
+  }
+
+  .mobile-action-cluster {
+    position: absolute;
+    right: max(14px, env(safe-area-inset-right, 0px));
+    bottom: max(14px, env(safe-area-inset-bottom, 0px));
+    display: grid;
+    grid-template-columns: repeat(2, auto);
+    gap: 10px;
+  }
+}
