@@ -1,8 +1,8 @@
 html,
 body,
 #root {
-  width: 100%;
-  height: 100%;
+  width: min(100%, 100vw);
+  height: max(100%, 100svh);
   min-height: 100dvh;
   margin: 0;
 }
@@ -13,44 +13,71 @@ body {
 }
 
 
-:root {
+ :root {
   --hud-safe-top: max(env(safe-area-inset-top, 0px), 0px);
   --hud-safe-right: max(env(safe-area-inset-right, 0px), 0px);
   --hud-safe-bottom: max(env(safe-area-inset-bottom, 0px), 0px);
   --hud-safe-left: max(env(safe-area-inset-left, 0px), 0px);
+  --space-xs: clamp(0.25rem, 0.8vw, 0.5rem);
+  --space-sm: clamp(0.5rem, 1.4vw, 0.8rem);
+  --space-md: clamp(0.75rem, 2vw, 1.1rem);
+  --space-lg: clamp(1rem, 2.5vw, 1.5rem);
+  --radius-sm: clamp(0.5rem, 1.3vw, 0.75rem);
+  --radius-md: clamp(0.75rem, 1.8vw, 1rem);
+  --radius-lg: clamp(1rem, 2.8vw, 1.5rem);
+  --font-sm: clamp(0.75rem, 2.6vw, 0.9rem);
+  --font-md: clamp(0.9rem, 3vw, 1.05rem);
+  --font-lg: clamp(1.05rem, 3.4vw, 1.45rem);
+  --layout-max-width: min(94vw, 86rem);
   --hud-inline-gap: clamp(0.65rem, 1.6vw, 1rem);
-  --ui-scale: 1;
-  --hud-text-scale: 1;
-  --hud-icon-scale: 1;
-  --touch-target-min: 48px;
-  --touch-button-min: clamp(var(--touch-target-min), 10vw, 70px);
+  --ui-scale: 0.92;
+  --hud-text-scale: 0.94;
+  --hud-icon-scale: 0.94;
+  --touch-target-min: 3rem;
+  --touch-button-min: clamp(var(--touch-target-min), 10vw, 4.375rem);
   --touch-grid-col-min: clamp(3.7rem, 16vw, 5rem);
   --touch-gap: clamp(0.42rem, 1.4vw, 0.7rem);
-  --touch-bottom-offset: calc(clamp(0.7rem, 2.2vh, 1.35rem) + var(--hud-safe-bottom));
+  --touch-bottom-offset: calc(clamp(0.7rem, 2.2svh, 1.35rem) + var(--hud-safe-bottom));
   --hud-font-small: clamp(0.58rem, calc(0.52rem + 0.3vw), 0.78rem);
   --hud-font-body: clamp(0.72rem, calc(0.66rem + 0.34vw), 0.95rem);
   --hud-font-value: clamp(1.05rem, calc(0.98rem + 0.7vw), 1.55rem);
-  --hud-side-top: calc(clamp(2.65rem, 6.4vh, 3.35rem) + var(--hud-safe-top));
+  --hud-side-top: calc(clamp(2.65rem, 6.4dvh, 3.35rem) + var(--hud-safe-top));
 }
-@media (max-width: 390px) {
+
+@media (min-width: 320px) and (max-width: 480px) {
   :root {
     --ui-scale: 0.9;
     --hud-text-scale: 0.92;
     --hud-icon-scale: 0.92;
-    --touch-target-min: 48px;
+    --touch-target-min: 3rem;
   }
 }
-@media (min-width: 391px) and (max-width: 767px) {
+
+@media (min-width: 481px) and (max-width: 767px) {
   :root {
-    --touch-target-min: 48px;
+    --ui-scale: 0.96;
+    --hud-text-scale: 0.98;
+    --hud-icon-scale: 0.98;
+    --touch-target-min: clamp(3rem, 8vw, 3.25rem);
   }
 }
-@media (min-width: 768px) {
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  :root {
+    --ui-scale: 1.02;
+    --hud-text-scale: 1.02;
+    --hud-icon-scale: 1.03;
+    --touch-target-min: 3.25rem;
+  }
+}
+
+@media (min-width: 1024px) {
   :root {
     --ui-scale: 1.08;
     --hud-text-scale: 1.06;
     --hud-icon-scale: 1.08;
-    --touch-target-min: 52px;
+    --touch-target-min: 3.25rem;
+    --layout-max-width: min(92vw, 90rem);
   }
 }
 
@@ -79,7 +106,8 @@ body {
 }
 
 .app-shell {
-  width: 100%;
+  width: min(100%, 100vw);
+  min-height: max(100svh, 100dvh);
   height: 100%;
   padding-top: var(--hud-safe-top);
   padding-right: var(--hud-safe-right);
@@ -89,7 +117,8 @@ body {
 
 .app-frame {
   position: relative;
-  width: min(100%, 1400px);
+  width: min(100%, var(--layout-max-width));
+  max-width: 100%;
   height: 100%;
   margin: 0 auto;
   overflow: hidden;
