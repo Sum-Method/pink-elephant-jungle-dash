@@ -20,6 +20,7 @@ If you publish updates and a browser shows an older cached version, follow `OFFL
 
 ## Recent update
 
+- Fixed a CSS build blocker by removing an accidentally duplicated `@media` wrapper in `src/styles/game-ui.css` that caused a PostCSS `Unclosed block` error during `npm run build`.
 - Updated lint tooling compatibility by pinning ESLint 9.x so `eslint-plugin-react@7.37.5` installs cleanly without peer-dependency conflicts.
 - Fixed PWA install prompt state wiring in `src/App.jsx` so the Settings install card uses `usePwaInstallPrompt` state instead of an undeclared global, preventing mobile startup crashes (`deferredInstallPrompt is not defined`) while preserving existing install behavior.
 - Standardized viewport/container sizing across `index.html`, `src/styles.css`, `src/styles/game-ui.css`, and the `src/App.jsx` gameplay mount so `html`, `body`, and `#root` consistently fill the viewport using `100%` + `100dvh`, the mount inherits full size, and horizontal overflow risk is reduced without gameplay logic changes.

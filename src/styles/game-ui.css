@@ -1237,7 +1237,6 @@ button:disabled {
   }
 }
 
-@media (min-width: 768px) and (orientation: landscape) {
 @media (min-width: 768px) and (orientation: landscape) and (pointer: fine) {
   .touch-controls {
     bottom: calc(2.5rem + var(--hud-safe-bottom));
