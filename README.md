@@ -34,6 +34,7 @@ If you publish updates and a browser shows an older cached version, follow `OFFL
 
 ## Recent update
 
+- Added explicit safe-area protection coverage across the main app shell and bottom HUD anchors so top and bottom UI stay clear of notches and iOS home indicators, including standalone PWA display mode handling.
 - Audited the layout for mobile-first responsiveness and added exact breakpoint tiers for small phones (320–480px), large phones (481–767px), tablets (768–1023px), and desktop (1024px+), backed by shared CSS variables for spacing, fonts, radii, and max layout width.
 - Strengthened viewport safety rules with flexible units (`rem`, `%`, `vw`, `svh`, `dvh`, `min()`, `max()`, `clamp()`) so major containers avoid fixed widths, stay centered on large displays, and prevent horizontal scrolling.
 - Added a dedicated **Level 3: Night Run** base theme with a purple night sky plus a white moon backdrop so the third level now has its own clear nighttime look.

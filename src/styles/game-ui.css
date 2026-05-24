@@ -109,10 +109,10 @@ body {
   width: min(100%, 100vw);
   min-height: max(100svh, 100dvh);
   height: 100%;
-  padding-top: var(--hud-safe-top);
-  padding-right: var(--hud-safe-right);
-  padding-bottom: var(--hud-safe-bottom);
-  padding-left: var(--hud-safe-left);
+  padding-top: max(0px, env(safe-area-inset-top, 0px));
+  padding-right: max(0px, env(safe-area-inset-right, 0px));
+  padding-bottom: max(0px, env(safe-area-inset-bottom, 0px));
+  padding-left: max(0px, env(safe-area-inset-left, 0px));
 }
 
 .app-frame {
@@ -1203,6 +1203,20 @@ button:disabled {
   opacity: 0.82;
 }
 
+.hud-safe-bottom-left {
+  left: calc(0.75rem + var(--hud-safe-left));
+  bottom: calc(1rem + var(--hud-safe-bottom));
+}
+
+.hud-safe-bottom-right {
+  right: calc(1rem + var(--hud-safe-right));
+  bottom: calc(1rem + var(--hud-safe-bottom));
+}
+
+.hud-safe-bottom-center {
+  bottom: calc(1.25rem + var(--hud-safe-bottom));
+}
+
 .hud-audio-dock:hover,
 .hud-audio-dock:focus-within {
   opacity: 1;
@@ -1236,6 +1250,12 @@ button:disabled {
   width: clamp(72px, 11vw, 96px);
   min-width: clamp(72px, 11vw, 96px);
   min-height: clamp(72px, 11vw, 96px);
+}
+
+@media (display-mode: standalone) {
+  .app-shell {
+    min-height: 100dvh;
+  }
 }
 
 .mobile-action-cluster {

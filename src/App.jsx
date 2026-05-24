@@ -3301,12 +3301,12 @@ export default function App() {
 
       {/* TOP STRIP — tally, section, timer */}
       {started && !complete && !gameOver && (
-        <div className="hud-audio-dock pointer-events-auto absolute bottom-4 left-3 z-20">
+        <div className="hud-audio-dock hud-safe-bottom-left pointer-events-auto absolute z-20">
           <AudioControls audioState={audioState} onToggle={toggleAudioState} compact />
         </div>
       )}
       {started && !complete && !gameOver && (
-        <div className="hud-elephant-ability-badge pointer-events-none absolute bottom-4 right-4 z-20"
+        <div className="hud-elephant-ability-badge hud-safe-bottom-right pointer-events-none absolute z-20"
           aria-label="Elephant charge ability status" role="img">
           <img
             src={`${import.meta.env.BASE_URL}favicon.png`}
@@ -3426,7 +3426,7 @@ export default function App() {
 
       {/* BOTTOM CENTRE — prompt + speedometer */}
       {started && !complete && !gameOver && (
-        <div className="hud-prompt-layer pointer-events-none absolute bottom-5 left-1/2 z-20 flex flex-col items-center gap-2">
+        <div className="hud-prompt-layer hud-safe-bottom-center pointer-events-none absolute left-1/2 z-20 flex flex-col items-center gap-2">
           <div ref={ui.prompt}
             className="hud-prompt overflow-hidden text-ellipsis whitespace-nowrap rounded-full px-5 py-2 text-center text-sm font-black tracking-wide text-amber-50">
             Hold ↑ to build Elephant Charge.
