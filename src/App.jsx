@@ -116,6 +116,22 @@ function getIsPortraitViewport() {
   return window.innerHeight > window.innerWidth;
 }
 
+function detectLayoutMode() {
+  if (typeof window === "undefined") return "desktop";
+  const viewportWidth = window.visualViewport?.width ?? window.innerWidth;
+  const viewportHeight = window.visualViewport?.height ?? window.innerHeight;
+  const orientationType = window.screen?.orientation?.type ?? "";
+  const isLandscape = orientationType ? orientationType.startsWith("landscape") : viewportWidth >= viewportHeight;
+  const hasTouch = (window.matchMedia?.("(any-pointer: coarse)")?.matches ?? false) || navigator.maxTouchPoints > 0;
+  const finePointer = window.matchMedia?.("(pointer: fine)")?.matches ?? false;
+
+  if (!hasTouch && finePointer && viewportWidth >= 1024) return "desktop";
+  if (!isLandscape) return "phone-portrait";
+  if (viewportWidth <= 932 || viewportHeight <= 520) return "phone-landscape";
+  if (viewportWidth <= 1280 || hasTouch) return "tablet-landscape";
+  return "desktop";
+}
+
 function createBroadBananaLeafGeometry() {
   const shape = new THREE.Shape();
   shape.moveTo(0, 1.28);
@@ -338,6 +354,8 @@ export default function App() {
   const [viewportHeight, setViewportHeight] = useState(() => getVisualViewportHeight());
   const [isPortrait, setIsPortrait] = useState(() => getIsPortraitViewport());
   const [showRotateOverlay, setShowRotateOverlay] = useState(false);
+  // Layout mode source of truth for responsive UI buckets from the audit findings.
+  const [layoutMode, setLayoutMode] = useState(() => detectLayoutMode());
   const [graphicsQuality, setGraphicsQuality] = useState(() => loadSettings()?.display?.graphicsQuality ?? "balanced");
   const activeLevelRef = useRef(buildLevelById("level-1"));
   const profileSnapshotRef = useRef(null);
@@ -607,6 +625,22 @@ export default function App() {
     setViewportHeight(getVisualViewportHeight());
   }, []);
 
+
+  useEffect(() => {
+    if (typeof window === "undefined") return undefined;
+    // Layout mode detection: updates root classes so CSS can target phone/tablet/desktop safely.
+    const updateLayoutMode = () => setLayoutMode(detectLayoutMode());
+    const viewport = window.visualViewport;
+    updateLayoutMode();
+    window.addEventListener("resize", updateLayoutMode);
+    window.addEventListener("orientationchange", updateLayoutMode);
+    viewport?.addEventListener?.("resize", updateLayoutMode);
+    return () => {
+      window.removeEventListener("resize", updateLayoutMode);
+      window.removeEventListener("orientationchange", updateLayoutMode);
+      viewport?.removeEventListener?.("resize", updateLayoutMode);
+    };
+  }, []);
 
   useEffect(() => {
     if (typeof window === "undefined") return undefined;
@@ -3368,7 +3402,7 @@ export default function App() {
   };
 
   return (
-    <main className={`app-shell relative h-screen w-screen overflow-hidden bg-[#60b0ff] text-white ${immersiveReady ? "immersive-ready" : ""}`} data-orientation={isPortrait ? "portrait" : "landscape"} style={{ fontFamily: "system-ui, -apple-system, sans-serif", width: "100vw", height: "100dvh", minHeight: viewportHeight ? `${Math.round(viewportHeight)}px` : "100dvh" }}>
+    <main className={`app-shell layout-${layoutMode} relative h-screen w-screen overflow-hidden bg-[#60b0ff] text-white ${immersiveReady ? "immersive-ready" : ""}`} data-orientation={isPortrait ? "portrait" : "landscape"} style={{ fontFamily: "system-ui, -apple-system, sans-serif", width: "100vw", height: "100dvh", minHeight: viewportHeight ? `${Math.round(viewportHeight)}px` : "100dvh" }}>
       <div className="app-frame" data-orientation={isPortrait ? "portrait" : "landscape"} style={{ paddingTop: "var(--hud-safe-top)", paddingRight: "var(--hud-safe-right)", paddingBottom: "var(--hud-safe-bottom)", paddingLeft: "var(--hud-safe-left)" }}>
         <div className="game-frame-stage" aria-hidden="true" />
         <div ref={mountRef} className={`absolute inset-0 h-full w-full ${isGameplayActive ? "gameplay-touch-zone" : ""}`} />
@@ -3386,12 +3420,12 @@ export default function App() {
 
       {/* TOP STRIP — tally, section, timer */}
       {started && !complete && !gameOver && (
-        <div className="hud-audio-dock hud-safe-bottom-left hud-decorative-edge pointer-events-auto absolute z-20" aria-label="Decorative audio dock">
+        <div className="game-hud-slot hud-audio-dock hud-safe-bottom-left hud-decorative-edge pointer-events-auto absolute z-20" aria-label="Decorative audio dock">
           <AudioControls audioState={audioState} onToggle={toggleAudioState} compact />
         </div>
       )}
       {started && !complete && !gameOver && (
-        <div className="hud-elephant-ability-badge hud-safe-bottom-right hud-decorative-edge pointer-events-none absolute z-20"
+        <div className="game-hud-slot hud-elephant-ability-badge hud-safe-bottom-right hud-decorative-edge pointer-events-none absolute z-20"
           aria-label="Elephant charge ability status" role="img">
           <img
             src={`${import.meta.env.BASE_URL}favicon.png`}
@@ -3405,7 +3439,7 @@ export default function App() {
       {started && !complete && !gameOver && (
         <>
         <div className="game-safe-zone" aria-hidden="true" />
-        <div className="hud-top-strip hud-safe-top pointer-events-none absolute left-0 right-0 top-0 z-10 flex items-start justify-between px-4 py-2">
+        <div className="game-hud-shell hud-top-strip hud-safe-top pointer-events-none absolute left-0 right-0 top-0 z-10 flex items-start justify-between px-4 py-2">
           <div className="hud-left-critical-stack">
             <div className="hud-icon-row hud-panel-dark">
               <span className="hud-icon-bubble" aria-hidden="true">🍋</span>
@@ -3538,8 +3572,8 @@ export default function App() {
       {!started && !complete && !gameOver && !sceneError && (
         <section className="absolute inset-0 z-30 flex items-center justify-center px-6"
           style={{ background: "linear-gradient(to bottom, rgba(0,0,0,0.5) 0%, rgba(15,28,12,0.45) 50%, rgba(0,0,0,0.8) 100%)", backdropFilter: "blur(2px)" }}>
-          <div className="w-full max-w-3xl rounded-[2rem] p-8 text-center"
-            style={{ background: "rgba(12,20,10,0.78)", border: "1px solid rgba(246,210,138,0.25)", boxShadow: "0 0 55px rgba(255,180,80,0.15)", maxHeight: "92vh", overflowY: "auto" }}>
+          <div className="title-card w-full max-w-3xl rounded-[2rem] p-8 text-center"
+            style={{ background: "rgba(12,20,10,0.78)", border: "1px solid rgba(246,210,138,0.25)", boxShadow: "0 0 55px rgba(255,180,80,0.15)" }}>
             <div className="mb-2 text-xs font-black uppercase tracking-[0.38em] text-emerald-200/75">Three-Loop Jungle Trial</div>
             <div className="title-elephant-badge mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full"
               aria-label="Pink elephant mascot" role="img">
@@ -3551,7 +3585,7 @@ export default function App() {
               Charge, jump, slide, and smash through a low-poly jungle course. Look for small trail telegraphs before obstacles, then chase fruit, crates, and bonus score.
             </p>
             <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
-              <button type="button" onClick={() => { setSettingsContext("title"); setSettingsOpen(true); }} className="rounded-full bg-white/10 px-6 py-3 text-xs font-black uppercase tracking-wider text-amber-100 transition hover:scale-105 active:scale-95">Settings</button>
+              <button type="button" onClick={() => { setSettingsContext("title"); setSettingsOpen(true); }} className="title-settings-button rounded-full px-6 py-3 text-xs font-black uppercase tracking-wider transition hover:scale-105 active:scale-95">Settings</button>
               <button onClick={startDemo}
               className="mt-7 rounded-full px-10 py-4 text-base font-black text-slate-950 transition hover:scale-105 active:scale-95"
               style={{ background: "#f472b6", boxShadow: "0 0 30px rgba(244,114,182,0.45)" }}>
