@@ -817,6 +817,19 @@ export default function App() {
     sun.shadow.camera.bottom = -34;
     scene.add(sun);
 
+    if (activeTheme.moon) {
+      const moon = new THREE.Mesh(
+        new THREE.SphereGeometry(activeTheme.moon.radius ?? 3.8, 24, 24),
+        new THREE.MeshBasicMaterial({ color: activeTheme.moon.color ?? "#ffffff", fog: false })
+      );
+      moon.position.set(activeTheme.moon.x ?? -22, activeTheme.moon.y ?? 23, activeTheme.moon.z ?? -88);
+      scene.add(moon);
+
+      const moonGlow = new THREE.PointLight(activeTheme.moon.glow ?? "#d9ccff", 0.9, 140, 2);
+      moonGlow.position.copy(moon.position);
+      scene.add(moonGlow);
+    }
+
     const textures = createSceneTextures();
 
     const jungle = new THREE.Mesh(new THREE.BoxGeometry(CONFIG.floorWidth, 1.2, courseFloorLength), new THREE.MeshStandardMaterial({ map: textures.ground, roughness: 0.98 }));

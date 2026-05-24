@@ -20,6 +20,7 @@ If you publish updates and a browser shows an older cached version, follow `OFFL
 
 ## Recent update
 
+- Added a dedicated **Level 3: Night Run** base theme with a purple night sky plus a white moon backdrop so the third level now has its own clear nighttime look.
 - Reduced expected browser permission noise: fullscreen and audio resume calls now run only from user gestures, and rejected permission attempts are logged as short development-only debug messages so gameplay continues without noisy console warnings.
 - Fixed branch-collision self-test failures by requiring actual AABB overlap before branch damage/blocking is applied, which aligns branch hit handling with visual overlap and keeps valid slide clearances passing.
 - Improved self-test failure logging in the browser console so each failed test now prints as its own readable warning line with a test name and reason, plus a compact failure table for quick debugging.
