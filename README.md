@@ -34,6 +34,8 @@ If you publish updates and a browser shows an older cached version, follow `OFFL
 
 ## Recent update
 
+- Audited and tightened the PWA manifest for install quality: kept manifest links in installable HTML, switched app display mode to `standalone` for a cleaner installed experience, and added explicit 192x192 + 512x512 icon entries required by installability checks.
+
 - Added responsive typography scaling for headings, HUD counters, labels, and buttons using `clamp()`.
 - Raised text baseline readability on small phones and set form input fonts to at least 16px to prevent mobile auto-zoom.
 - Shortened gameplay-facing helper copy to keep overlays easier to scan during play.
