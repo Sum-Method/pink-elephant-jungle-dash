@@ -193,8 +193,9 @@ Before release, re-test every fixed mobile issue on at least **two real devices*
 - **Jump:** tap `Space`
 - **Slide:** hold `Space`
 - **Trunk smash:** `Shift`
-- **Touch devices (new thumb layout):** hold the **Run/Charge** button on the **left** side, and use the **right-side action cluster** for **Left, Right, Slide, and Smash**
-- **Desktop controls are preserved:** keyboard controls stay the same as before
+- **Phone/mobile:** compact thumb layout with **left-side Run/Charge** and a **right-side action cluster** for movement/actions.
+- **Tablet:** touch controls stay enabled with **tablet-optimized spacing and button sizing** for easier taps.
+- **Desktop:** **keyboard-first controls are preserved** (same key mappings as before).
 
 ## Mobile layout notes
 
