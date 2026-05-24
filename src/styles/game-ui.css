@@ -1730,22 +1730,91 @@ button:disabled {
   --hud-mobile-ready: 1;
 }
 
-/* Phone-landscape gameplay HUD compact mode: keep center lane playable and controls unobstructed. */
+/* Phone-landscape minimal gameplay HUD: keep center lane clear and touch-first controls. */
 .layout-phone-landscape .hud-top-strip {
-  top: calc(var(--hud-safe-top) + 0.24rem);
+  top: calc(var(--hud-safe-top) + 0.22rem);
   left: calc(var(--hud-safe-left) + 0.4rem);
   right: calc(var(--hud-safe-right) + 0.4rem);
-  padding: 0.24rem 0.35rem;
-  gap: 0.3rem;
-  align-items: center;
-  z-index: 18;
+  padding: 0;
+  gap: 0.25rem;
+  align-items: flex-start;
+  z-index: 22;
+  pointer-events: none;
 }
 
 .layout-phone-landscape .hud-left-critical-stack {
   display: flex;
-  flex-direction: row;
-  gap: 0.3rem;
+  flex-direction: column;
+  gap: 0.22rem;
+  align-items: flex-start;
+}
+
+.layout-phone-landscape .hud-icon-row {
+  min-height: 1.34rem;
+  padding: 0.12rem 0.36rem;
+  border-radius: 0.58rem;
+  gap: 0.2rem;
+  max-width: 26vw;
+}
+.layout-phone-landscape .hud-icon-bubble { width: 0.88rem; font-size: 0.64rem; }
+.layout-phone-landscape .hud-icon-row-label { font-size: 0.46rem; letter-spacing: 0.08em; }
+.layout-phone-landscape .hud-icon-row-value { font-size: 0.62rem; }
+.layout-phone-landscape .hud-lives-value { font-size: 0.56rem; letter-spacing: 0.02em; }
+
+.layout-phone-landscape .hud-right-cluster {
+  gap: 0.22rem;
+  align-items: flex-end;
+  pointer-events: none;
+}
+.layout-phone-landscape .hud-control-row { pointer-events: auto; }
+.layout-phone-landscape .hud-gold-frame-button {
+  min-width: 2.08rem;
+  min-height: 2.08rem;
+  width: 2.08rem;
+  height: 2.08rem;
+  padding: 0;
+}
+.layout-phone-landscape .hud-timer-pill {
+  padding: 0.16rem 0.42rem;
+  border-radius: 999px;
+  font-size: 0.6rem;
+  gap: 0.24rem;
+}
+.layout-phone-landscape .hud-timer-pill span[style*="TIME"] {
+  font-size: 8px !important;
+  letter-spacing: 0.14em !important;
+}
+
+.layout-phone-landscape .hud-center-strip {
+  top: calc(var(--hud-safe-top) + 0.24rem);
+  z-index: 22;
+}
+.layout-phone-landscape .hud-section-pill {
+  padding: 0.18rem 0.46rem;
+  font-size: 0.5rem;
+  letter-spacing: 0.1em;
+  max-width: 30vw;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.layout-phone-landscape .hud-prompt-layer {
+  left: 50%;
+  right: auto;
+  transform: translateX(-50%);
+  bottom: calc(var(--hud-safe-bottom) + 4.95rem);
   align-items: center;
+  z-index: 21;
+  pointer-events: none;
+}
+.layout-phone-landscape .hud-prompt {
+  max-width: min(34vw, 11rem);
+  padding: 0.14rem 0.38rem;
+  font-size: 0.5rem;
+  border-radius: 999px;
+  white-space: nowrap;
+  opacity: 0.92;
 }
 
 .layout-phone-landscape .hud-next-life-row,
@@ -1754,113 +1823,33 @@ button:disabled {
 .layout-phone-landscape .hud-crate-chip,
 .layout-phone-landscape .hud-multiplier-badge,
 .layout-phone-landscape .hud-secondary-panel,
+.layout-phone-landscape .hud-primary-panel,
+.layout-phone-landscape .hud-side-panels-row,
+.layout-phone-landscape .hud-top-left-score,
 .layout-phone-landscape .hud-elephant-ability-badge,
 .layout-phone-landscape .hud-audio-dock,
 .layout-phone-landscape .hud-speedometer {
   display: none !important;
 }
 
-.layout-phone-landscape .hud-icon-row {
-  min-height: 1.75rem;
-  padding: 0.18rem 0.45rem;
-  border-radius: 0.7rem;
-  gap: 0.26rem;
-}
-
-.layout-phone-landscape .hud-icon-bubble { width: 1rem; font-size: 0.72rem; }
-.layout-phone-landscape .hud-icon-row-label { font-size: 0.52rem; letter-spacing: 0.1em; }
-.layout-phone-landscape .hud-icon-row-value { font-size: 0.72rem; }
-.layout-phone-landscape .hud-lives-value { font-size: 0.64rem; letter-spacing: 0.03em; }
-
-.layout-phone-landscape .hud-right-cluster {
-  gap: 0.3rem;
-  align-items: center;
-}
-.layout-phone-landscape .hud-timer-pill {
-  padding: 0.2rem 0.5rem;
-  border-radius: 999px;
-  font-size: 0.68rem;
-}
-
-.layout-phone-landscape .hud-center-strip {
-  top: calc(var(--hud-safe-top) + 0.32rem);
-  z-index: 18;
-}
-.layout-phone-landscape .hud-section-pill {
-  padding: 0.2rem 0.54rem;
-  font-size: 0.54rem;
-  letter-spacing: 0.12em;
-  max-width: 38vw;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.layout-phone-landscape .hud-side-panels-row {
-  top: calc(var(--hud-safe-top) + 2.3rem);
-  left: auto;
-  right: calc(var(--hud-safe-right) + 0.55rem);
-  width: min(33vw, 10.25rem);
-  z-index: 18;
-}
-.layout-phone-landscape .hud-primary-panel {
-  border-radius: 0.78rem;
-  padding: 0.32rem 0.46rem 0.42rem;
-  gap: 0.22rem;
-}
-.layout-phone-landscape .hud-primary-panel .my-3,
-.layout-phone-landscape .hud-primary-panel .mt-3 {
-  display: none !important;
-}
-.layout-phone-landscape .hud-charge-row { margin: 0.18rem 0 0.1rem; }
-.layout-phone-landscape .hud-charge-row .text-\[10px\],
-.layout-phone-landscape .hud-primary-panel .mb-1 {
-  font-size: 0.5rem !important;
-  letter-spacing: 0.1em;
-}
-.layout-phone-landscape .hud-primary-panel .h-3 {
-  height: 0.34rem;
-}
-
-.layout-phone-landscape .hud-prompt-layer {
-  left: auto;
-  right: calc(var(--hud-safe-right) + 0.6rem);
-  transform: none;
-  bottom: calc(var(--hud-safe-bottom) + 5.8rem);
-  align-items: flex-end;
-  z-index: 18;
-}
-.layout-phone-landscape .hud-prompt {
-  max-width: min(44vw, 12.5rem);
-  padding: 0.2rem 0.42rem;
-  font-size: 0.54rem;
-  border-radius: 999px;
-  white-space: nowrap;
-}
-
-/* Touch controls must remain tappable above HUD chrome in phone-landscape. */
+/* Touch controls must remain highest-priority and edge-anchored in phone-landscape. */
 .layout-phone-landscape .mobile-controls {
-  z-index: 42;
+  z-index: 46;
   pointer-events: none;
 }
 .layout-phone-landscape .mobile-run-control {
-  left: calc(var(--hud-safe-left) + 0.5rem);
-  bottom: calc(var(--hud-safe-bottom) + 0.5rem);
+  left: calc(var(--hud-safe-left) + 0.42rem);
+  bottom: calc(var(--hud-safe-bottom) + 0.42rem);
 }
 .layout-phone-landscape .mobile-action-cluster {
-  right: calc(var(--hud-safe-right) + 0.5rem);
-  bottom: calc(var(--hud-safe-bottom) + 0.5rem);
+  right: calc(var(--hud-safe-right) + 0.42rem);
+  bottom: calc(var(--hud-safe-bottom) + 0.42rem);
 }
 .layout-phone-landscape .mobile-controls button,
 .layout-phone-landscape .touch-control-button,
-.layout-phone-landscape .touch-control-hitbox {
+.layout-phone-landscape .touch-control-hitbox,
+.layout-phone-landscape .hud-gold-frame-button {
   pointer-events: auto;
-}
-
-.layout-phone-landscape .hud-top-left-score,
-.layout-phone-landscape .hud-side-panels-row,
-.layout-phone-landscape .hud-prompt-layer {
-  pointer-events: none;
 }
 
 .layout-phone-landscape .hud-debug-mini {
