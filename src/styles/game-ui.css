@@ -22,7 +22,7 @@ body {
   --ui-scale: 1;
   --hud-text-scale: 1;
   --hud-icon-scale: 1;
-  --touch-target-min: 44px;
+  --touch-target-min: 48px;
   --touch-button-min: clamp(var(--touch-target-min), 10vw, 70px);
   --touch-grid-col-min: clamp(3.7rem, 16vw, 5rem);
   --touch-gap: clamp(0.42rem, 1.4vw, 0.7rem);
@@ -37,7 +37,7 @@ body {
     --ui-scale: 0.9;
     --hud-text-scale: 0.92;
     --hud-icon-scale: 0.92;
-    --touch-target-min: 46px;
+    --touch-target-min: 48px;
   }
 }
 @media (min-width: 391px) and (max-width: 767px) {
@@ -71,10 +71,28 @@ body {
 .gameplay-touch-zone {
   width: 100%;
   height: 100%;
+  max-width: 100%;
   overscroll-behavior: contain;
   -webkit-user-select: none;
   user-select: none;
   -webkit-touch-callout: none;
+}
+
+.app-shell {
+  width: 100%;
+  height: 100%;
+  padding-top: var(--hud-safe-top);
+  padding-right: var(--hud-safe-right);
+  padding-bottom: var(--hud-safe-bottom);
+  padding-left: var(--hud-safe-left);
+}
+
+.app-frame {
+  position: relative;
+  width: min(100%, 1400px);
+  height: 100%;
+  margin: 0 auto;
+  overflow: hidden;
 }
 
 
