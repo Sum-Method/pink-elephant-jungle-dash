@@ -141,6 +141,29 @@ button {
   font: inherit;
 }
 
+/* Accessibility baseline: keep all controls finger-friendly and keyboard visible. */
+button,
+[role="button"],
+input[type="button"],
+input[type="submit"],
+input[type="reset"],
+input[type="checkbox"],
+input[type="radio"],
+input[type="range"],
+select {
+  min-width: 48px;
+  min-height: 48px;
+}
+
+button:focus-visible,
+[role="button"]:focus-visible,
+input:focus-visible,
+select:focus-visible {
+  outline: 3px solid rgba(167, 243, 208, 0.95);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 2px rgba(6, 78, 59, 0.85);
+}
+
 .relative { position: relative; }
 .absolute { position: absolute; }
 .inset-0 { inset: 0; }
@@ -1266,7 +1289,7 @@ button:disabled {
   bottom: var(--mobile-edge-bottom);
   display: grid;
   grid-template-columns: repeat(2, minmax(clamp(52px, 8vw, 76px), 1fr));
-  gap: clamp(6px, 1.2vw, 10px);
+  gap: clamp(8px, 1.4vw, 12px);
 }
 
 .mobile-action-cluster button {
@@ -1289,7 +1312,7 @@ button:disabled {
     --mobile-edge-right: max(16px, env(safe-area-inset-right, 0px));
     --mobile-edge-bottom: max(16px, env(safe-area-inset-bottom, 0px));
     grid-template-columns: repeat(2, minmax(clamp(58px, 7.6vw, 84px), 1fr));
-    gap: clamp(8px, 1.3vw, 12px);
+    gap: clamp(8px, 1.3vw, 14px);
   }
 
   .mobile-action-cluster button {
