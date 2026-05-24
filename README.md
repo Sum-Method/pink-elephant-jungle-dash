@@ -13,7 +13,7 @@ Pink Elephant Jungle Dash is a beginner-friendly 3D browser game where you run a
 
 ### Latest HUD update
 
-- Rebuilt the **phone-landscape gameplay HUD** to be compact and playability-first: one shallow top row, compact energy/charge meter, smaller prompt, hidden low-priority panels, and stronger touch-control visibility/layering so Samsung S23 landscape fullscreen stays playable.
+- Phone-landscape now uses a **separate minimal gameplay HUD** (not the desktop HUD): top-left fruit/lives, top-center state pill, top-right timer + pause, tiny bottom-center prompt, and corner thumb controls so the center track stays clear on Samsung S23 landscape fullscreen.
 
 
 ## New: Device profile blueprint
@@ -279,7 +279,7 @@ Before release, re-test every fixed mobile issue on at least **two real devices*
 - **Jump:** tap `Space`
 - **Slide:** hold `Space`
 - **Trunk smash:** `Shift`
-- **Phone/mobile:** compact thumb layout with **left-side Run/Charge** and a **right-side action cluster** for movement/actions.
+- **Phone/mobile (landscape):** controls appear immediately after you press **Begin the Trail** (when Touch mode is Auto or On). Left thumb: **Run/Charge**. Right thumb: **Left, Right, Slide, Smash**.
 - **Tablet:** touch controls stay enabled with **tablet-optimized spacing and button sizing** for easier taps.
 - **Desktop:** **keyboard-first controls are preserved** (same key mappings as before).
 - **2-in-1 laptops:** default behavior is **Auto** (touch controls on tablet/phone-like layouts, keyboard-first on desktop-wide layouts). You can override this in **Settings → Controls** with **Touch: Auto / On / Off**.
@@ -287,6 +287,7 @@ Before release, re-test every fixed mobile issue on at least **two real devices*
 ## Mobile layout notes
 
 - The mobile UI is optimized for **landscape play** so your thumbs have more room and the center view stays clear.
+- In phone-landscape gameplay, the app uses a **minimal HUD** to keep the elephant path visible: top-left fruit/lives, top-center state, top-right timer/pause, and a small bottom prompt only when needed.
 - Controls and HUD respect **safe-area insets** (notch/cutout areas), so important buttons and stats stay visible and tappable on modern phones.
 
 ## Main features
