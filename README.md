@@ -39,6 +39,8 @@ If you publish updates and a browser shows an older cached version, follow `OFFL
 
 ## Recent update
 
+- Added gameplay performance profiling and adaptive visual scaling for obstacle-heavy moments: the game now samples sustained frame rate, tracks nearby obstacle density, and automatically lowers non-essential effects first (particle burst counts, bloom strength, mist/telegraph intensity, snake accent animation frequency, and shadow quality) when performance drops, while keeping core obstacle readability and gameplay responsiveness stable during longer runs.
+
 - Added lifecycle-safe auto-pause/resume for app/tab focus changes (tab switch, app switch, lock/unlock, notification interruptions): active runs now pause automatically, keep current run progress in memory, restore without duplicate timers, and apply a short post-resume safety window to avoid unfair instant hits.
 
 - HUD safe-zone refactor: top HUD is now floating/translucent instead of full-width bars, critical gameplay HUD is kept inside an inner safe-zone rectangle, score moved to top-left, pause/settings stays top-right, movement stays bottom-left, and action controls stay bottom-right for better tablet and wide-screen consistency.
