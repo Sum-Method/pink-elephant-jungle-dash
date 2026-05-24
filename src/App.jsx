@@ -325,6 +325,9 @@ export default function App() {
   const nextLevelConfig = nextLevelId ? getLevelConfig(nextLevelId) : null;
   const isGameplayActive = started && !paused && !complete && !gameOver;
   const { canShowInstallPrompt, installGame, dismissInstallPrompt } = usePwaInstallPrompt();
+  const showInstallCard = canShowInstallPrompt;
+  const dismissInstallCard = dismissInstallPrompt;
+  const handleInstallGame = installGame;
 
   const ui = {
     health: useRef(null),
@@ -3563,7 +3566,7 @@ export default function App() {
           setTouchControlsMode(value);
         }}
         isStandalone={isStandaloneApp}
-        canInstall={Boolean(deferredInstallPrompt)}
+        canInstall={canShowInstallPrompt}
         showInstallCard={showInstallCard}
         onInstall={handleInstallGame}
         onDismissInstall={dismissInstallCard}
