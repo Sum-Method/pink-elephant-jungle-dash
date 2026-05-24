@@ -1175,6 +1175,49 @@ button:disabled {
   z-index: 24;
 }
 
+/* Mobile control overlay layout (keeps center gameplay lane clear). */
+.mobile-controls {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 24;
+}
+
+.mobile-controls button {
+  pointer-events: auto;
+  touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.mobile-run-control {
+  --mobile-edge-left: max(12px, env(safe-area-inset-left, 0px));
+  --mobile-edge-bottom: max(12px, env(safe-area-inset-bottom, 0px));
+  position: absolute;
+  left: var(--mobile-edge-left);
+  bottom: var(--mobile-edge-bottom);
+  width: clamp(72px, 11vw, 96px);
+  min-width: clamp(72px, 11vw, 96px);
+  min-height: clamp(72px, 11vw, 96px);
+}
+
+.mobile-action-cluster {
+  --mobile-edge-right: max(12px, env(safe-area-inset-right, 0px));
+  --mobile-edge-bottom: max(12px, env(safe-area-inset-bottom, 0px));
+  position: absolute;
+  right: var(--mobile-edge-right);
+  bottom: var(--mobile-edge-bottom);
+  display: grid;
+  grid-template-columns: repeat(2, minmax(clamp(52px, 8vw, 76px), 1fr));
+  gap: clamp(6px, 1.2vw, 10px);
+}
+
+.mobile-action-cluster button {
+  width: clamp(52px, 8vw, 76px);
+  min-width: clamp(52px, 8vw, 76px);
+  min-height: clamp(52px, 8vw, 76px);
+}
+
 @media (min-width: 768px) and (orientation: landscape) {
   .touch-controls {
     bottom: calc(2.5rem + var(--hud-safe-bottom));
@@ -1331,6 +1374,19 @@ button:disabled {
   .hud-elephant-ability-badge {
     right: calc(0.55rem + var(--hud-safe-right));
     bottom: calc(9.8rem + var(--hud-safe-bottom));
+  }
+}
+
+@media (orientation: landscape) and (max-width: 932px) and (max-height: 520px) {
+  .mobile-run-control {
+    left: max(10px, env(safe-area-inset-left, 0px));
+    bottom: max(8px, env(safe-area-inset-bottom, 0px));
+  }
+
+  .mobile-action-cluster {
+    right: max(10px, env(safe-area-inset-right, 0px));
+    bottom: max(8px, env(safe-area-inset-bottom, 0px));
+    gap: clamp(4px, 1vw, 8px);
   }
 }
 
