@@ -6,7 +6,7 @@ import { RotateOverlay } from "./components/game-ui/RotateOverlay.jsx";
 import { SettingsPanel } from "./components/game-ui/SettingsPanel.jsx";
 import { TouchControls } from "./components/game-ui/TouchControls.jsx";
 import { usePwaInstallPrompt } from "./hooks/usePwaInstallPrompt.js";
-import { CAMERA_FEEDBACK, CONFIG, HUD_TIMING, MOVEMENT, PARTICLES, PICKUPS, SCORING } from "./game/config.js";
+import { CAMERA_FEEDBACK, CONFIG, HUD_TIMING, MOVEMENT, PARTICLES, PERFORMANCE, PICKUPS, SCORING } from "./game/config.js";
 import {
   canRetreatFromObstacle,
   enemyBox,
@@ -791,6 +791,7 @@ export default function App() {
     let lastFpsTime = performance.now();
     let frames = 0;
     let fps = 60;
+    const perfState = { frameWindowMs: 0, frameWindowCount: 0, windowFps: 60, effectQuality: 1, nearbyObstacleCount: 0 };
 
     const scene = new THREE.Scene();
     const activeCourse = currentLevelConfig.course ?? {};
@@ -2352,7 +2353,8 @@ export default function App() {
     }
 
     function burst(x, y, z, colour, count = PARTICLES.defaultBurstCount, scale = 0.28) {
-      for (let i = 0; i < count; i++) activateParticle(x, y, z, colour, scale, 0.8 + Math.random() * 0.4);
+      const adjustedCount = Math.max(2, Math.round(count * perfState.effectQuality));
+      for (let i = 0; i < adjustedCount; i++) activateParticle(x, y, z, colour, scale, 0.8 + Math.random() * 0.4);
     }
 
     function createPopTexture(text, colour) {
@@ -2686,8 +2688,10 @@ export default function App() {
       activeObstacles.length = 0;
       for (let i = 0; i < colliders.length; i += 1) activeObstacles.push(colliders[i]);
       for (let i = 0; i < crocs.length; i += 1) activeObstacles.push(crocs[i]);
+      let nearbyObstacleCount = 0;
       for (const obs of activeObstacles) {
         if (!obs.active) continue;
+        if (obs.z < body.z + 2 && obs.z > body.z - PERFORMANCE.obstacleHeavyDistance) nearbyObstacleCount += 1;
         const oBox = obstacleBox(obs, obstacleAabb);
         let collisionBox = aabb(pBox, oBox) ? pBox : null;
         if (!collisionBox && (obs.type === "log" || obs.type === "branch" || obs.type === "crate" || obs.type === "croc")) {
@@ -2725,6 +2729,7 @@ export default function App() {
           if (result.blocked && (body.y <= oBox.maxY + 0.2 || body.yVelocity <= 0.5)) shouldForceGroundReset = true;
         }
       }
+      perfState.nearbyObstacleCount = nearbyObstacleCount;
 
       for (const item of pickups) {
         if (!item.active) continue;
@@ -2870,7 +2875,7 @@ export default function App() {
         if (!visible) return;
         const proximity = 1 - clamp(distanceAhead / TELEGRAPH_VISIBLE_DISTANCE, 0, 1);
         const pulse = 0.72 + Math.sin(t * 7.5 + index * 0.9) * 0.18;
-        const opacity = telegraph.baseOpacity * (0.35 + proximity * 0.65) * pulse;
+        const opacity = telegraph.baseOpacity * (0.35 + proximity * 0.65) * pulse * lerp(0.72, 1, perfState.effectQuality);
         telegraph.group.position.y = Math.sin(t * 5.5 + index) * 0.035;
         telegraph.materials.forEach((material, materialIndex) => {
           material.opacity = Math.min(materialIndex === 0 ? 0.28 : 0.46, opacity * (materialIndex === 0 ? 0.7 : 1));
@@ -2890,6 +2895,7 @@ export default function App() {
       });
 
       branchHazardAccents.forEach((accent, index) => {
+        if (perfState.effectQuality < 0.7 && index % 2 === 1) return;
         const eyePulse = 2.2 + Math.sin(t * 7.8 + index * 0.75) * 1.3;
         if (accent.eye) accent.eye.material.emissiveIntensity = eyePulse;
         accent.head.position.y = accent.baseHeadY + Math.sin(t * 3.4 + index * 0.6) * 0.08;
@@ -2948,6 +2954,8 @@ export default function App() {
           pops.splice(i, 1);
         }
       }
+      jungleMistMat.opacity = lerp(0.05, 0.16, perfState.effectQuality);
+      shadow.material.opacity = lerp(0.26, lerp(0.4, 0.16, air), perfState.effectQuality);
     }
 
     const cameraDesired = new THREE.Vector3();
@@ -3199,6 +3207,7 @@ export default function App() {
       if (ui.debug.current) {
         setTextIfChanged(ui.debug, "debug", [
           `FPS ${fps}`,
+          `Perf ${perfState.windowFps}fps / FX ${Math.round(perfState.effectQuality * 100)}% / Near obs ${perfState.nearbyObstacleCount}`,
           `Section ${section}`,
           `X ${body.x.toFixed(2)}  Y ${body.y.toFixed(2)}  Z ${body.z.toFixed(2)}`,
           `Speed ${body.speed.toFixed(2)}  Charge ${roundedCharge}%`,
@@ -3228,6 +3237,24 @@ export default function App() {
         fps = Math.round((frames * 1000) / (now - lastFpsTime));
         frames = 0;
         lastFpsTime = now;
+      }
+      perfState.frameWindowMs += dt * 1000;
+      perfState.frameWindowCount += 1;
+      if (perfState.frameWindowMs >= PERFORMANCE.sampleWindowMs) {
+        perfState.windowFps = Math.round((perfState.frameWindowCount * 1000) / perfState.frameWindowMs);
+        const heavyMoment = perfState.nearbyObstacleCount >= PERFORMANCE.obstacleHeavyCount;
+        if (perfState.windowFps <= PERFORMANCE.veryLowFpsThreshold) perfState.effectQuality = 0.52;
+        else if (perfState.windowFps <= PERFORMANCE.lowFpsThreshold && heavyMoment) perfState.effectQuality = 0.68;
+        else perfState.effectQuality = 1;
+        renderer.shadowMap.enabled = perfState.effectQuality >= 0.68;
+        const nextShadowSize = perfState.effectQuality >= 0.68 ? 1024 : 512;
+        if (sun.shadow.mapSize.x !== nextShadowSize) {
+          sun.shadow.mapSize.set(nextShadowSize, nextShadowSize);
+          sun.shadow.needsUpdate = true;
+        }
+        if (postProcessing?.bloomPass) postProcessing.bloomPass.strength = 0.34 * perfState.effectQuality;
+        perfState.frameWindowMs = 0;
+        perfState.frameWindowCount = 0;
       }
       if (pausedRef.current) {
         renderFrame();
