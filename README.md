@@ -20,6 +20,7 @@ If you publish updates and a browser shows an older cached version, follow `OFFL
 
 ## Recent update
 
+- Added the modern `<meta name="mobile-web-app-capable" content="yes">` tag above the existing Apple tag in `index.html`, while keeping iOS compatibility and fixing the Chrome deprecation warning.
 - Fixed a startup crash in `src/App.jsx` by removing a call to an undefined development texture preview helper (`createTexturePreviewPanel`), so the live scene now starts normally.
 - Simplified install stability by removing unused ESLint package dependencies from `package.json` (the project checks already run TypeScript + CSS checks), eliminating the recurring ESLint peer-conflict path during `npm install`.
 - Added a project `.npmrc` with `legacy-peer-deps=true` as a safety fallback so `npm install` can proceed even if npm encounters transient peer-resolution conflicts in some environments.
