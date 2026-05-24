@@ -3314,12 +3314,12 @@ export default function App() {
 
       {/* TOP STRIP — tally, section, timer */}
       {started && !complete && !gameOver && (
-        <div className="hud-audio-dock hud-safe-bottom-left pointer-events-auto absolute z-20">
+        <div className="hud-audio-dock hud-safe-bottom-left hud-decorative-edge pointer-events-auto absolute z-20" aria-label="Decorative audio dock">
           <AudioControls audioState={audioState} onToggle={toggleAudioState} compact />
         </div>
       )}
       {started && !complete && !gameOver && (
-        <div className="hud-elephant-ability-badge hud-safe-bottom-right pointer-events-none absolute z-20"
+        <div className="hud-elephant-ability-badge hud-safe-bottom-right hud-decorative-edge pointer-events-none absolute z-20"
           aria-label="Elephant charge ability status" role="img">
           <img
             src={`${import.meta.env.BASE_URL}favicon.png`}
@@ -3331,8 +3331,10 @@ export default function App() {
         </div>
       )}
       {started && !complete && !gameOver && (
+        <>
+        <div className="game-safe-zone" aria-hidden="true" />
         <div className="hud-top-strip hud-safe-top pointer-events-none absolute left-0 right-0 top-0 z-10 flex items-start justify-between px-4 py-2">
-          <div className="hud-counter-stack flex flex-col gap-2">
+          <div className="hud-left-critical-stack">
             <div className="hud-icon-row hud-panel-dark">
               <span className="hud-icon-bubble" aria-hidden="true">🍋</span>
               <span className="hud-icon-row-label">Fruit</span>
@@ -3352,16 +3354,8 @@ export default function App() {
               </span>
             </div>
           </div>
-          <div ref={ui.sectionBadge} className="hud-section-pill rounded-full px-4 py-1 text-xs font-black uppercase tracking-[0.28em] text-emerald-200">
-            Learning Trail
-          </div>
           <div className="hud-right-cluster">
             <div className="hud-control-row pointer-events-auto">
-              <div className="hud-timer-pill flex items-center gap-2 rounded-full px-3 py-1 text-sm font-black text-amber-100">
-                <Icon label="⏱" />
-                <span style={{ fontSize: "10px", letterSpacing: "0.2em", color: "rgba(255,200,100,0.6)" }}>TIME</span>
-                <span ref={ui.timerDisplay} style={{ fontVariantNumeric: "tabular-nums" }}>00:00</span>
-              </div>
               <button
                 type="button"
                 className="hud-gold-frame-button"
@@ -3372,17 +3366,33 @@ export default function App() {
                 ⚙
               </button>
             </div>
-            <div className="hud-score-stack" title="Score from fruit, crates, pineapples, and monkeys">
-              <span className="hud-score-label">Score</span>
-              <span className="hud-score-emphasis hud-gold-outline-text hud-gold-gradient-text" ref={ui.scoreTally}>0</span>
+            <div className="hud-timer-pill flex items-center gap-2 rounded-full px-3 py-1 text-sm font-black text-amber-100">
+              <Icon label="⏱" />
+              <span style={{ fontSize: "10px", letterSpacing: "0.2em", color: "rgba(255,200,100,0.6)" }}>TIME</span>
+              <span ref={ui.timerDisplay} style={{ fontVariantNumeric: "tabular-nums" }}>00:00</span>
             </div>
-            <div ref={ui.multiplierBadge}
+          </div>
+        </div>
+        <div className="hud-center-strip pointer-events-none absolute left-1/2 top-0 z-10 -translate-x-1/2">
+          <div ref={ui.sectionBadge} className="hud-section-pill rounded-full px-4 py-1 text-xs font-black uppercase tracking-[0.28em] text-emerald-200">
+            Learning Trail
+          </div>
+        </div>
+        </>
+      )}
+
+      {started && !complete && !gameOver && (
+        <div className="hud-top-left-score pointer-events-none absolute z-20">
+          <div className="hud-score-stack" title="Score from fruit, crates, pineapples, and monkeys">
+            <span className="hud-score-label">Score</span>
+            <span className="hud-score-emphasis hud-gold-outline-text hud-gold-gradient-text" ref={ui.scoreTally}>0</span>
+          </div>
+          <div ref={ui.multiplierBadge}
               className="hud-multiplier-badge hud-gold-outline-text hud-gold-gradient-text transition-all duration-200"
               style={{ opacity: 0, transform: "scale(0.85)", color: "#ffd34a" }}>
               1x COMBO
             </div>
-            <div className="hud-crate-chip hud-panel-dark" title="Crates smashed">📦 <span ref={ui.cratesTally}>0</span></div>
-          </div>
+          <div className="hud-crate-chip hud-panel-dark" title="Crates smashed">📦 <span ref={ui.cratesTally}>0</span></div>
         </div>
       )}
 
