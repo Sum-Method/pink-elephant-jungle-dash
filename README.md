@@ -20,6 +20,7 @@ If you publish updates and a browser shows an older cached version, follow `OFFL
 
 ## Recent update
 
+- Updated touch-control visibility detection in `src/App.jsx` so phones/tablets keep on-screen touch controls, while wide desktop keyboard-first layouts now suppress touch controls by default even on touch-capable hardware.
 - Added a dedicated tablet-landscape touch-control tier between phone and desktop in `src/styles/game-ui.css`, keeping the same left-thumb run button + right action cluster pattern while slightly increasing button size/spacing and nudging edge offsets for safer HUD corner clearance.
 - Scoped legacy `.touch-controls` grid layout to desktop-style pointer conditions only, while keeping the new mobile thumb overlay (`.mobile-controls`) as the source of truth for phones so desktop/tablet no longer inherit unintended mobile placement and phones no longer inherit old grid assumptions.
 - Aligned root/mobile viewport layout rules across `index.html`, `src/styles.css`, and `src/styles/game-ui.css` so `html`, `body`, `#root`, and gameplay container consistently use full viewport sizing (`100vw` + `100dvh`), remove left gutter risk, and prevent horizontal scrolling during gameplay (including Galaxy S23 landscape checks).
