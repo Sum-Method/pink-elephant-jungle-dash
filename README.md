@@ -20,6 +20,7 @@ If you publish updates and a browser shows an older cached version, follow `OFFL
 
 ## Recent update
 
+- Added a lightweight CSS brace sanity check (`npm run check:css`) so accidental unclosed/extra braces in `src/styles/game-ui.css` are caught before build.
 - Fixed a CSS build blocker by removing an accidentally duplicated `@media` wrapper in `src/styles/game-ui.css` that caused a PostCSS `Unclosed block` error during `npm run build`.
 - Updated lint tooling compatibility by pinning ESLint 9.x so `eslint-plugin-react@7.37.5` installs cleanly without peer-dependency conflicts.
 - Fixed PWA install prompt state wiring in `src/App.jsx` so the Settings install card uses `usePwaInstallPrompt` state instead of an undeclared global, preventing mobile startup crashes (`deferredInstallPrompt is not defined`) while preserving existing install behavior.
