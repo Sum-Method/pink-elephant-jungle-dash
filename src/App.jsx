@@ -446,8 +446,16 @@ export default function App() {
       if (!immersiveRequestedRef.current) tryImmersiveMode();
     };
 
-    const query = window.matchMedia("(hover: none) and (pointer: coarse)");
-    const updateVisibility = () => setTouchControlsVisible(query.matches || touchInputDetectedRef.current);
+    const touchDeviceQuery = window.matchMedia("(hover: none) and (pointer: coarse)");
+    const wideDesktopQuery = window.matchMedia("(min-width: 1024px) and (hover: hover) and (pointer: fine)");
+    const updateVisibility = () => {
+      const isWideDesktopLayout = wideDesktopQuery.matches;
+      if (isWideDesktopLayout) {
+        setTouchControlsVisible(false);
+        return;
+      }
+      setTouchControlsVisible(touchDeviceQuery.matches || touchInputDetectedRef.current);
+    };
     const showForTouchInput = (event) => {
       if (event.pointerType === "touch" || event.pointerType === "pen") {
         touchInputDetectedRef.current = true;
@@ -460,14 +468,16 @@ export default function App() {
     };
 
     updateVisibility();
-    query.addEventListener?.("change", updateVisibility);
+    touchDeviceQuery.addEventListener?.("change", updateVisibility);
+    wideDesktopQuery.addEventListener?.("change", updateVisibility);
     window.addEventListener("pointerdown", showForTouchInput, { passive: true });
     window.addEventListener("pointerdown", handlePointerForImmersive, { passive: true });
     window.addEventListener("touchstart", showForTouchStart, { passive: true });
     window.addEventListener("touchstart", tryImmersiveMode, { passive: true });
 
     return () => {
-      query.removeEventListener?.("change", updateVisibility);
+      touchDeviceQuery.removeEventListener?.("change", updateVisibility);
+      wideDesktopQuery.removeEventListener?.("change", updateVisibility);
       window.removeEventListener("pointerdown", showForTouchInput);
       window.removeEventListener("pointerdown", handlePointerForImmersive);
       window.removeEventListener("touchstart", showForTouchStart);
