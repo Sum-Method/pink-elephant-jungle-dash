@@ -3568,6 +3568,16 @@ export default function App() {
         <TouchControls visible={touchControlsVisible} onControlChange={handleTouchControlChange} />
       )}
 
+      {import.meta.env.DEV && layoutMode === "phone-landscape" && (
+        <div className="hud-debug-mini" aria-hidden="true">
+          <div>layout: {layoutMode}</div>
+          <div>viewport: {Math.round(viewportWidth)}x{Math.round(viewportHeight)}</div>
+          <div>touch visible: {String(touchControlsVisible)}</div>
+          <div>touch mode: {touchControlsMode}</div>
+          <div>fullscreen: {String(Boolean(document.fullscreenElement))}</div>
+        </div>
+      )}
+
       {/* START SCREEN */}
       {!started && !complete && !gameOver && !sceneError && (
         <section className="absolute inset-0 z-30 flex items-center justify-center px-6"

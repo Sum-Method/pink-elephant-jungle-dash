@@ -7,6 +7,10 @@ Live playable version: https://jedbcov-coder.github.io/pink-elephant-jungle-dash
 
 Pink Elephant Jungle Dash is a beginner-friendly 3D browser game where you run as a pink elephant, collect fruit, dodge jungle hazards, and try to survive as long as possible.
 
+### Latest HUD update
+
+- Rebuilt the **phone-landscape gameplay HUD** to be compact and playability-first: one shallow top row, compact energy/charge meter, smaller prompt, hidden low-priority panels, and stronger touch-control visibility/layering so Samsung S23 landscape fullscreen stays playable.
+
 
 ## New: Device profile blueprint
 
