@@ -45,6 +45,7 @@ If you publish updates and a browser shows an older cached version, follow `OFFL
 
 ## Recent update
 
+- Added a stable layout-mode system (`desktop`, `tablet-landscape`, `phone-landscape`, `phone-portrait`) on the root app shell, fixed Samsung S23 phone-landscape title fitting so Settings + Begin the Trail stay visible without scrolling, corrected Settings button contrast states, and added HUD mobile hook classes for the next phone-landscape HUD pass without changing gameplay logic.
 - Ran a focused contrast/readability pass for gameplay clarity: increased HUD label/pill contrast (removing low-contrast gray-on-gray combinations), boosted critical warning telegraph visibility and border strength, brightened obstacle warning accents, and darkened/desaturated mid/far background foliage/stone layers so player + hazards + pickups separate more clearly from scenery (including reduced-brightness / glare readability checks).
 
 - Added gameplay performance profiling and adaptive visual scaling for obstacle-heavy moments: the game now samples sustained frame rate, tracks nearby obstacle density, and automatically lowers non-essential effects first (particle burst counts, bloom strength, mist/telegraph intensity, snake accent animation frequency, and shadow quality) when performance drops, while keeping core obstacle readability and gameplay responsiveness stable during longer runs.
