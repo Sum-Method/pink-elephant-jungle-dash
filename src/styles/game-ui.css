@@ -540,6 +540,14 @@ button {
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 10px 22px rgba(0, 0, 0, 0.24);
 }
 
+
+@media (max-width: 767px), (pointer: coarse) and (orientation: landscape) and (max-width: 932px) {
+  .title-primary-controls,
+  .title-advanced-note {
+    display: none !important;
+  }
+}
+
 @media (max-width: 430px), (max-height: 720px) {
   .title-primary-controls {
     grid-template-columns: 1fr;
