@@ -377,6 +377,10 @@ export default function App() {
     update();
     media?.addEventListener?.("change", update);
     return () => media?.removeEventListener?.("change", update);
+  const tryImmersiveMode = useCallback((fromUserGesture = false) => {
+    immersiveRequestedRef.current = true;
+    if (fromUserGesture) requestImmersiveMobileMode();
+    setImmersiveReady(true);
   }, []);
 
   const currentLevelConfig = getLevelConfig(currentLevelId);
@@ -555,6 +559,14 @@ export default function App() {
     return audioManagerRef.current?.startAudio() ?? null;
   }
 
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const media = window.matchMedia?.("(display-mode: standalone)");
+    const update = () => setIsStandaloneApp(Boolean(window.navigator.standalone) || Boolean(media?.matches));
+    update();
+    media?.addEventListener?.("change", update);
+    return () => media?.removeEventListener?.("change", update);
+  }, []);
 
   useEffect(() => {
     activeLevelRef.current = buildLevelById(currentLevelId);

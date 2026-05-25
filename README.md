@@ -12,6 +12,9 @@ Pink Elephant Jungle Dash is a beginner-friendly 3D browser game where you run a
 - Reordered `App()` declarations so refs and state hooks are created before helpers/effects that use them.
 - Fixed a render-time initialization order bug that caused `ReferenceError: Cannot access 'ka' before initialization` in the production/minified build.
 - No level layouts, obstacle data, or visual assets were changed.
+- Fixed a startup/build-order crash caused by referencing state helpers before they were initialized in `App()`.
+- Reordered the immersive-mode callback and standalone-mode effect so they run only after their related state is declared.
+- No level layout, obstacle data, course length, or visual assets were changed in this fix.
 
 ### Latest complete-screen lock reset hardening (2026-05-25)
 
