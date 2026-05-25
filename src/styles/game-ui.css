@@ -1377,6 +1377,10 @@ button:disabled {
   bottom: calc(1.25rem + var(--hud-safe-bottom));
 }
 
+.hud-safe-top-center {
+  top: calc(3.15rem + var(--hud-safe-top));
+}
+
 .hud-audio-dock:hover,
 .hud-audio-dock:focus-within {
   opacity: 1;
@@ -2123,7 +2127,7 @@ button:disabled {
   left: 50%;
   right: auto;
   transform: translateX(-50%);
-  bottom: calc(var(--hud-safe-bottom) + 2.45rem);
+  top: calc(var(--hud-safe-top) + 1.3rem);
   align-items: center;
   z-index: 21;
   pointer-events: none;

@@ -3566,7 +3566,7 @@ export default function App() {
 
       {/* BOTTOM CENTRE — prompt + speedometer */}
       {started && !complete && !gameOver && (
-        <div className="hud-prompt-layer hud-safe-bottom-center pointer-events-none absolute left-1/2 z-20 flex flex-col items-center gap-2">
+        <div className="hud-prompt-layer hud-safe-top-center pointer-events-none absolute left-1/2 z-20 flex flex-col items-center gap-2">
           <div ref={ui.prompt}
             className="hud-prompt overflow-hidden text-ellipsis whitespace-nowrap rounded-full px-5 py-2 text-center text-sm font-black tracking-wide text-amber-50">
             Hold ↑ to build Elephant Charge.
