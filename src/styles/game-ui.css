@@ -1380,7 +1380,7 @@ button:disabled {
 
 .mobile-left-cluster {
   display: grid;
-  grid-template-columns: repeat(2, minmax(clamp(56px, 8.5vw, 84px), 1fr));
+  grid-template-columns: 1fr;
   gap: clamp(10px, 1.8vw, 16px);
 }
 
@@ -1400,6 +1400,28 @@ button:disabled {
   min-width: clamp(84px, 12vw, 112px);
   min-height: clamp(84px, 12vw, 112px);
   border: 2px solid rgba(255, 219, 97, 0.78);
+}
+
+.touch-control-charge-badge {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.12rem;
+}
+
+.touch-control-charge-favicon {
+  width: clamp(26px, 3.2vw, 34px);
+  height: clamp(26px, 3.2vw, 34px);
+  object-fit: contain;
+  filter: drop-shadow(0 0 8px rgba(255, 164, 218, 0.45));
+}
+
+.touch-control-charge-status {
+  font-size: clamp(0.44rem, 0.7vw, 0.56rem);
+  line-height: 1;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(255, 244, 180, 0.88);
 }
 
 .touch-control-button:focus-visible {
@@ -1424,7 +1446,7 @@ button:disabled {
   right: var(--mobile-edge-right);
   bottom: var(--mobile-edge-bottom);
   display: grid;
-  grid-template-columns: repeat(2, minmax(clamp(56px, 8.5vw, 84px), 1fr));
+  grid-template-columns: 1fr;
   gap: clamp(12px, 1.8vw, 16px);
 }
 
@@ -1447,7 +1469,7 @@ button:disabled {
   .mobile-right-cluster {
     --mobile-edge-right: max(16px, env(safe-area-inset-right, 0px));
     --mobile-edge-bottom: max(16px, env(safe-area-inset-bottom, 0px));
-    grid-template-columns: repeat(2, minmax(clamp(62px, 8.2vw, 92px), 1fr));
+    grid-template-columns: 1fr;
     gap: clamp(12px, 1.6vw, 18px);
   }
 
@@ -1509,6 +1531,14 @@ button:disabled {
 }
 
 .touch-control-button:active {
+  background:
+    radial-gradient(circle at 36% 22%, rgba(255, 244, 201, 0.28), transparent 36%),
+    rgba(112, 38, 82, 0.86);
+  border-color: rgba(255, 219, 97, 0.78);
+  transform: scale(0.95);
+}
+
+.touch-control-button[data-pressed="true"] {
   background:
     radial-gradient(circle at 36% 22%, rgba(255, 244, 201, 0.28), transparent 36%),
     rgba(112, 38, 82, 0.86);
@@ -1856,15 +1886,15 @@ button:disabled {
   left: 50%;
   right: auto;
   transform: translateX(-50%);
-  bottom: calc(var(--hud-safe-bottom) + 2.95rem);
+  bottom: calc(var(--hud-safe-bottom) + 2.45rem);
   align-items: center;
   z-index: 21;
   pointer-events: none;
 }
 .layout-phone-landscape .hud-prompt {
-  max-width: min(68vw, 13.2rem);
+  max-width: min(62vw, 12rem);
   padding: 0.12rem 0.34rem;
-  font-size: 0.48rem;
+  font-size: 0.44rem;
   border-radius: 999px;
   white-space: nowrap;
   opacity: 0.92;

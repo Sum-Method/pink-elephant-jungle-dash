@@ -11,7 +11,7 @@ Pink Elephant Jungle Dash is a beginner-friendly 3D browser game where you run a
 ### Latest two-thumb touch controls update
 
 - Reworked touch gameplay controls into a clear two-thumb layout for phone-landscape, tablet touch-landscape, and touch-enabled 2-in-1 fullscreen mode.
-- Left cluster now places the existing **CHARGE** badge at the top with **LEFT/RIGHT** steering buttons below.
+- Left cluster now places the original circular elephant portrait **CHARGE** badge at the top with **LEFT/RIGHT** steering buttons below.
 - Right cluster now places **JUMP** on top and **SMASH / HOLD SLIDE** below, both wired to existing gameplay inputs (no mechanic changes).
 - Added stronger stuck-input safety: touch inputs now auto-release on pointer cancel/leave/up, pause, settings open, game end, and window/app focus loss.
 
