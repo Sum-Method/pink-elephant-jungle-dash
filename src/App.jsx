@@ -3721,32 +3721,28 @@ export default function App() {
 
       {/* PAUSE OVERLAY */}
       {paused && started && !complete && !gameOver && !sceneError && (
-        <section className="pointer-events-auto absolute inset-0 z-40 flex items-center justify-center px-6"
+        <section className="pointer-events-auto absolute inset-0 z-40 flex items-center justify-center px-4 sm:px-6"
           style={{ background: "rgba(7,12,8,0.42)", backdropFilter: "blur(3px)" }}
           aria-modal="true" role="dialog" aria-labelledby="pause-title">
-          <div className="rounded-[1.5rem] p-6 text-center text-amber-50"
+          <div className="w-full max-w-md rounded-[1.75rem] p-6 sm:p-7 text-center text-amber-50"
             style={{ background: "rgba(12,20,10,0.9)", border: "1px solid rgba(246,210,138,0.28)", boxShadow: "0 0 45px rgba(0,0,0,0.32)" }}>
             <div className="text-xs font-black uppercase tracking-[0.32em] text-emerald-200/70">Trail Paused</div>
-            <h2 id="pause-title" className="display-title mt-1 text-3xl font-black text-pink-200">Take a Jungle Breather</h2>
-            <p className="mt-2 text-sm text-amber-50/65">Press Esc or P to resume. Input was cleared so no move sticks after focus changes.</p>
-            <div className="mt-5 rounded-xl border border-amber-100/20 bg-black/20 px-4 py-3">
-              <div className="text-[11px] font-black uppercase tracking-[0.2em] text-amber-100/80">Quick Audio</div>
-              <AudioControls audioState={audioState} onToggle={toggleAudioState} />
-            </div>
-            <div className="mt-5 flex flex-wrap items-center justify-center gap-3">
-              <button type="button" onClick={resumeGame}
-                className="rounded-full bg-emerald-200 px-5 py-2 text-sm font-black text-emerald-950 transition hover:scale-105 active:scale-95">
+            <h2 id="pause-title" className="display-title mt-2 text-3xl font-black text-pink-200">Take a Jungle Breather</h2>
+            <div className="mt-6 flex flex-col items-stretch gap-3">
+              <button type="button" onClick={resumeGame} autoFocus
+                className="rounded-full bg-pink-200 px-6 py-3 text-base font-black text-fuchsia-950 shadow-[0_0_26px_rgba(244,114,182,0.4)] transition hover:scale-[1.02] active:scale-[0.98]">
                 Resume
               </button>
-              <button type="button" onClick={restartGame}
-                className="rounded-full bg-amber-200 px-5 py-2 text-sm font-black text-slate-950 transition hover:scale-105 active:scale-95">
-                Restart
-              </button>
               <button type="button" onClick={() => { setSettingsContext("pause"); setSettingsOpen(true); }}
-                className="hud-settings-button rounded-full px-5 py-2 text-sm font-black transition hover:scale-105 active:scale-95">
+                className="hud-settings-button rounded-full px-6 py-3 text-sm font-black transition hover:scale-[1.02] active:scale-[0.98]">
                 Settings
               </button>
+              <button type="button" onClick={restartGame}
+                className="rounded-full border border-amber-200/35 bg-amber-950/20 px-6 py-3 text-sm font-black text-amber-100 transition hover:scale-[1.02] hover:bg-amber-900/30 active:scale-[0.98]">
+                Restart Run
+              </button>
             </div>
+            <p className="mt-5 text-xs sm:text-sm text-amber-50/70">Press Esc or P to Resume</p>
           </div>
         </section>
       )}
