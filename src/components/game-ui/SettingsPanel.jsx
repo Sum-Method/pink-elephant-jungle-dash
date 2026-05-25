@@ -145,9 +145,11 @@ export function SettingsPanel({
         </div>
 
         <div className="mt-4 border-t border-amber-100/20 pt-2 text-center text-[11px] text-amber-50/50">
-          <p>Pink Elephant Jungle Dash</p>
-          <p className="mt-1 text-amber-50/65">Made with love for Georgia, by uncle Jed</p>
-          <p className="mt-1">Version {appVersion}</p>
+<p>Pink Elephant Jungle Dash</p>
+<p className="mt-1 text-amber-50/65">
+  Made with love for Georgia, by Uncle Jed
+</p>
+<p className="mt-1">Version {appVersion}</p>
         </div>
       </div>
     </section>
