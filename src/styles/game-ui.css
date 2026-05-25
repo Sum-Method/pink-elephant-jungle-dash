@@ -1851,6 +1851,92 @@ button:disabled {
   line-height: 1;
 }
 
+.jungle-focus-ring:focus-visible {
+  outline: 2px solid rgba(167, 243, 208, 0.78);
+  outline-offset: 3px;
+}
+
+.jungle-menu-card {
+  width: min(94vw, 44rem);
+  border-radius: 1.75rem;
+  padding: clamp(1.2rem, 2.8vw, 1.7rem);
+  text-align: center;
+  color: rgba(255, 248, 230, 0.95);
+  background: linear-gradient(180deg, rgba(12, 28, 19, 0.88), rgba(8, 19, 14, 0.94));
+  border: 1px solid rgba(156, 250, 208, 0.26);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.42), inset 0 1px 0 rgba(255, 245, 221, 0.08);
+  backdrop-filter: blur(8px);
+}
+
+.jungle-menu-button-stack {
+  margin-top: 1.15rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.72rem;
+}
+
+.jungle-menu-button-primary,
+.jungle-menu-button-secondary,
+.jungle-menu-button-warning {
+  width: min(100%, 22rem);
+  border-radius: 9999px;
+  padding: 0.74rem 1.05rem;
+  font-weight: 800;
+  transition: transform 120ms ease, filter 120ms ease, background-color 120ms ease, border-color 120ms ease, color 120ms ease;
+}
+
+.jungle-menu-button-primary {
+  background: linear-gradient(180deg, #fbc6df, #f39cc8);
+  border: 1px solid rgba(255, 216, 237, 0.92);
+  color: #4c1430;
+  box-shadow: 0 10px 24px rgba(247, 134, 187, 0.32);
+}
+
+.jungle-menu-button-secondary {
+  background: rgba(9, 28, 20, 0.82);
+  border: 1px solid rgba(110, 231, 183, 0.56);
+  color: #e6fff3;
+}
+
+.jungle-menu-button-warning {
+  background: rgba(64, 39, 14, 0.4);
+  border: 1px solid rgba(251, 191, 36, 0.55);
+  color: #f6d28a;
+}
+
+.jungle-menu-button-primary:hover,
+.jungle-menu-button-secondary:hover,
+.jungle-menu-button-warning:hover {
+  transform: translateY(-1px) scale(1.01);
+  filter: brightness(1.04);
+}
+
+.jungle-menu-button-primary:active,
+.jungle-menu-button-secondary:active,
+.jungle-menu-button-warning:active {
+  transform: scale(0.985);
+  filter: brightness(0.97);
+}
+
+.jungle-menu-button-primary:disabled,
+.jungle-menu-button-secondary:disabled,
+.jungle-menu-button-warning:disabled {
+  background: rgba(74, 85, 79, 0.4);
+  border-color: rgba(156, 163, 175, 0.38);
+  color: rgba(228, 230, 229, 0.62);
+  box-shadow: none;
+  cursor: not-allowed;
+  transform: none;
+  filter: none;
+}
+
+.jungle-menu-footer {
+  margin-top: 1rem;
+  font-size: clamp(0.75rem, 0.68rem + 0.22vw, 0.92rem);
+  color: rgba(255, 248, 230, 0.68);
+}
+
 
 
 .start-screen-overlay {

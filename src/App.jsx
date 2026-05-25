@@ -3789,25 +3789,24 @@ export default function App() {
         <section className="pointer-events-auto absolute inset-0 z-40 flex items-center justify-center px-4 sm:px-6"
           style={{ background: "rgba(7,12,8,0.42)", backdropFilter: "blur(3px)" }}
           aria-modal="true" role="dialog" aria-labelledby="pause-title">
-          <div className="w-full max-w-md rounded-[1.75rem] p-6 sm:p-7 text-center text-amber-50"
-            style={{ background: "rgba(12,20,10,0.9)", border: "1px solid rgba(246,210,138,0.28)", boxShadow: "0 0 45px rgba(0,0,0,0.32)" }}>
+          <div className="jungle-menu-card">
             <div className="text-xs font-black uppercase tracking-[0.32em] text-emerald-200/70">Trail Paused</div>
             <h2 id="pause-title" className="display-title mt-2 text-3xl font-black text-pink-200">Take a Jungle Breather</h2>
-            <div className="mt-6 flex flex-col items-stretch gap-3">
+            <div className="jungle-menu-button-stack">
               <button type="button" onClick={resumeGame} autoFocus
-                className="rounded-full bg-pink-200 px-6 py-3 text-base font-black text-fuchsia-950 shadow-[0_0_26px_rgba(244,114,182,0.4)] transition hover:scale-[1.02] active:scale-[0.98]">
+                className="jungle-focus-ring jungle-menu-button-primary text-base">
                 Resume
               </button>
               <button type="button" onClick={() => { setSettingsContext("pause"); setSettingsOpen(true); }}
-                className="hud-settings-button rounded-full px-6 py-3 text-sm font-black transition hover:scale-[1.02] active:scale-[0.98]">
+                className="jungle-focus-ring jungle-menu-button-secondary text-sm">
                 Settings
               </button>
               <button type="button" onClick={restartGame}
-                className="rounded-full border border-amber-200/35 bg-amber-950/20 px-6 py-3 text-sm font-black text-amber-100 transition hover:scale-[1.02] hover:bg-amber-900/30 active:scale-[0.98]">
+                className="jungle-focus-ring jungle-menu-button-warning text-sm">
                 Restart Run
               </button>
             </div>
-            <p className="mt-5 text-xs sm:text-sm text-amber-50/70">Press Esc or P to Resume</p>
+            <p className="jungle-menu-footer">Press Esc or P to Resume</p>
           </div>
         </section>
       )}
