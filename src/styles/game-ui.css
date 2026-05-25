@@ -1485,6 +1485,29 @@ button:disabled {
   }
 }
 
+@media (min-width: 768px) and (pointer: fine) {
+  .app-shell.touch-mode-always .touch-controls {
+    bottom: calc(2.5rem + var(--hud-safe-bottom));
+    display: grid;
+    gap: 0.65rem;
+    grid-template-areas:
+      ".    jump  .     . charge smash"
+      "left .     right . .      ."
+      ".    slide .     . .      .";
+    grid-template-columns: 5rem 5rem 5rem minmax(2rem, 1fr) 5.5rem 5.5rem;
+    left: calc(3rem + var(--hud-safe-left));
+    right: calc(3rem + var(--hud-safe-right));
+    max-width: none;
+    transform: none;
+    width: auto;
+    pointer-events: none;
+  }
+
+  .app-shell.touch-mode-always .touch-control-button {
+    pointer-events: auto;
+  }
+}
+
 @media (min-width: 768px) and (orientation: landscape) and (pointer: fine) {
   .touch-controls {
     bottom: calc(2.5rem + var(--hud-safe-bottom));
