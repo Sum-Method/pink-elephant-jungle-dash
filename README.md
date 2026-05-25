@@ -9,6 +9,13 @@ Pink Elephant Jungle Dash is a beginner-friendly 3D browser game where you run a
 
 
 
+
+### Latest touch joystick + settings polish update (2026-05-25)
+
+- Replaced split **Charge + Left + Right** touch input with one joystick-style Charge pad: hold to charge, then drag left/right to steer while still holding.
+- Updated controls guidance in Settings so touch players see the new hold-and-drag steering flow.
+- Polished Settings navigation with quick section jump chips (Audio, Controls, Display, App, Save, About) and a clearer bottom **Back to Game** action.
+
 ### Latest PWA device-fit update (2026-05-25)
 
 - Fixed a production build blocker by removing duplicate app version exports, so deployment builds can complete again.
