@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useRef } from "react";
 
+// Keep button order + key codes stable: left cluster = Charge/Forward, Left, Right; right cluster = Jump, Smash/Hold Slide.
 const LEFT_CLUSTER_BUTTONS = [
   { code: "ArrowUp", label: "Charge", icon: "CHARGE", hint: "Hold", style: "badge" },
   { code: "ArrowLeft", label: "Left", icon: "◀", hint: "Steer" },
