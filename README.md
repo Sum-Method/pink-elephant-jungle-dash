@@ -7,6 +7,12 @@ Live playable version: https://jedbcov-coder.github.io/pink-elephant-jungle-dash
 
 Pink Elephant Jungle Dash is a beginner-friendly 3D browser game where you run as a pink elephant, collect fruit, dodge jungle hazards, and try to survive as long as possible.
 
+### Latest short-height desktop compact spacing pass
+
+- Tightened short-height desktop/laptop title layout with smaller card padding, tighter top badge spacing, and reduced section/control gaps to keep key actions visible on shorter screens.
+- Reduced mascot/icon footprint (`title-elephant-badge`, `title-favicon-logo`) and dialed down title/subtitle sizes (`title-logo-main`, `title-logo-sub`) while preserving readable hierarchy with `clamp()` scaling.
+- Reduced description line-height and compacted version/build marker spacing so the status marker stays visible without crowding.
+
 ### Latest short-height desktop/laptop title-fit update
 
 - Start-screen overlay now uses viewport-aware top/bottom padding plus overlay-level vertical scrolling to keep the title card fully visible on laptop/desktop heights without introducing internal card scrollbars.

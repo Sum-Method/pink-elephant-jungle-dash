@@ -1888,7 +1888,78 @@ button:disabled {
   .layout-tablet-landscape .title-card {
     width: min(100%, 58rem);
     max-height: min(90dvh, 46rem);
-    padding: clamp(0.86rem, 1.4vh + 0.42rem, 1.55rem);
+    padding: clamp(0.75rem, 1.1vh + 0.32rem, 1.25rem);
+  }
+
+  .layout-desktop .title-card .mb-2,
+  .layout-tablet-landscape .title-card .mb-2 {
+    margin-bottom: clamp(0.2rem, 0.45vh, 0.45rem);
+    font-size: clamp(0.58rem, 0.2vw + 0.52rem, 0.72rem);
+  }
+
+  .layout-desktop .title-card .title-elephant-badge,
+  .layout-tablet-landscape .title-card .title-elephant-badge {
+    margin-bottom: clamp(0.3rem, 0.7vh, 0.62rem);
+    width: clamp(2.85rem, 3.6vh, 4rem);
+    height: clamp(2.85rem, 3.6vh, 4rem);
+  }
+
+  .layout-desktop .title-card .title-favicon-logo,
+  .layout-tablet-landscape .title-card .title-favicon-logo {
+    width: clamp(2.1rem, 2.65vh, 2.9rem);
+    height: clamp(2.1rem, 2.65vh, 2.9rem);
+  }
+
+  .layout-desktop .title-logo-main,
+  .layout-tablet-landscape .title-logo-main {
+    font-size: clamp(1.68rem, 2.1vw, 2.35rem);
+    line-height: 1.01;
+  }
+
+  .layout-desktop .title-logo-sub,
+  .layout-tablet-landscape .title-logo-sub {
+    margin-top: clamp(0.1rem, 0.3vh, 0.26rem);
+    font-size: clamp(0.94rem, 1.15vw, 1.28rem);
+    line-height: 1.02;
+  }
+
+  .layout-desktop .title-card > p,
+  .layout-tablet-landscape .title-card > p {
+    max-width: 35rem;
+    margin-top: clamp(0.32rem, 0.72vh, 0.58rem);
+    line-height: 1.3;
+  }
+
+  .layout-desktop .title-card .mt-4,
+  .layout-tablet-landscape .title-card .mt-4 {
+    margin-top: clamp(0.32rem, 0.7vh, 0.58rem);
+  }
+
+  .layout-desktop .title-card .mt-6,
+  .layout-tablet-landscape .title-card .mt-6 {
+    margin-top: clamp(0.4rem, 0.85vh, 0.68rem);
+  }
+
+  .layout-desktop .title-card .mt-3,
+  .layout-tablet-landscape .title-card .mt-3 {
+    margin-top: clamp(0.24rem, 0.5vh, 0.45rem);
+  }
+
+  .layout-desktop .title-card .gap-3,
+  .layout-tablet-landscape .title-card .gap-3 {
+    gap: clamp(0.38rem, 0.72vh, 0.64rem);
+  }
+
+  .layout-desktop .title-selftest-note,
+  .layout-tablet-landscape .title-selftest-note {
+    margin-top: clamp(0.24rem, 0.5vh, 0.44rem);
+    font-size: clamp(0.62rem, 0.2vw + 0.56rem, 0.72rem);
+  }
+
+  .layout-desktop .title-selftest-note > div,
+  .layout-tablet-landscape .title-selftest-note > div {
+    margin-top: 0;
+    gap: clamp(0.02rem, 0.16vh, 0.12rem);
   }
 
   .layout-desktop .title-primary-controls,
@@ -1899,17 +1970,6 @@ button:disabled {
   .layout-desktop .title-advanced-note,
   .layout-tablet-landscape .title-advanced-note {
     display: none !important;
-  }
-
-  .layout-desktop .title-card > p,
-  .layout-tablet-landscape .title-card > p {
-    max-width: 36rem;
-  }
-
-  .layout-desktop .title-selftest-note,
-  .layout-tablet-landscape .title-selftest-note {
-    margin-top: 0.35rem;
-    font-size: 0.72rem;
   }
 }
 
