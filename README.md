@@ -13,8 +13,9 @@ Pink Elephant Jungle Dash is a beginner-friendly 3D browser game where you run a
 ### Latest mobile controls + HUD cleanup update (2026-05-25)
 
 - Charge is now a joystick-style touch pad: hold to charge, then drag left/right on the same button to steer.
+- The charge pad now sits slightly further right for easier left-thumb access, uses curved green steering arrows, and includes a separate **Reverse** button underneath for backing up.
 - Jump and Smash/Slide buttons are anchored together in the bottom-right corner for easier right-thumb play.
-- In phone-landscape while touch controls are active, extra HUD panels are hidden to reduce overlap and keep the track view clear.
+- In phone-landscape while touch controls are active, extra HUD panels are hidden to reduce overlap and keep the track view clear (driven by `.touch-controls-active` on the app shell).
 
 ### Latest touch joystick + settings polish update (2026-05-25)
 

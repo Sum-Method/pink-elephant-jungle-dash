@@ -1371,7 +1371,7 @@ button:disabled {
   --mobile-edge-left: max(12px, env(safe-area-inset-left, 0px));
   --mobile-edge-bottom: max(12px, env(safe-area-inset-bottom, 0px));
   position: absolute;
-  left: var(--mobile-edge-left);
+  left: calc(var(--mobile-edge-left) + clamp(18px, 5.4vw, 40px));
   bottom: var(--mobile-edge-bottom);
   width: clamp(84px, 12vw, 112px);
   min-width: clamp(84px, 12vw, 112px);
@@ -1396,18 +1396,16 @@ button:disabled {
   gap: clamp(10px, 1.8vw, 16px);
 }
 
-.touch-control-badge {
+.touch-control-joystick {
   border-radius: 999px;
-  min-width: clamp(84px, 12vw, 112px);
-  min-height: clamp(84px, 12vw, 112px);
-  border: 2px solid rgba(255, 219, 97, 0.78);
+  border: 2px solid rgba(93, 237, 173, 0.86);
 }
 
-.touch-control-charge-badge {
+.touch-control-joystick-core {
   display: inline-flex;
-  flex-direction: column;
   align-items: center;
-  gap: 0.12rem;
+  justify-content: center;
+  gap: clamp(6px, 1.3vw, 14px);
 }
 
 .touch-control-charge-favicon {
@@ -1417,12 +1415,11 @@ button:disabled {
   filter: drop-shadow(0 0 8px rgba(255, 164, 218, 0.45));
 }
 
-.touch-control-charge-status {
-  font-size: clamp(0.44rem, 0.7vw, 0.56rem);
+.touch-control-joystick-arrow {
+  color: rgba(110, 231, 183, 0.95);
+  font-size: clamp(1rem, 2.2vw, 1.5rem);
   line-height: 1;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: rgba(255, 244, 180, 0.88);
+  text-shadow: 0 0 8px rgba(74, 222, 128, 0.6);
 }
 
 .touch-control-button:focus-visible {
@@ -1448,7 +1445,7 @@ button:disabled {
   bottom: var(--mobile-edge-bottom);
   display: grid;
   grid-template-columns: 1fr;
-  gap: clamp(12px, 1.8vw, 16px);
+  gap: clamp(8px, 1.4vw, 12px);
 }
 
 .mobile-right-cluster button {
@@ -2121,15 +2118,15 @@ button:disabled {
   pointer-events: none;
 }
 .layout-phone-landscape .mobile-left-cluster {
-  left: calc(var(--hud-safe-left) + 0.42rem);
+  left: calc(var(--hud-safe-left) + 1.1rem);
   bottom: calc(var(--hud-safe-bottom) + 0.42rem);
 }
 .layout-phone-landscape .mobile-right-cluster {
-  right: calc(var(--hud-safe-right) + 0.42rem);
-  bottom: calc(var(--hud-safe-bottom) + 0.42rem);
+  right: calc(var(--hud-safe-right) + 0.75rem);
+  bottom: calc(var(--hud-safe-bottom) + 0.55rem);
   display: grid;
   grid-template-columns: 1fr;
-  gap: clamp(8px, 1.6vw, 12px);
+  gap: clamp(8px, 1.2vw, 11px);
 }
 .layout-phone-landscape .mobile-controls button,
 .layout-phone-landscape .touch-control-button,
@@ -2224,7 +2221,8 @@ button:disabled {
 .app-shell.layout-phone-landscape.touch-controls-active .hud-top-left-score,
 .app-shell.layout-phone-landscape.touch-controls-active .hud-center-strip,
 .app-shell.layout-phone-landscape.touch-controls-active .hud-prompt-layer,
-.app-shell.layout-phone-landscape.touch-controls-active .hud-elephant-ability-badge {
+.app-shell.layout-phone-landscape.touch-controls-active .hud-elephant-ability-badge,
+.app-shell.layout-phone-landscape.touch-controls-active .hud-debug-mini {
   display: none !important;
 }
 
