@@ -3659,7 +3659,7 @@ export default function App() {
         </div>
       )}
 
-      {started && !complete && !gameOver && (
+      {isGameplayActive && (
         <TouchControls
           visible={touchControlsVisible}
           disabled={!started || paused || complete || gameOver || settingsOpen}
@@ -3667,7 +3667,7 @@ export default function App() {
         />
       )}
 
-      {import.meta.env.DEV && layoutMode === "phone-landscape" && (
+      {import.meta.env.DEV && isGameplayActive && layoutMode === "phone-landscape" && (
         <div className="hud-debug-mini" aria-hidden="true">
           <div>layout: {layoutMode}</div>
           <div>viewport: {Math.round(viewportWidth)}x{Math.round(viewportHeight)}</div>
@@ -3857,7 +3857,7 @@ export default function App() {
       <RotateOverlay visible={showRotateOverlay} />
 
       {/* DEBUG PANEL */}
-      {debug && (
+      {debug && isGameplayActive && (
         <pre ref={ui.debug} className="pointer-events-none absolute bottom-4 right-4 z-10 min-w-56 rounded-2xl p-4 text-xs leading-relaxed text-lime-200"
           style={{ background: "rgba(0,0,0,0.75)", border: "1px solid rgba(100,220,80,0.18)" }} />
       )}
