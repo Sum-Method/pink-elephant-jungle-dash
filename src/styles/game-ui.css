@@ -1807,6 +1807,19 @@ button:disabled {
 }
 
 
+
+.start-screen-overlay {
+  align-items: flex-start;
+  overflow-y: auto;
+  padding-top: clamp(0.75rem, 3vh, 2rem);
+  padding-bottom: clamp(0.75rem, 3vh, 2rem);
+}
+
+.start-screen-overlay .title-card {
+  margin-top: auto;
+  margin-bottom: auto;
+}
+
 /* Desktop/laptop title-card fit pass: keep start screen usable at normal zoom. */
 .title-card {
   width: min(100%, 54rem);
