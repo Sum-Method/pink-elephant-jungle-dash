@@ -1,10 +1,8 @@
 import React, { useCallback, useEffect, useRef } from "react";
 
-// Keep button order + key codes stable: left cluster = Charge/Forward, Left, Right; right cluster = Jump, Smash/Hold Slide.
+// Left cluster now uses a single charge pad with drag steering (joystick-like).
 const LEFT_CLUSTER_BUTTONS = [
-  { code: "ArrowUp", label: "Charge", icon: "CHARGE", hint: "Hold", style: "badge" },
-  { code: "ArrowLeft", label: "Left", icon: "◀", hint: "Steer" },
-  { code: "ArrowRight", label: "Right", icon: "▶", hint: "Steer" },
+  { code: "ArrowUp", label: "Charge", icon: "CHARGE", hint: "Hold + drag", style: "badge" },
 ];
 
 const RIGHT_CLUSTER_BUTTONS = [
@@ -24,12 +22,18 @@ export function TouchControls({ visible, disabled, onControlChange }) {
   if (!visible) return null;
 
   const activePointersByCodeRef = useRef(new Map());
+  const chargeSteerPointerRef = useRef(null);
+  const chargeSteerDirectionRef = useRef(0);
 
   const releaseAll = useCallback(() => {
     for (const [code] of activePointersByCodeRef.current.entries()) {
       onControlChange(code, false);
     }
     activePointersByCodeRef.current.clear();
+    chargeSteerPointerRef.current = null;
+    chargeSteerDirectionRef.current = 0;
+    onControlChange("ArrowLeft", false);
+    onControlChange("ArrowRight", false);
   }, [onControlChange]);
 
   useEffect(() => {
@@ -56,11 +60,39 @@ export function TouchControls({ visible, disabled, onControlChange }) {
     }
   };
 
+
+  const updateChargeSteer = (event) => {
+    if (chargeSteerPointerRef.current !== event.pointerId) return;
+    const controlRect = event.currentTarget.getBoundingClientRect();
+    const centerX = controlRect.left + controlRect.width / 2;
+    const offsetX = event.clientX - centerX;
+    const deadZone = Math.max(18, controlRect.width * 0.14);
+
+    let nextDirection = 0;
+    if (offsetX < -deadZone) nextDirection = -1;
+    if (offsetX > deadZone) nextDirection = 1;
+
+    const previousDirection = chargeSteerDirectionRef.current;
+    if (previousDirection === nextDirection) return;
+
+    if (previousDirection === -1) onControlChange("ArrowLeft", false);
+    if (previousDirection === 1) onControlChange("ArrowRight", false);
+
+    if (nextDirection === -1) onControlChange("ArrowLeft", true);
+    if (nextDirection === 1) onControlChange("ArrowRight", true);
+
+    chargeSteerDirectionRef.current = nextDirection;
+  };
+
   const handlePointerDown = (event, code) => {
     event.preventDefault();
     event.stopPropagation();
     event.currentTarget.setPointerCapture?.(event.pointerId);
     addPointerPress(code, event.pointerId);
+    if (code === "ArrowUp") {
+      chargeSteerPointerRef.current = event.pointerId;
+      updateChargeSteer(event);
+    }
   };
   const handlePointerUp = (event, code) => {
     event.preventDefault();
@@ -69,11 +101,23 @@ export function TouchControls({ visible, disabled, onControlChange }) {
       event.currentTarget.releasePointerCapture(event.pointerId);
     }
     removePointerPress(code, event.pointerId);
+    if (code === "ArrowUp" && chargeSteerPointerRef.current === event.pointerId) {
+      chargeSteerPointerRef.current = null;
+      if (chargeSteerDirectionRef.current === -1) onControlChange("ArrowLeft", false);
+      if (chargeSteerDirectionRef.current === 1) onControlChange("ArrowRight", false);
+      chargeSteerDirectionRef.current = 0;
+    }
   };
   const handlePointerCancel = (event, code) => {
     event.preventDefault();
     event.stopPropagation();
     removePointerPress(code, event.pointerId);
+    if (code === "ArrowUp" && chargeSteerPointerRef.current === event.pointerId) {
+      chargeSteerPointerRef.current = null;
+      if (chargeSteerDirectionRef.current === -1) onControlChange("ArrowLeft", false);
+      if (chargeSteerDirectionRef.current === 1) onControlChange("ArrowRight", false);
+      chargeSteerDirectionRef.current = 0;
+    }
   };
 
   const pressStart = (event, code) => {
@@ -106,6 +150,7 @@ export function TouchControls({ visible, disabled, onControlChange }) {
             onContextMenu={(event) => event.preventDefault()}
             onPointerDown={(event) => pressStart(event, code)}
             onPointerUp={(event) => pressEnd(event, code)}
+            onPointerMove={(event) => { if (code === "ArrowUp") updateChargeSteer(event); }}
             onPointerCancel={(event) => pressCancel(event, code)}
             onPointerLeave={(event) => pressCancel(event, code)}
           >

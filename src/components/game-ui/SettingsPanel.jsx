@@ -43,7 +43,7 @@ export function SettingsPanel({
 
   return (
     <section className="pointer-events-auto absolute inset-0 z-40 flex items-center justify-center px-6" style={{ background: "rgba(7,12,8,0.6)", backdropFilter: "blur(3px)" }} aria-modal="true" role="dialog" aria-labelledby="settings-title">
-      <div className="w-full max-w-3xl rounded-[1.5rem] p-6 text-left text-amber-50" style={{ background: "rgba(12,20,10,0.95)", border: "1px solid rgba(246,210,138,0.28)", boxShadow: "0 0 45px rgba(0,0,0,0.32)", maxHeight: "92vh", overflowY: "auto" }}>
+      <div className="w-full max-w-4xl rounded-[1.5rem] p-6 text-left text-amber-50" style={{ background: "rgba(12,20,10,0.95)", border: "1px solid rgba(246,210,138,0.28)", boxShadow: "0 0 45px rgba(0,0,0,0.32)", maxHeight: "92vh", overflowY: "auto" }}>
         <div className="flex items-center justify-between gap-3">
           <div>
             <div className="text-xs font-black uppercase tracking-[0.32em] text-emerald-200/70">Settings</div>
@@ -53,7 +53,21 @@ export function SettingsPanel({
           <button type="button" onClick={onClose} className="hud-settings-button rounded-full px-4 py-2 text-xs font-black uppercase tracking-wider transition hover:scale-105 active:scale-95">Close</button>
         </div>
 
-        <div className="mt-5 border-t border-amber-100/20 pt-4">
+
+        <nav className="mt-4 grid grid-cols-2 gap-2 md:grid-cols-6" aria-label="Settings sections">
+          {[
+            ["#settings-audio", "Audio"],
+            ["#settings-controls", "Controls"],
+            ["#settings-display", "Display"],
+            ["#settings-pwa", "App"],
+            ["#settings-save", "Save"],
+            ["#settings-about", "About"],
+          ].map(([href, label]) => (
+            <a key={href} href={href} className="rounded-full border border-emerald-100/25 bg-emerald-950/35 px-3 py-2 text-center text-[11px] font-black uppercase tracking-[0.16em] text-emerald-100/90 transition hover:bg-emerald-900/45">{label}</a>
+          ))}
+        </nav>
+
+        <div id="settings-audio" className="mt-5 border-t border-amber-100/20 pt-4">
           <h3 className="text-sm font-black uppercase tracking-[0.18em] text-amber-100">Audio</h3>
           <div className="mt-3 flex flex-wrap gap-2">
             <button type="button" onClick={() => onToggleAudio("muted")} className="rounded-full px-4 py-2 text-xs font-black" style={{ background: audioState.muted ? "rgba(248,113,113,0.92)" : "rgba(134,239,172,0.92)", color: "#082f1a" }}>{audioState.muted ? "Master: Off" : "Master: On"}</button>
@@ -62,10 +76,10 @@ export function SettingsPanel({
           </div>
         </div>
 
-        <div className="mt-5 border-t border-amber-100/20 pt-4">
+        <div id="settings-controls" className="mt-5 border-t border-amber-100/20 pt-4">
           <h3 className="text-sm font-black uppercase tracking-[0.18em] text-amber-100">Controls</h3>
           <p className="mt-2 text-xs text-amber-50/75"><strong>Desktop:</strong> Move: Arrows/WASD · Jump/Slide: Space · Smash: F.</p>
-          <p className="mt-1 text-xs text-amber-50/75"><strong>Mobile:</strong> Use the on-screen buttons.</p>
+          <p className="mt-1 text-xs text-amber-50/75"><strong>Mobile:</strong> Hold Charge and drag left or right to steer, then use Jump and Smash.</p>
           <div className="mt-3 flex flex-wrap gap-2">
             {[
               ["auto", "Touch: Auto"],
@@ -92,7 +106,7 @@ export function SettingsPanel({
           <p className="mt-1 text-xs text-emerald-100/50">Tip: Play in landscape on phones.</p>
         </div>
 
-        <div className="mt-5 border-t border-amber-100/20 pt-4">
+        <div id="settings-display" className="mt-5 border-t border-amber-100/20 pt-4">
           <h3 className="text-sm font-black uppercase tracking-[0.18em] text-amber-100">Display</h3>
           <div className="mt-2 flex flex-wrap gap-2">
             {[
@@ -105,21 +119,25 @@ export function SettingsPanel({
           </div>
         </div>
 
-        <div className="mt-5 border-t border-amber-100/20 pt-4">
+        <div id="settings-pwa" className="mt-5 border-t border-amber-100/20 pt-4">
           <h3 className="text-sm font-black uppercase tracking-[0.18em] text-amber-100">PWA App</h3>
           <p className="mt-2 text-xs text-amber-50/75">Current mode: {modeLabel}.</p>
           <PwaInstallCard visible={showInstallCard} canInstall={canInstall && !isStandalone} onInstall={onInstall} onDismiss={onDismissInstall} />
         </div>
 
-        <div className="mt-5 border-t border-amber-100/20 pt-4">
+        <div id="settings-save" className="mt-5 border-t border-amber-100/20 pt-4">
           <h3 className="text-sm font-black uppercase tracking-[0.18em] text-amber-100">Save Data</h3>
           <SaveDebugTools visible={showSaveTools} onToggle={onToggleSaveTools} onExport={onExportSave} onImport={onImportSave} onReset={onResetSave} />
         </div>
 
-        <div className="mt-5 border-t border-amber-100/20 pt-4 text-xs text-amber-50/75">
+        <div id="settings-about" className="mt-5 border-t border-amber-100/20 pt-4 text-xs text-amber-50/75">
           <h3 className="text-sm font-black uppercase tracking-[0.18em] text-amber-100">About</h3>
           <p className="mt-2">Pink Elephant Jungle Dash</p>
           <p className="mt-1">Version: {appVersion}</p>
+        </div>
+
+        <div className="mt-6 flex flex-wrap justify-end gap-2 border-t border-amber-100/20 pt-4">
+          <button type="button" onClick={onClose} className="rounded-full border border-emerald-100/40 bg-emerald-950/45 px-5 py-2 text-xs font-black uppercase tracking-[0.14em] text-emerald-100">Back to Game</button>
         </div>
       </div>
     </section>
