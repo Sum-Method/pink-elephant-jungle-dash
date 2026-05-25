@@ -3667,7 +3667,7 @@ export default function App() {
             <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
               <button type="button" onClick={() => { setSettingsContext("title"); setSettingsOpen(true); }} className="hud-settings-button rounded-full px-6 py-3 text-xs font-black uppercase tracking-wider transition hover:scale-105 active:scale-95">Settings</button>
               <button onClick={startDemo}
-              className="mt-7 rounded-full px-10 py-4 text-base font-black text-slate-950 transition hover:scale-105 active:scale-95"
+              className="rounded-full px-10 py-4 text-base font-black text-slate-950 transition hover:scale-105 active:scale-95"
               style={{ background: "#f472b6", boxShadow: "0 0 30px rgba(244,114,182,0.45)" }}>
               Begin the Trail
               </button>
