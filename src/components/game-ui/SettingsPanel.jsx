@@ -4,7 +4,7 @@ import { PwaInstallCard } from "./PwaInstallCard.jsx";
 import { SaveDebugTools } from "./SaveDebugTools.jsx";
 
 const sectionCardClass = "rounded-2xl border border-amber-100/20 bg-black/20 p-4";
-const segmentedButtonClass = "rounded-xl border border-emerald-100/30 bg-emerald-950/45 px-3 py-2 text-xs font-black uppercase tracking-[0.12em] text-emerald-100 transition hover:bg-emerald-900/55 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-200/80 focus-visible:ring-offset-2 focus-visible:ring-offset-emerald-950";
+const segmentedButtonClass = "jungle-focus-ring rounded-xl border border-emerald-100/30 bg-emerald-950/45 px-3 py-2 text-xs font-black uppercase tracking-[0.12em] text-emerald-100 transition hover:bg-emerald-900/55";
 
 export function SettingsPanel({
   open,
@@ -46,14 +46,14 @@ export function SettingsPanel({
 
   return (
     <section className="pointer-events-auto absolute inset-0 z-40 flex items-center justify-center px-4 sm:px-6" style={{ background: "rgba(7,12,8,0.6)", backdropFilter: "blur(3px)" }} aria-modal="true" role="dialog" aria-labelledby="settings-title">
-      <div className="w-full max-w-5xl rounded-[1.5rem] p-4 text-left text-amber-50 sm:p-5" style={{ background: "rgba(12,20,10,0.95)", border: "1px solid rgba(246,210,138,0.28)", boxShadow: "0 0 45px rgba(0,0,0,0.32)" }}>
+      <div className="jungle-menu-card w-full max-w-5xl text-left sm:p-5">
         <div className="flex items-start justify-between gap-3">
           <div>
             <div className="text-xs font-black uppercase tracking-[0.32em] text-emerald-200/70">Settings</div>
             <h2 id="settings-title" className="display-title mt-1 text-2xl font-black text-pink-200 sm:text-3xl">Game Settings</h2>
             <p className="mt-1 text-xs text-amber-50/65">From {context === "pause" ? "Pause" : "Title"}. Esc closes this panel.</p>
           </div>
-          <button type="button" onClick={onClose} aria-label="Close settings" className="hud-settings-button rounded-full px-4 py-2 text-xs font-black uppercase tracking-wider transition hover:scale-105 active:scale-95">Close</button>
+          <button type="button" onClick={onClose} aria-label="Close settings" className="jungle-focus-ring jungle-menu-button-secondary w-auto px-4 py-2 text-xs uppercase tracking-wider">Close</button>
         </div>
 
         <div className="mt-4 grid gap-3 lg:grid-cols-2">
