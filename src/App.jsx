@@ -71,12 +71,12 @@ const SHOW_TEXTURE_PREVIEW = false;
 const JUNGLE_LAYOUT_SEED = 0x5eed2026;
 
 const AUDIO_PREFS_KEY = "pink-elephant-audio-state";
-const TOUCH_CONTROLS_MODES = ["auto", "off", "always"];
+const TOUCH_CONTROLS_MODES = ["always", "auto", "off"];
 // Before adding Level 2, ensure Level 1 is loaded from level config (this is that checkpoint).
 
 function normalizeTouchControlsMode(mode) {
   if (mode === "on") return "always";
-  return TOUCH_CONTROLS_MODES.includes(mode) ? mode : "auto";
+  return TOUCH_CONTROLS_MODES.includes(mode) ? mode : "always";
 }
 
 function requestImmersiveMobileMode() {
@@ -546,7 +546,7 @@ export default function App() {
     const tabletLikeQuery = window.matchMedia("(max-width: 1280px) and (orientation: landscape)");
     const phoneLikeQuery = window.matchMedia("(max-width: 900px)");
     const updateVisibility = () => {
-      if (touchControlsMode === "on" || touchControlsMode === "always") {
+      if (touchControlsMode === "always") {
         setTouchControlsVisible(true);
         return;
       }
@@ -598,11 +598,17 @@ export default function App() {
     if (!gameplayActive) return;
     const autoShouldShow = layoutMode === "phone-landscape" || layoutMode === "tablet-landscape" || (navigator.maxTouchPoints > 0 && layoutMode === "desktop");
 
-    if (touchControlsMode === "on" || touchControlsMode === "always" || (touchControlsMode === "auto" && autoShouldShow)) {
+    if (touchControlsMode === "always" || (touchControlsMode === "auto" && autoShouldShow)) {
       touchInputDetectedRef.current = true;
       setTouchControlsVisible(true);
     }
   }, [started, paused, complete, gameOver, layoutMode, touchControlsMode]);
+
+
+  useEffect(() => {
+    if (!isGameplayActive) return;
+    console.log(`Touch controls mode: ${touchControlsMode}, visible: ${touchControlsVisible}, layout: ${layoutMode}`);
+  }, [isGameplayActive, touchControlsMode, touchControlsVisible, layoutMode]);
 
   useEffect(() => {
     if (typeof window === "undefined") return undefined;
