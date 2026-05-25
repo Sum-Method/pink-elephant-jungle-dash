@@ -69,8 +69,6 @@ const nl = String.fromCharCode(10);
 // Development-only helper: turn this on locally to inspect generated texture canvases.
 const SHOW_TEXTURE_PREVIEW = false;
 const JUNGLE_LAYOUT_SEED = 0x5eed2026;
-const COMPLETE_SCREEN_INPUT_LOCK_MS = 900;
-
 const AUDIO_PREFS_KEY = "pink-elephant-audio-state";
 const TOUCH_CONTROLS_MODES = ["always", "auto", "off"];
 // Before adding Level 2, ensure Level 1 is loaded from level config (this is that checkpoint).
@@ -325,7 +323,6 @@ export default function App() {
   const keyRef = useRef(createKeys());
   const startedRef = useRef(false);
   const completeRef = useRef(false);
-  const completeScreenOpenedAtRef = useRef(0);
   const gameOverRef = useRef(false);
   const debugRef = useRef(false);
   const pausedRef = useRef(false);
@@ -392,6 +389,31 @@ export default function App() {
   const nextLevelConfig = nextLevelId ? getLevelConfigStrict(nextLevelId) : null;
   const hasNextLevel = Boolean(nextLevelId && nextLevelConfig);
   const isGameplayActive = started && !paused && !complete && !gameOver;
+  const COMPLETE_SCREEN_INPUT_LOCK_MS = 900;
+  const completeScreenOpenedAtRef = useRef(0);
+
+  function isCompleteScreenInputLocked() {
+    return performance.now() - completeScreenOpenedAtRef.current < COMPLETE_SCREEN_INPUT_LOCK_MS;
+  }
+
+  function handleCompleteActionKeyDown(event) {
+    if (!["Enter", " ", "Spacebar"].includes(event.key)) return;
+    if (!isCompleteScreenInputLocked()) return;
+    event.preventDefault();
+    event.stopPropagation();
+  }
+
+  function handleContinueClick(event, action, tag) {
+    event.preventDefault();
+    event.stopPropagation();
+    if (isCompleteScreenInputLocked()) {
+      console.debug("[complete-action-blocked] action blocked during lock", { tag });
+      return;
+    }
+    console.debug(tag);
+    action();
+  }
+
   const { canShowInstallPrompt, installGame, dismissInstallPrompt } = usePwaInstallPrompt();
   const showInstallCard = canShowInstallPrompt;
   const dismissInstallCard = dismissInstallPrompt;
@@ -776,10 +798,6 @@ export default function App() {
       return;
     }
     setKeyState(keyRef.current, code, isPressed);
-  }
-
-  function isCompleteScreenInputLocked() {
-    return performance.now() - completeScreenOpenedAtRef.current < COMPLETE_SCREEN_INPUT_LOCK_MS;
   }
 
   function releaseTouchInputs() {
@@ -3500,24 +3518,6 @@ export default function App() {
     pendingLevelStartRef.current = { levelId, start: true };
     setCurrentLevelId(levelId);
   };
-
-  function handleCompleteActionKeyDown(event) {
-    if (!["Enter", " ", "Spacebar"].includes(event.key)) return;
-    if (!isCompleteScreenInputLocked()) return;
-    event.preventDefault();
-    event.stopPropagation();
-  }
-
-  function handleContinueClick(event, action, tag) {
-    event.preventDefault();
-    event.stopPropagation();
-    if (isCompleteScreenInputLocked()) {
-      console.debug("[complete-action-blocked] action blocked during lock", { tag });
-      return;
-    }
-    console.debug(tag);
-    action();
-  }
 
   return (
     <main className={`app-shell layout-${layoutMode} touch-mode-${touchControlsMode} ${touchControlsVisible ? "touch-controls-active" : ""} relative h-screen w-screen overflow-hidden bg-[#04140a] text-white ${immersiveReady ? "immersive-ready" : ""} ${paused ? "pause-overlay-active" : ""}`} data-orientation={isPortrait ? "portrait" : "landscape"} style={{ fontFamily: "system-ui, -apple-system, sans-serif", width: "100%", maxWidth: "100%", height: "100dvh", minHeight: viewportHeight ? `${Math.round(viewportHeight)}px` : "100dvh" }}>

@@ -7,6 +7,11 @@ Live playable version: https://jedbcov-coder.github.io/pink-elephant-jungle-dash
 
 Pink Elephant Jungle Dash is a beginner-friendly 3D browser game where you run as a pink elephant, collect fruit, dodge jungle hazards, and try to survive as long as possible.
 
+### Latest complete-screen lock helper cleanup (2026-05-25)
+
+- Moved complete-screen input lock helpers to a single, early location near the top of `App()` so they are defined before any effects/JSX use them.
+- Kept one source of truth for `isCompleteScreenInputLocked`, `handleCompleteActionKeyDown`, `handleContinueClick`, and `completeScreenOpenedAtRef` to avoid duplicate/deep declarations.
+
 ### Latest pause/settings visual polish restoration (2026-05-25)
 
 - Restored the jungle-glass look for Pause and Settings overlays with softer rounded cards, mint/amber borders, blur, and gentle shadow.
