@@ -1976,7 +1976,9 @@ button:disabled {
 /* Short-height desktop/laptop: keep title card focused by hiding only the full controls/help list. */
 @media (min-width: 1024px) and (max-height: 1080px) and (pointer: fine) {
   .layout-desktop .title-primary-controls,
-  .layout-tablet-landscape .title-primary-controls {
+  .layout-tablet-landscape .title-primary-controls,
+  .layout-desktop .title-advanced-note,
+  .layout-tablet-landscape .title-advanced-note {
     display: none !important;
   }
 }

@@ -9,6 +9,7 @@ Pink Elephant Jungle Dash is a beginner-friendly 3D browser game where you run a
 
 ### Latest short-height desktop/laptop controls visibility update
 
+- Also hides the optional advanced helper note (`title-advanced-note`) on short-height desktop/laptop viewports so the primary start actions stay visible without crowding.
 - On short-height desktop/laptop viewports, the full controls/help list (`title-primary-controls`) is now hidden so the title card stays focused and fits more reliably.
 - Kept the key start-screen elements visible: title, description, **Settings**, **Begin the Trail**, and version/build marker.
 - No touch-control or gameplay logic was changed in this pass.
