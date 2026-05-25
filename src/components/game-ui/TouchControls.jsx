@@ -19,7 +19,7 @@ const BUTTON_LABELS = {
   SmashSlide: "Smash or hold to slide",
 };
 
-export function TouchControls({ visible, disabled, onControlChange }) {
+export function TouchControls({ visible, disabled, interactionLocked = false, onControlChange }) {
   if (!visible) return null;
 
   const activePointersByCodeRef = useRef(new Map());
@@ -47,7 +47,7 @@ export function TouchControls({ visible, disabled, onControlChange }) {
   useEffect(() => () => releaseAll(), [releaseAll]);
 
   const addPointerPress = (code, pointerId) => {
-    if (disabled) return;
+    if (disabled || interactionLocked) return;
     const activePointers = activePointersByCodeRef.current.get(code) ?? new Set();
     activePointers.add(pointerId);
     activePointersByCodeRef.current.set(code, activePointers);
@@ -66,6 +66,7 @@ export function TouchControls({ visible, disabled, onControlChange }) {
 
 
   const updateChargeSteer = (event) => {
+    if (disabled || interactionLocked) return;
     if (chargeSteerPointerRef.current !== event.pointerId) return;
     const controlRect = event.currentTarget.getBoundingClientRect();
     const centerX = controlRect.left + controlRect.width / 2;
@@ -97,6 +98,7 @@ export function TouchControls({ visible, disabled, onControlChange }) {
   };
 
   const handlePointerDown = (event, code) => {
+    if (disabled || interactionLocked) return;
     event.preventDefault();
     event.stopPropagation();
     event.currentTarget.setPointerCapture?.(event.pointerId);
@@ -107,6 +109,7 @@ export function TouchControls({ visible, disabled, onControlChange }) {
     }
   };
   const handlePointerUp = (event, code) => {
+    if (interactionLocked) return;
     event.preventDefault();
     event.stopPropagation();
     if (event.currentTarget.hasPointerCapture?.(event.pointerId)) {
@@ -123,6 +126,7 @@ export function TouchControls({ visible, disabled, onControlChange }) {
     }
   };
   const handlePointerCancel = (event, code) => {
+    if (interactionLocked) return;
     event.preventDefault();
     event.stopPropagation();
     removePointerPress(code, event.pointerId);
@@ -152,7 +156,7 @@ export function TouchControls({ visible, disabled, onControlChange }) {
   };
 
   return (
-    <div className="touch-controls mobile-controls" aria-label="Touch game controls">
+    <div className="touch-controls mobile-controls" aria-label="Touch game controls" data-interaction-locked={interactionLocked ? "true" : "false"}>
       <div className="mobile-left-cluster" aria-label="Movement and charge controls">
         {LEFT_CLUSTER_BUTTONS.map(({ code, label, icon, hint, style }) => (
           <div key={`${code}-${label}`} className="touch-control-hitbox">
