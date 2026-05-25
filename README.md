@@ -9,6 +9,12 @@ Pink Elephant Jungle Dash is a beginner-friendly 3D browser game where you run a
 
 
 
+### Latest end-screen touch safety update (2026-05-25)
+
+- Touch controls are now explicitly non-interactive whenever **Level Complete** or **Game Over** overlays are active.
+- Added a one-time touch release call when entering complete/game-over states so held touch input cannot leak into end-screen actions.
+- End-screen overlays now use stronger pointer-event/z-index protection to prevent hidden gameplay layers from receiving taps behind the overlay.
+
 ### Latest completion/game-over input lock update (2026-05-25)
 
 - Added a short 900ms input lock when the **Level Complete** or **Game Over** overlay opens to prevent accidental instant button activation from stale keyboard/touch input.
