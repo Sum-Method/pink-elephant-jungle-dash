@@ -14,6 +14,8 @@ Pink Elephant Jungle Dash is a beginner-friendly 3D browser game where you run a
 - Updated touch controls modes so `always` reliably shows controls during gameplay on desktop/laptop/2-in-1/phone/tablet, while `auto` now supports phone-landscape, tablet-landscape, and touch-capable 2-in-1 layouts.
 - Hid debug-only visual overlays in normal gameplay by making the dashed safe-zone frame and center pause label fully invisible while keeping their tap functionality.
 - Added short-height laptop fit rules so title, Settings, Begin button, and version/build marker stay visible at common laptop sizes (1366x768, 1536x864, 1600x900).
+- Bumped deployment marker to `1.0.2 / docs-touch-crashfix-2026-05-25` with update note `pause safety and hidden debug zones`.
+- Follow-up crash guard pass: both the center pause failsafe and the top-right settings/pause button now use one shared safe pause handler that exits early when gameplay is not in a valid running state, preventing startup/pause crashes.
 - Bumped deployment marker to `1.0.1 / docs-touch-test-2026-05-25` with update note `always touch controls and laptop title fit`.
 
 ### Latest short-height desktop/laptop controls visibility update

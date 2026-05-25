@@ -790,6 +790,12 @@ export default function App() {
     }
   }, [started, paused, complete, gameOver, settingsOpen]);
 
+  const requestPauseSafely = useCallback(() => {
+    if (sceneError) return;
+    if (!startedRef.current || completeRef.current || gameOverRef.current || settingsOpen) return;
+    setPausedState(true);
+  }, [sceneError, settingsOpen]);
+
   useEffect(() => {
     if (typeof window === "undefined") return undefined;
     const release = () => releaseTouchInputs();
@@ -3482,7 +3488,7 @@ export default function App() {
         <button
           type="button"
           className="center-pause-tap-target"
-          onClick={openPauseFromCenterTap}
+          onClick={requestPauseSafely}
           aria-label="Pause game from center of screen"
           title="Tap center to pause"
         />
@@ -3551,7 +3557,7 @@ export default function App() {
               <button
                 type="button"
                 className="hud-settings-button hud-settings-icon-button"
-                onClick={() => setPausedState(true)}
+                onClick={requestPauseSafely}
                 aria-label="Pause game and open settings"
                 title="Pause / Settings"
               >
