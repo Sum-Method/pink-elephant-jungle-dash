@@ -36,6 +36,7 @@ Pink Elephant Jungle Dash is a beginner-friendly 3D browser game where you run a
 
 ### Latest desktop-layout repair
 
+- Start screen desktop/laptop scaling pass: title card now uses short-height responsive sizing, wider landscape fit, tighter spacing, and keeps **Settings** + **Begin the Trail** visible at normal browser zoom; on short-height desktop/laptop viewports, full controls/help cards are hidden and replaced by the concise tip/self-test line.
 - Restored desktop/laptop UI after mobile HUD regression: tightened phone-landscape CSS scoping, added explicit desktop/tablet guard rules, removed title-card internal scrolling on larger layouts, and reinforced the title Settings button contrast states so desktop visuals remain polished while mobile foundation classes stay available for future work.
 
 ### Latest HUD update
