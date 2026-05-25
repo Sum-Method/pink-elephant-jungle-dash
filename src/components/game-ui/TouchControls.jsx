@@ -2,7 +2,8 @@ import React, { useCallback, useEffect, useRef } from "react";
 
 // Left cluster now uses a single charge pad with drag steering (joystick-like).
 const LEFT_CLUSTER_BUTTONS = [
-  { code: "ArrowUp", label: "Charge", icon: "CHARGE", hint: "Hold + drag", style: "badge" },
+  { code: "ArrowUp", label: "Charge", icon: "CHARGE", hint: "Hold + drag", style: "joystick" },
+  { code: "ArrowDown", label: "Reverse", icon: "↩", hint: "Back up", style: "reverse" },
 ];
 
 const RIGHT_CLUSTER_BUTTONS = [
@@ -142,7 +143,7 @@ export function TouchControls({ visible, disabled, onControlChange }) {
           <div key={`${code}-${label}`} className="touch-control-hitbox">
           <button
             type="button"
-            className={`touch-control-button touch-control-${label.toLowerCase()} ${style === "badge" ? "touch-control-badge" : ""}`.trim()}
+            className={`touch-control-button touch-control-${label.toLowerCase()} ${style === "joystick" ? "touch-control-joystick" : ""}`.trim()}
             aria-label={BUTTON_LABELS[label]}
             title={BUTTON_LABELS[label]}
             data-pressed="false"
@@ -154,10 +155,11 @@ export function TouchControls({ visible, disabled, onControlChange }) {
             onPointerCancel={(event) => pressCancel(event, code)}
             onPointerLeave={(event) => pressCancel(event, code)}
           >
-            {style === "badge" ? (
-              <span className="touch-control-charge-badge" aria-hidden="true">
+            {style === "joystick" ? (
+              <span className="touch-control-joystick-core" aria-hidden="true">
+                <span className="touch-control-joystick-arrow touch-control-joystick-arrow-left">↶</span>
                 <img src={`${import.meta.env.BASE_URL}favicon.png`} alt="" className="touch-control-charge-favicon" />
-                <span className="touch-control-charge-status">Charge</span>
+                <span className="touch-control-joystick-arrow touch-control-joystick-arrow-right">↷</span>
               </span>
             ) : (
               <span className="touch-control-icon" aria-hidden="true">{icon}</span>
