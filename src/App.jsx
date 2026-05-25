@@ -3679,7 +3679,7 @@ export default function App() {
 
       {/* START SCREEN */}
       {!started && !complete && !gameOver && !sceneError && (
-        <section className="absolute inset-0 z-30 flex items-center justify-center px-6"
+        <section className="start-screen-overlay absolute inset-0 z-30 flex items-center justify-center px-6"
           style={{ background: "linear-gradient(to bottom, rgba(0,0,0,0.5) 0%, rgba(15,28,12,0.45) 50%, rgba(0,0,0,0.8) 100%)", backdropFilter: "blur(2px)" }}>
           <div className="title-card w-full max-w-3xl rounded-[2rem] p-8 text-center"
             style={{ background: "rgba(12,20,10,0.78)", border: "1px solid rgba(246,210,138,0.25)", boxShadow: "0 0 55px rgba(255,180,80,0.15)" }}>

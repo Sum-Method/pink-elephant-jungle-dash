@@ -9,6 +9,7 @@ Pink Elephant Jungle Dash is a beginner-friendly 3D browser game where you run a
 
 ### Latest short-height desktop/laptop title-fit update
 
+- Start-screen overlay now uses viewport-aware top/bottom padding plus overlay-level vertical scrolling to keep the title card fully visible on laptop/desktop heights without introducing internal card scrollbars.
 - Added height-aware desktop/laptop media queries for common short-height landscape viewports (including 1366×768, 1536×864, 1600×900, and 1920×1080).
 - Scoped changes to title/start-screen selectors only so gameplay and HUD selectors remain unchanged.
 
