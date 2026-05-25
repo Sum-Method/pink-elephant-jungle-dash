@@ -337,14 +337,12 @@ export default function App() {
   const gameStartTimeRef = useRef(null);
   const touchInputDetectedRef = useRef(false);
   const immersiveRequestedRef = useRef(false);
-
-  const tryImmersiveMode = useCallback((fromUserGesture = false) => {
-    immersiveRequestedRef.current = true;
-    if (fromUserGesture) requestImmersiveMobileMode();
-    setImmersiveReady(true);
-  }, []);
-
   const pendingLevelStartRef = useRef(null);
+  const completeScreenOpenedAtRef = useRef(0);
+  const activeLevelRef = useRef(buildLevelById("level-1"));
+  const profileSnapshotRef = useRef(null);
+  const saveSystemReadyRef = useRef(false);
+  const testSummaryRef = useRef("Self-tests pending");
 
   const [started, setStarted] = useState(false);
   const [complete, setComplete] = useState(false);
@@ -352,20 +350,10 @@ export default function App() {
   const [debug, setDebug] = useState(false);
   const [paused, setPaused] = useState(false);
   const [sceneError, setSceneError] = useState(null);
-
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    const media = window.matchMedia?.("(display-mode: standalone)");
-    const update = () => setIsStandaloneApp(Boolean(window.navigator.standalone) || Boolean(media?.matches));
-    update();
-    media?.addEventListener?.("change", update);
-    return () => media?.removeEventListener?.("change", update);
-  }, []);
   const [showSaveDebugTools, setShowSaveDebugTools] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [settingsContext, setSettingsContext] = useState("title");
   const [isStandaloneApp, setIsStandaloneApp] = useState(false);
-  const testSummaryRef = useRef("Self-tests pending");
   const [finalResults, setFinalResults] = useState(null);
   const [showFinalReward, setShowFinalReward] = useState(false);
   const [audioState, setAudioState] = useState(readStoredAudioState);
@@ -380,17 +368,29 @@ export default function App() {
   // Layout mode source of truth for responsive UI buckets from the audit findings.
   const [layoutMode, setLayoutMode] = useState(() => detectLayoutMode());
   const [graphicsQuality, setGraphicsQuality] = useState(() => loadSettings()?.display?.graphicsQuality ?? "balanced");
-  const activeLevelRef = useRef(buildLevelById("level-1"));
-  const profileSnapshotRef = useRef(null);
-  const saveSystemReadyRef = useRef(false);
   const [saveSystemReady, setSaveSystemReady] = useState(false);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const media = window.matchMedia?.("(display-mode: standalone)");
+    const update = () => setIsStandaloneApp(Boolean(window.navigator.standalone) || Boolean(media?.matches));
+    update();
+    media?.addEventListener?.("change", update);
+    return () => media?.removeEventListener?.("change", update);
+  }, []);
+
   const currentLevelConfig = getLevelConfig(currentLevelId);
   const nextLevelId = currentLevelConfig.nextLevel;
   const nextLevelConfig = nextLevelId ? getLevelConfigStrict(nextLevelId) : null;
   const hasNextLevel = Boolean(nextLevelId && nextLevelConfig);
   const isGameplayActive = started && !paused && !complete && !gameOver;
   const COMPLETE_SCREEN_INPUT_LOCK_MS = 900;
-  const completeScreenOpenedAtRef = useRef(0);
+
+  const tryImmersiveMode = useCallback((fromUserGesture = false) => {
+    immersiveRequestedRef.current = true;
+    if (fromUserGesture) requestImmersiveMobileMode();
+    setImmersiveReady(true);
+  }, []);
 
   function resetCompleteScreenInputLock() {
     completeScreenOpenedAtRef.current = 0;
