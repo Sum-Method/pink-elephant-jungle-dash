@@ -3490,7 +3490,7 @@ export default function App() {
           <AudioControls audioState={audioState} onToggle={toggleAudioState} compact />
         </div>
       )}
-      {started && !complete && !gameOver && (
+      {started && !complete && !gameOver && !touchControlsVisible && (
         <div className="game-hud-slot hud-elephant-ability-badge hud-safe-bottom-right hud-decorative-edge pointer-events-none absolute z-20"
           aria-label="Elephant charge ability status" role="img">
           <img

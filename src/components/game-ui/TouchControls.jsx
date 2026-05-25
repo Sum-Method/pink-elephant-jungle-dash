@@ -7,8 +7,8 @@ const LEFT_CLUSTER_BUTTONS = [
 ];
 
 const RIGHT_CLUSTER_BUTTONS = [
-  { code: "Space", label: "Jump", icon: "⤒", hint: "Tap" },
-  { code: "KeyF", label: "SmashSlide", icon: "💥", hint: "Tap/Hold" },
+  { code: "Space", label: "Jump", icon: "⤒", hint: "Jump" },
+  { code: "KeyF", label: "SmashSlide", displayLabel: "Smash", icon: "💥", hint: "Hold Slide" },
 ];
 
 const BUTTON_LABELS = {
@@ -75,6 +75,21 @@ export function TouchControls({ visible, disabled, onControlChange }) {
     removePointerPress(code, event.pointerId);
   };
 
+  const pressStart = (event, code) => {
+    event.currentTarget.dataset.pressed = "true";
+    handlePointerDown(event, code);
+  };
+
+  const pressEnd = (event, code) => {
+    event.currentTarget.dataset.pressed = "false";
+    handlePointerUp(event, code);
+  };
+
+  const pressCancel = (event, code) => {
+    event.currentTarget.dataset.pressed = "false";
+    handlePointerCancel(event, code);
+  };
+
   return (
     <div className="touch-controls mobile-controls" aria-label="Touch game controls">
       <div className="mobile-left-cluster" aria-label="Movement and charge controls">
@@ -85,14 +100,22 @@ export function TouchControls({ visible, disabled, onControlChange }) {
             className={`touch-control-button touch-control-${label.toLowerCase()} ${style === "badge" ? "touch-control-badge" : ""}`.trim()}
             aria-label={BUTTON_LABELS[label]}
             title={BUTTON_LABELS[label]}
+            data-pressed="false"
             disabled={disabled}
             onContextMenu={(event) => event.preventDefault()}
-            onPointerDown={(event) => handlePointerDown(event, code)}
-            onPointerUp={(event) => handlePointerUp(event, code)}
-            onPointerCancel={(event) => handlePointerCancel(event, code)}
-            onPointerLeave={(event) => handlePointerCancel(event, code)}
+            onPointerDown={(event) => pressStart(event, code)}
+            onPointerUp={(event) => pressEnd(event, code)}
+            onPointerCancel={(event) => pressCancel(event, code)}
+            onPointerLeave={(event) => pressCancel(event, code)}
           >
-            <span className="touch-control-icon" aria-hidden="true">{icon}</span>
+            {style === "badge" ? (
+              <span className="touch-control-charge-badge" aria-hidden="true">
+                <img src={`${import.meta.env.BASE_URL}favicon.png`} alt="" className="touch-control-charge-favicon" />
+                <span className="touch-control-charge-status">Charge</span>
+              </span>
+            ) : (
+              <span className="touch-control-icon" aria-hidden="true">{icon}</span>
+            )}
             <span className="touch-control-label">{label}</span>
             <span className="touch-control-hint">{hint}</span>
           </button>
@@ -100,22 +123,23 @@ export function TouchControls({ visible, disabled, onControlChange }) {
         ))}
       </div>
       <div className="mobile-right-cluster" aria-label="Action controls">
-        {RIGHT_CLUSTER_BUTTONS.map(({ code, label, icon, hint }) => (
+        {RIGHT_CLUSTER_BUTTONS.map(({ code, label, displayLabel, icon, hint }) => (
         <div key={`${code}-${label}`} className="touch-control-hitbox">
         <button
           type="button"
           className={`touch-control-button touch-control-${label.toLowerCase()}`}
+          data-pressed="false"
           aria-label={BUTTON_LABELS[label]}
           title={BUTTON_LABELS[label]}
           disabled={disabled}
           onContextMenu={(event) => event.preventDefault()}
-          onPointerDown={(event) => handlePointerDown(event, code)}
-          onPointerUp={(event) => handlePointerUp(event, code)}
-          onPointerCancel={(event) => handlePointerCancel(event, code)}
-          onPointerLeave={(event) => handlePointerCancel(event, code)}
+          onPointerDown={(event) => pressStart(event, code)}
+          onPointerUp={(event) => pressEnd(event, code)}
+          onPointerCancel={(event) => pressCancel(event, code)}
+          onPointerLeave={(event) => pressCancel(event, code)}
         >
           <span className="touch-control-icon" aria-hidden="true">{icon}</span>
-          <span className="touch-control-label">{label}</span>
+          <span className="touch-control-label">{displayLabel ?? label}</span>
           <span className="touch-control-hint">{hint}</span>
         </button>
           </div>
