@@ -70,6 +70,7 @@ export function SettingsPanel({
             {[
               ["auto", "Touch: Auto"],
               ["on", "Touch: On"],
+              ["always", "Touch: Always"],
               ["off", "Touch: Off"],
             ].map(([value, label]) => (
               <button
@@ -88,6 +89,7 @@ export function SettingsPanel({
             ))}
           </div>
           <p className="mt-2 text-xs text-emerald-100/60">Auto mode: touch layouts show buttons; desktop layout keeps keyboard focus.</p>
+          <p className="mt-1 text-xs text-emerald-100/50">Always mode keeps touch buttons visible everywhere. Legacy On mode still works the same.</p>
           <p className="mt-1 text-xs text-emerald-100/50">Tip: Play in landscape on phones.</p>
         </div>
 

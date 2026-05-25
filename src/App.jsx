@@ -71,7 +71,12 @@ const SHOW_TEXTURE_PREVIEW = false;
 const JUNGLE_LAYOUT_SEED = 0x5eed2026;
 
 const AUDIO_PREFS_KEY = "pink-elephant-audio-state";
+const TOUCH_CONTROLS_MODES = ["auto", "on", "off", "always"];
 // Before adding Level 2, ensure Level 1 is loaded from level config (this is that checkpoint).
+
+function normalizeTouchControlsMode(mode) {
+  return TOUCH_CONTROLS_MODES.includes(mode) ? mode : "auto";
+}
 
 function requestImmersiveMobileMode() {
   // Tries browser APIs that can hide system UI on mobile during gameplay.
@@ -369,7 +374,7 @@ export default function App() {
   const [finalResults, setFinalResults] = useState(null);
   const [audioState, setAudioState] = useState(readStoredAudioState);
   const [touchControlsVisible, setTouchControlsVisible] = useState(false);
-  const [touchControlsMode, setTouchControlsMode] = useState(() => loadSettings()?.display?.touchControlsMode ?? "auto");
+  const [touchControlsMode, setTouchControlsMode] = useState(() => normalizeTouchControlsMode(loadSettings()?.display?.touchControlsMode));
   const [currentLevelId, setCurrentLevelId] = useState("level-1");
   const [immersiveReady, setImmersiveReady] = useState(false);
   const [viewportHeight, setViewportHeight] = useState(() => getVisualViewportHeight());
@@ -3830,9 +3835,10 @@ export default function App() {
         }}
         touchControlsMode={touchControlsMode}
         onTouchControlsModeChange={(value) => {
+          const normalizedValue = normalizeTouchControlsMode(value);
           const existing = loadSettings() ?? {};
-          saveSettings({ ...existing, display: { ...(existing.display ?? {}), touchControlsMode: value } });
-          setTouchControlsMode(value);
+          saveSettings({ ...existing, display: { ...(existing.display ?? {}), touchControlsMode: normalizedValue } });
+          setTouchControlsMode(normalizedValue);
         }}
         isStandalone={isStandaloneApp}
         canInstall={canShowInstallPrompt}
