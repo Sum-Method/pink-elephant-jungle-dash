@@ -12,6 +12,12 @@ Pink Elephant Jungle Dash is a beginner-friendly 3D browser game where you run a
 - Fixed a Level Complete runtime crash by restoring a broken `useEffect` closure and removing a duplicate callback declaration in `App.jsx`.
 - Kept complete-screen helpers as function declarations defined before JSX usage, so complete-screen actions are safe from initialization-order issues.
 - Added an explicit F12 pass-through in gameplay key handlers so opening DevTools does not affect game input state.
+### Latest Level Complete crash fix (2026-05-25)
+
+- Fixed a declaration-order bug in `src/App.jsx` that could trigger `ReferenceError: Cannot access 'ka' before initialization` when Level 1 completed.
+- Ensured complete-screen helper functions are declared before the JSX render path uses them.
+- Kept complete-screen button handlers as callbacks so Continue does not auto-fire during render.
+- Confirmed gameplay keyboard filtering still ignores F12 so browser DevTools can open normally.
 
 ### Latest startup crash fix (2026-05-25)
 
