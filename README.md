@@ -869,3 +869,9 @@ Notes:
 
 - Enabled production sourcemaps in `vite.config.js` with `build.sourcemap = true` to map minified GitHub Pages errors back to source files while investigating the Level 1 → Level 2 transition crash.
 - This is temporary and can be turned off after transition debugging is complete.
+
+
+### Latest transition crash isolation update (2026-05-26)
+
+- Added targeted scene-creation failure handling in `src/App.jsx` around `createSceneBasics`, `createCourseGeometry`, and `createSharedResources`.
+- On setup failure, the app now logs `[scene-create-failed]` with level id + stack, clears transition state, clears pending level start, and shows the error message for easier source-map debugging.

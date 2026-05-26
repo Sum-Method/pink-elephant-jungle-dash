@@ -1055,7 +1055,26 @@ export default function App() {
     let fps = 60;
     const perfState = { frameWindowMs: 0, frameWindowCount: 0, windowFps: 60, effectQuality: 1, nearbyObstacleCount: 0 };
 
-    const { scene, camera, sun, activeCourse, activeTheme, courseFloorLength, courseFinishZ, courseVisualEndZ } = createSceneBasics({ mount, currentLevelConfig });
+    const failSceneCreate = (error) => {
+      console.error("[scene-create-failed]", {
+        currentLevelId,
+        error,
+        stack: error?.stack,
+      });
+      setSceneError(error?.message ?? "Unknown scene creation error");
+      setIsLevelTransitioning(false);
+      pendingLevelStartRef.current = null;
+    };
+
+    let sceneBasics;
+    try {
+      sceneBasics = createSceneBasics({ mount, currentLevelConfig });
+    } catch (error) {
+      failSceneCreate(error);
+      return undefined;
+    }
+
+    const { scene, camera, sun, activeCourse, activeTheme, courseFloorLength, courseFinishZ, courseVisualEndZ } = sceneBasics;
     const levelSpeed = currentLevelConfig.speed ?? MOVEMENT;
     const levelMaxSpeed = levelSpeed.maxSpeed ?? MOVEMENT.maxSpeed;
 
@@ -1109,11 +1128,20 @@ export default function App() {
     canopyMesh.position.set(0, -10, jungle.position.z);
     scene.add(canopyMesh);
 
-    const { pathGroup, safeHalfWidth } = createCourseGeometry({
-      scene,
-      textures,
-      courseVisualEndZ,
-    });
+    let pathGroup;
+    let safeHalfWidth;
+    try {
+      ({ pathGroup, safeHalfWidth } = createCourseGeometry({
+        scene,
+        textures,
+        courseVisualEndZ,
+      }));
+    } catch (error) {
+      failSceneCreate(error);
+      safeRemoveRendererDomElement(renderer, mount);
+      renderer?.dispose?.();
+      return undefined;
+    }
 
     const colliders = [], pickups = [], crocs = [], particles = [], pops = [];
     const activeObstacles = [];
@@ -1121,13 +1149,25 @@ export default function App() {
     const branchHazardAccents = [];
     const branchCueTriggered = new Set();
     const enemies = [], collectibleMeshes = [];
-    const { particlePool, popPools, pooledParticleGeometry, sharedGeometries, sharedTreeGeometries } = createSharedResources({
-      scene,
-      createBroadBananaLeafGeometry,
-      createMossClumpGeometry,
-      createLargeForegroundRockGeometry,
-      createRuinBlockClusterGeometry,
-    });
+    let particlePool;
+    let popPools;
+    let pooledParticleGeometry;
+    let sharedGeometries;
+    let sharedTreeGeometries;
+    try {
+      ({ particlePool, popPools, pooledParticleGeometry, sharedGeometries, sharedTreeGeometries } = createSharedResources({
+        scene,
+        createBroadBananaLeafGeometry,
+        createMossClumpGeometry,
+        createLargeForegroundRockGeometry,
+        createRuinBlockClusterGeometry,
+      }));
+    } catch (error) {
+      failSceneCreate(error);
+      safeRemoveRendererDomElement(renderer, mount);
+      renderer?.dispose?.();
+      return undefined;
+    }
     const MAX_PICKUP_POINT_LIGHTS = 4;
     let pickupPointLights = 0;
     const createLimitedPickupLight = (color, intensity, distance) => {
