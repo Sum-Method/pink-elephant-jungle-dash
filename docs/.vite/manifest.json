@@ -16,6 +16,7 @@
   },
   "index.html": {
     "file": "assets/index-CZ2nZ7cD.js",
+    "file": "assets/index-Bbisj0Sq.js",
     "name": "index",
     "src": "index.html",
     "isEntry": true,
@@ -31,7 +32,7 @@
     ]
   },
   "src/App.jsx": {
-    "file": "assets/App-CjPpa__q.js",
+    "file": "assets/App-BNWa42GS.js",
     "name": "App",
     "src": "src/App.jsx",
     "isDynamicEntry": true,
