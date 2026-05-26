@@ -54,6 +54,13 @@ Pink Elephant Jungle Dash is a beginner-friendly 3D browser runner game where yo
 - Added explicit blocked-reason logging (`input-lock` vs `transitioning`) for faster troubleshooting of ignored clicks.
 - Added an allowed-path log before level continuation to confirm when `startLevelById(nextLevelId)` is being invoked.
 
+
+### Latest startup safeHalfWidth wiring fix (2026-05-26)
+
+- Updated `src/game/scene/createCourseGeometry.js` to return `safeHalfWidth` from `createCourseGeometry()`.
+- Updated `src/App.jsx` to receive `safeHalfWidth` from `createCourseGeometry(...)` so startup no longer throws `safeHalfWidth is not defined`.
+- Kept this as a minimal startup fix only (no gameplay, level data, or UI redesign changes).
+
 ## Deployment note
 - The live game is deployed with **GitHub Pages** at the link above.
 - The current playable demo is **3 levels**.

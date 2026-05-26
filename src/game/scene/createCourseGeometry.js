@@ -58,5 +58,5 @@ export function createCourseGeometry({ scene, textures, courseVisualEndZ }) {
     pathGroup.add(ribbon);
   });
 
-  return { pathGroup, courseVisualEndZ, pathSurface };
+  return { pathGroup, courseVisualEndZ, pathSurface, safeHalfWidth };
 }
