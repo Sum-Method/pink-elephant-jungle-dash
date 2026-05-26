@@ -18,7 +18,10 @@ import { trackAngle, trackCenter, worldPosition, worldX } from "./track.js";
 import { CONFIG, MOVEMENT, PICKUPS, SCORING } from "./config.js";
 import { buildLevelById, LEVEL } from "./level.js";
 import { LEVEL_REGISTRY, getLevelConfig, getLevelConfigStrict } from "./levels/index.js";
+import { loadLevelConfig, loadLevelConfigStrict } from "./levels/levelLoader.js";
 import { validateLevelConfig } from "./levels/levelSchema.js";
+import { validateChunkDefinition } from "./chunks/chunkSchema.js";
+import { ALL_CHUNK_TYPES } from "./chunks/chunkTypes.js";
 import level2 from "./levels/level2.js";
 import level3 from "./levels/level3.js";
 import { LOOP_DIFFICULTIES, LOOP_PROMPT_PLANS, LEVEL_SECTIONS, promptPlanHasCue, sectionDifficulty, sectionMetadata } from "./levelPromptMetadata.js";
@@ -98,14 +101,22 @@ export function runSelfTests() {
 
   const levelIds = Object.keys(LEVEL_REGISTRY);
   assert("all registered levels exist", levelIds.every((levelId) => Boolean(getLevelConfigStrict(levelId))));
-  assert("level chain keeps level-1 -> level-2", getLevelConfigStrict("level-1")?.nextLevel === "level-2");
-  assert("level chain keeps level-2 -> level-3", getLevelConfigStrict("level-2")?.nextLevel === "level-3");
-  assert("level chain keeps level-3 terminal", getLevelConfigStrict("level-3")?.nextLevel === null);
+  assert(
+    "level chain is exactly level-1 -> level-2 -> level-3 -> null",
+    getLevelConfigStrict("level-1")?.nextLevel === "level-2"
+      && getLevelConfigStrict("level-2")?.nextLevel === "level-3"
+      && getLevelConfigStrict("level-3")?.nextLevel === null,
+  );
   assert("all levels have loops and matching loopPlans", Object.values(LEVEL_REGISTRY).every((level) => Array.isArray(level.loops) && Array.isArray(level.loopPlans) && level.loops.length === level.loopPlans.length));
-  assert("every registered level passes validateLevelConfig", levelIds.every((levelId) => validateLevelConfig(LEVEL_REGISTRY[levelId])));
+  assert("all 3 registered demo levels pass validateLevelConfig", levelIds.length === 3 && levelIds.every((levelId) => validateLevelConfig(LEVEL_REGISTRY[levelId])));
   assert("intentionally invalid fake level fails validation", !validateLevelConfig({ id: "broken-level", loops: "not-an-array" }));
+  assert("no required playable level exists after level-3", getLevelConfigStrict("level-3")?.nextLevel === null);
+  assert("loadLevelConfigStrict('unknown-id') returns null", loadLevelConfigStrict("unknown-id") === null);
+  assert("loadLevelConfig('unknown-id') falls back to level-1", loadLevelConfig("unknown-id")?.id === "level-1");
   assert("strict unknown level lookup returns null", getLevelConfigStrict("unknown-level-id") === null);
   assert("normal unknown level lookup falls back to level-1", getLevelConfig("unknown-level-id")?.id === "level-1");
+  assert("validateChunkDefinition rejects clearly invalid chunk object", !validateChunkDefinition({ id: "", type: "", length: -1, difficulty: "hard", hazards: {} }));
+  assert("chunk type constants exist and are non-empty strings", ALL_CHUNK_TYPES.length > 0 && ALL_CHUNK_TYPES.every((chunkType) => typeof chunkType === "string" && chunkType.trim().length > 0));
   assert("level 1 keeps default course values", !getLevelConfigStrict("level-1")?.course);
   assert("level 2 keeps extended course values", getLevelConfigStrict("level-2")?.course?.floorLength === 1500 && getLevelConfigStrict("level-2")?.course?.finishLineZ === -1330 && getLevelConfigStrict("level-2")?.course?.endOfCourseZ === -1352);
   assert("level 3 keeps extended course values", getLevelConfigStrict("level-3")?.course?.floorLength === 1500 && getLevelConfigStrict("level-3")?.course?.finishLineZ === -1330 && getLevelConfigStrict("level-3")?.course?.endOfCourseZ === -1352);
