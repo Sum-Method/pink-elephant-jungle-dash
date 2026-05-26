@@ -407,6 +407,24 @@ export default function App() {
     event.stopPropagation();
   }
 
+  function clearGameHash() {
+    if (typeof window === "undefined") return;
+    if (!window.location.hash) return;
+    console.debug("[settings-close-clear-hash]", window.location.hash);
+    window.history.replaceState(null, "", window.location.pathname + window.location.search);
+  }
+
+  function closeSettingsPanel() {
+    setSettingsOpen(false);
+    clearGameHash();
+  }
+
+  function openSettings(context) {
+    if (completeRef.current || gameOverRef.current || isLevelTransitioning) return;
+    setSettingsContext(context);
+    setSettingsOpen(true);
+  }
+
   function handleContinueClick(event, action, tag) {
     event.preventDefault();
     event.stopPropagation();
@@ -414,7 +432,7 @@ export default function App() {
       console.debug("[complete-action-blocked] action blocked during lock", { tag });
       return;
     }
-    console.debug(tag);
+    console.debug(tag, { hash: typeof window !== "undefined" ? window.location.hash : "" });
     action();
   }
 
@@ -495,10 +513,12 @@ export default function App() {
   }
 
   function resumeGame() {
+    closeSettingsPanel();
     setPausedState(false);
   }
 
   function restartGame() {
+    closeSettingsPanel();
     resetGameRef.current?.({ start: true });
   }
 
@@ -2609,6 +2629,8 @@ export default function App() {
         gameOverRef.current = true;
         const results = snapshotResults();
         setFinalResults(results);
+        closeSettingsPanel();
+        setSettingsContext("title");
         setPausedState(false);
         keyRef.current = createKeys();
         releaseTouchInputs();
@@ -2632,6 +2654,7 @@ export default function App() {
 
     function completeLevel(popZ = body.z) {
       if (completeRef.current) return;
+      console.debug("[level-complete]", currentLevelId, typeof window !== "undefined" ? window.location.hash : "");
       const results = snapshotResults({ z: popZ });
       body.completed = true;
       completeRef.current = true;
@@ -2641,6 +2664,8 @@ export default function App() {
       playTone("gate");
       setFinalResults(results);
       setShowFinalReward(!hasNextLevel);
+      closeSettingsPanel();
+      setSettingsContext("title");
       keyRef.current = createKeys();
       releaseTouchInputs();
       completeScreenOpenedAtRef.current = performance.now();
@@ -2708,7 +2733,7 @@ export default function App() {
       if (e.code === "Escape" || e.code === "KeyP") {
         if (!e.repeat && !wasPressed) {
           if (settingsOpen) {
-            setSettingsOpen(false);
+            closeSettingsPanel();
           } else if (startedRef.current && !completeRef.current && !gameOverRef.current) setPausedState(!pausedRef.current);
           else keyRef.current = createKeys();
         }
@@ -3523,6 +3548,7 @@ export default function App() {
 
   function startNewGame() {
     resetCompleteScreenInputLock();
+    closeSettingsPanel();
     stopTitleTheme(0.18);
     startAudio();
     pendingLevelStartRef.current = { levelId: "level-1", start: true };
@@ -3542,6 +3568,8 @@ export default function App() {
     const nextConfig = levelId ? getLevelConfigStrict(levelId) : null;
     if (!nextConfig || isLevelTransitioning) return;
 
+    console.debug("[start-level]", levelId);
+    closeSettingsPanel();
     resetCompleteScreenInputLock();
     completeRef.current = false;
     setComplete(false);
@@ -3731,7 +3759,7 @@ export default function App() {
               style={{ background: "#f472b6", boxShadow: "0 0 30px rgba(244,114,182,0.45)" }}>
               Begin the Trail
               </button>
-              <button type="button" onClick={() => { setSettingsContext("title"); setSettingsOpen(true); }} className="title-settings-action hud-settings-button rounded-full px-6 py-3 text-xs font-black uppercase tracking-wider transition hover:scale-105 active:scale-95">Settings</button>
+              <button type="button" onClick={() => openSettings("title")} className="title-settings-action hud-settings-button rounded-full px-6 py-3 text-xs font-black uppercase tracking-wider transition hover:scale-105 active:scale-95">Settings</button>
             </div>
             <div className="title-primary-controls mt-6 text-left text-xs text-amber-50/70" aria-label="Primary controls">
               {[["↑", "Build Charge"], ["← / →", "Steer"], ["Tap Space", "Jump"], ["Hold Space", "Slide"], ["Shift", "Trunk Smash"], ["M", "Mute"]].map(([key, label]) => (
@@ -3784,14 +3812,14 @@ export default function App() {
             </div>
             <div className="complete-actions mt-8 flex flex-wrap items-center justify-center gap-3">
               {hasNextLevel ? (
-                <button onClick={(event) => handleContinueClick(event, () => startLevelById(nextLevelId), "[continue-clicked]")}
+                <button onClick={(event) => handleContinueClick(event, () => { console.debug("[continue-click]", nextLevelId, typeof window !== "undefined" ? window.location.hash : ""); startLevelById(nextLevelId); }, "[continue-clicked]")}
                   onKeyDown={handleCompleteActionKeyDown}
                   disabled={isLevelTransitioning || isCompleteScreenInputLocked()}
                   className="complete-primary-action rounded-full bg-emerald-200 px-8 py-3 font-black text-emerald-950 transition hover:scale-105 active:scale-95">
                   {isCompleteScreenInputLocked() ? "Get Ready..." : `Continue to ${nextLevelConfig?.name ?? "Next Level"}`}
                 </button>
               ) : (
-                <button onClick={(event) => handleContinueClick(event, startDemo, "[continue-clicked]")}
+                <button onClick={(event) => handleContinueClick(event, () => { console.debug("[continue-click]", "level-1", typeof window !== "undefined" ? window.location.hash : ""); startDemo(); }, "[continue-clicked]")}
                   onKeyDown={handleCompleteActionKeyDown}
                   disabled={isCompleteScreenInputLocked()}
                   className="complete-primary-action rounded-full bg-amber-200 px-8 py-3 font-black text-slate-950 transition hover:scale-105 active:scale-95">
@@ -3821,7 +3849,7 @@ export default function App() {
               <span>🐘 <span>{finalResults?.lives ?? 0}</span></span>
               <span>⏱ <span>{formatElapsed(finalResults?.elapsedMs ?? 0)}</span></span>
             </div>
-            <button onClick={(event) => handleContinueClick(event, startDemo, "[continue-clicked]")}
+            <button onClick={(event) => handleContinueClick(event, () => { console.debug("[continue-click]", "level-1", typeof window !== "undefined" ? window.location.hash : ""); startDemo(); }, "[continue-clicked]")}
               onKeyDown={handleCompleteActionKeyDown}
               disabled={isCompleteScreenInputLocked()}
               className="mt-8 rounded-full bg-white px-8 py-3 font-black text-slate-950 transition hover:scale-105 active:scale-95">
@@ -3844,7 +3872,7 @@ export default function App() {
                 className="jungle-focus-ring jungle-menu-button-primary text-base">
                 Resume
               </button>
-              <button type="button" onClick={() => { setSettingsContext("pause"); setSettingsOpen(true); }}
+              <button type="button" onClick={() => openSettings("pause")}
                 className="jungle-focus-ring jungle-menu-button-secondary text-sm">
                 Settings
               </button>
@@ -3862,7 +3890,7 @@ export default function App() {
       <SettingsPanel
         open={settingsOpen}
         context={settingsContext}
-        onClose={() => setSettingsOpen(false)}
+        onClose={closeSettingsPanel}
         audioState={audioState}
         onToggleAudio={toggleAudioState}
         graphicsQuality={graphicsQuality}
