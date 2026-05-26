@@ -54,9 +54,9 @@ Pink Elephant Jungle Dash is a beginner-friendly 3D browser game where you run a
 
 ### Latest self-test coverage update (2026-05-26)
 
-- Expanded `src/game/selfTests.js` level tests to verify every registered level passes schema validation.
-- Added explicit safety assertions for unknown level lookups (strict returns `null`, normal returns fallback `level-1`).
-- Added an intentionally invalid fake level assertion to confirm validation fails as expected.
+- Expanded `src/game/selfTests.js` level tests to verify the Level 1 → Level 2 → Level 3 chain ends at `null` exactly, with no required playable level after Level 3.
+- Added explicit level-loader assertions so `loadLevelConfigStrict('unknown-id')` returns `null` and `loadLevelConfig('unknown-id')` safely falls back to `level-1`.
+- Added deterministic chunk-schema checks so a clearly invalid chunk fails `validateChunkDefinition`, and all chunk type constants are present as non-empty strings.
 - Kept gameplay collision and progression assertions intact while retaining required build sections checks for all levels.
 
 
