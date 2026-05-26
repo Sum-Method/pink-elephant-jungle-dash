@@ -1,12 +1,44 @@
 # Pink Elephant Jungle Dash
 
 ## Play the game
-<img width="1774" height="887" alt="pe-jungledash" src="https://github.com/user-attachments/assets/55be6aa3-74ab-412a-be98-e74b854bae1b" />
 
 Live playable version: https://jedbcov-coder.github.io/pink-elephant-jungle-dash/
 
-Pink Elephant Jungle Dash is a beginner-friendly 3D browser game where you run as a pink elephant, collect fruit, dodge jungle hazards, and try to survive as long as possible.
+<img width="1774" height="887" alt="pe-jungledash" src="https://github.com/user-attachments/assets/55be6aa3-74ab-412a-be98-e74b854bae1b" />
 
+## About the game
+Pink Elephant Jungle Dash is a beginner-friendly 3D browser runner game where you guide a pink elephant through jungle paths, collect fruit, and avoid hazards.
+
+## Controls
+- **Move:** `A` / `D` or Left / Right arrow keys
+- **Jump:** `W`, Up arrow, or `Space`
+- **Slide:** `S` or Down arrow
+- **Pause:** `Esc` or `P`
+- **Touch devices:** Use the on-screen touch controls
+
+## Main features
+- 3 playable handcrafted levels with increasing challenge
+- Fruit collection, hazards, and level progression
+- Touch controls and keyboard controls
+- Installable PWA support for mobile-friendly play
+
+## Run locally
+1. Install **Node.js 18+** (recommended for this project).
+2. Open a terminal in this project folder.
+3. Install dependencies:
+   ```bash
+   npm install
+   ```
+4. Start the local dev server:
+   ```bash
+   npm run dev
+   ```
+5. Open the local URL shown in the terminal (usually `http://localhost:5173`).
+
+## Deployment note
+- The live game is deployed with **GitHub Pages** at the link above.
+- The current playable demo is **3 levels**.
+- Chunk architecture scaffolding exists for future expansion, but chunk-driven runtime gameplay is **not active yet**.
 
 ### Latest chunk README note (2026-05-26)
 
