@@ -340,6 +340,7 @@ export default function App() {
   const [currentLevelId, setCurrentLevelId] = useState("level-1");
   const [isLevelTransitioning, setIsLevelTransitioning] = useState(false);
   const [completeActionLocked, setCompleteActionLocked] = useState(false);
+  const [completeInputLocked, setCompleteInputLocked] = useState(false);
   const [immersiveReady, setImmersiveReady] = useState(false);
   const [viewportHeight, setViewportHeight] = useState(() => getVisualViewportHeight());
   const [isPortrait, setIsPortrait] = useState(() => getIsPortraitViewport());
@@ -401,6 +402,22 @@ export default function App() {
       nextLevelId,
     });
   }, [complete, gameOver, completeActionLocked, currentLevelId, nextLevelId]);
+  const completeButtonDisabled = isLevelTransitioning || completeInputLocked;
+
+  useEffect(() => {
+    if (!complete && !gameOver) {
+      setCompleteInputLocked(false);
+      return undefined;
+    }
+
+    setCompleteInputLocked(true);
+
+    const timer = window.setTimeout(() => {
+      setCompleteInputLocked(false);
+    }, COMPLETE_SCREEN_INPUT_LOCK_MS);
+
+    return () => window.clearTimeout(timer);
+  }, [complete, gameOver]);
 
   useEffect(() => {
     const didOpenComplete = !prevCompleteRef.current && complete;
@@ -422,11 +439,13 @@ export default function App() {
       isLevelTransitioning,
       completeScreenOpenedAt: completeScreenOpenedAtRef.current,
       completeScreenInputLocked: completeActionLocked,
+      completeScreenInputLocked: completeInputLocked,
     });
 
     prevCompleteRef.current = complete;
     if (complete) prevCompleteLevelIdRef.current = currentLevelId;
   }, [complete, currentLevelId, currentLevelConfig?.name, nextLevelId, nextLevelConfig?.name, hasNextLevel, showFinalReward, isLevelTransitioning, completeActionLocked]);
+  }, [complete, currentLevelId, currentLevelConfig?.name, nextLevelId, nextLevelConfig?.name, hasNextLevel, showFinalReward, isLevelTransitioning, completeInputLocked]);
 
   function resetCompleteScreenInputLock() {
     completeScreenOpenedAtRef.current = 0;
@@ -435,6 +454,7 @@ export default function App() {
   function handleCompleteActionKeyDown(event) {
     if (!["Enter", " ", "Spacebar"].includes(event.key)) return;
     if (!completeActionLocked) return;
+    if (!completeInputLocked) return;
     event.preventDefault();
     event.stopPropagation();
   }
@@ -462,6 +482,7 @@ export default function App() {
     event.stopPropagation();
 
     const blockedByInputLock = completeActionLocked;
+    const blockedByInputLock = completeInputLocked;
     const blockedByTransition = isLevelTransitioning;
     const { currentLevelId: contextCurrentLevelId = currentLevelId, nextLevelId: contextNextLevelId = null, actionLabel = "continue" } = context;
 
@@ -2573,6 +2594,7 @@ export default function App() {
         completeScreenOpenedAtRef.current = performance.now();
         console.debug("[complete-screen-opened] game-over overlay opened", { at: completeScreenOpenedAtRef.current });
         setCompleteActionLocked(true);
+        setCompleteInputLocked(true);
         setGameOver(true);
       }
     }
@@ -2608,6 +2630,7 @@ export default function App() {
       completeScreenOpenedAtRef.current = performance.now();
       console.debug("[complete-screen-opened] complete overlay opened", { at: completeScreenOpenedAtRef.current });
       setCompleteActionLocked(true);
+      setCompleteInputLocked(true);
       setComplete(true);
     }
 
@@ -3762,6 +3785,11 @@ export default function App() {
               disabled={completeActionButtonDisabled}
               className="mt-8 rounded-full bg-white px-8 py-3 font-black text-slate-950 transition hover:scale-105 active:scale-95">
               {completeActionLocked ? "Get Ready..." : "Try Again"}
+              className="mt-8 rounded-full bg-white px-8 py-3 font-black text-slate-950 transition hover:scale-105 active:scale-95">
+              {completeActionLocked ? "Get Ready..." : "Try Again"}
+              disabled={completeButtonDisabled}
+              className="mt-8 rounded-full bg-white px-8 py-3 font-black text-slate-950 transition hover:scale-105 active:scale-95">
+              {completeInputLocked ? "Get Ready..." : "Try Again"}
             </button>
           </div>
         </section>
