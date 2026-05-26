@@ -863,3 +863,9 @@ Notes:
 
 - Updated `src/App.jsx` continue action flow so Level Complete "Continue" defers `startLevelById(...)` by one animation frame.
 - This keeps the existing lock/UI behavior but avoids same-tick overlay transition races that could trigger fragile startup timing in minified builds.
+
+
+### Latest temporary source-map debugging update (2026-05-26)
+
+- Enabled production sourcemaps in `vite.config.js` with `build.sourcemap = true` to map minified GitHub Pages errors back to source files while investigating the Level 1 → Level 2 transition crash.
+- This is temporary and can be turned off after transition debugging is complete.

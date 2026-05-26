@@ -3785,6 +3785,8 @@ export default function App() {
               disabled={completeActionButtonDisabled}
               className="mt-8 rounded-full bg-white px-8 py-3 font-black text-slate-950 transition hover:scale-105 active:scale-95">
               {completeActionLocked ? "Get Ready..." : "Try Again"}
+              className="mt-8 rounded-full bg-white px-8 py-3 font-black text-slate-950 transition hover:scale-105 active:scale-95">
+              {completeActionLocked ? "Get Ready..." : "Try Again"}
               disabled={completeButtonDisabled}
               className="mt-8 rounded-full bg-white px-8 py-3 font-black text-slate-950 transition hover:scale-105 active:scale-95">
               {completeInputLocked ? "Get Ready..." : "Try Again"}
