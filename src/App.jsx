@@ -377,10 +377,6 @@ export default function App() {
     update();
     media?.addEventListener?.("change", update);
     return () => media?.removeEventListener?.("change", update);
-  const tryImmersiveMode = useCallback((fromUserGesture = false) => {
-    immersiveRequestedRef.current = true;
-    if (fromUserGesture) requestImmersiveMobileMode();
-    setImmersiveReady(true);
   }, []);
 
   const currentLevelConfig = getLevelConfig(currentLevelId);
@@ -2680,6 +2676,7 @@ export default function App() {
     }
 
     function keyDown(e) {
+      if (e.code === "F12") return;
       if (!isAllowedKey(e.code)) return;
       e.preventDefault();
       const wasPressed = Boolean(keyRef.current.__pressed[e.code]);
@@ -2704,6 +2701,7 @@ export default function App() {
     }
 
     function keyUp(e) {
+      if (e.code === "F12") return;
       if (!isAllowedKey(e.code)) return;
       e.preventDefault();
       setKeyState(keyRef.current, e.code, false);
