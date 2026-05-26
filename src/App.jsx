@@ -2676,6 +2676,7 @@ export default function App() {
     }
 
     function keyDown(e) {
+      if (e.code === "F12") return;
       if (!isAllowedKey(e.code)) return;
       e.preventDefault();
       const wasPressed = Boolean(keyRef.current.__pressed[e.code]);
@@ -2700,6 +2701,7 @@ export default function App() {
     }
 
     function keyUp(e) {
+      if (e.code === "F12") return;
       if (!isAllowedKey(e.code)) return;
       e.preventDefault();
       setKeyState(keyRef.current, e.code, false);
