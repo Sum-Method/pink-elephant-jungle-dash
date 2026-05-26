@@ -2580,9 +2580,14 @@ button:disabled {
 .complete-overlay {
   padding-top: calc(var(--hud-safe-top) + 0.5rem);
   padding-bottom: calc(var(--hud-safe-bottom) + 0.5rem);
+  z-index: 90;
+  pointer-events: auto;
 }
 .complete-card {
   width: min(96vw, 48rem);
+  position: relative;
+  z-index: 91;
+  pointer-events: auto;
 }
 .complete-title {
   font-size: clamp(1.6rem, 3.2vw, 2.4rem);
@@ -2595,6 +2600,10 @@ button:disabled {
 }
 .complete-primary-action {
   min-height: 2.75rem;
+  pointer-events: auto;
+}
+.complete-actions {
+  pointer-events: auto;
 }
 
 .layout-phone-landscape .complete-overlay {
