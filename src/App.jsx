@@ -1064,7 +1064,11 @@ export default function App() {
     canopyMesh.position.set(0, -10, jungle.position.z);
     scene.add(canopyMesh);
 
-    const { pathGroup } = createCourseGeometry({ scene, textures, courseVisualEndZ });
+    const { pathGroup, safeHalfWidth } = createCourseGeometry({
+      scene,
+      textures,
+      courseVisualEndZ,
+    });
 
     const colliders = [], pickups = [], crocs = [], particles = [], pops = [];
     const activeObstacles = [];
