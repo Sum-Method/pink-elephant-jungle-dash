@@ -370,19 +370,6 @@ export default function App() {
   const [graphicsQuality, setGraphicsQuality] = useState(() => loadSettings()?.display?.graphicsQuality ?? "balanced");
   const [saveSystemReady, setSaveSystemReady] = useState(false);
 
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    const media = window.matchMedia?.("(display-mode: standalone)");
-    const update = () => setIsStandaloneApp(Boolean(window.navigator.standalone) || Boolean(media?.matches));
-    update();
-    media?.addEventListener?.("change", update);
-    return () => media?.removeEventListener?.("change", update);
-  const tryImmersiveMode = useCallback((fromUserGesture = false) => {
-    immersiveRequestedRef.current = true;
-    if (fromUserGesture) requestImmersiveMobileMode();
-    setImmersiveReady(true);
-  }, []);
-
   const currentLevelConfig = getLevelConfig(currentLevelId);
   const nextLevelId = currentLevelConfig.nextLevel;
   const nextLevelConfig = nextLevelId ? getLevelConfigStrict(nextLevelId) : null;
