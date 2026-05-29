@@ -9,6 +9,7 @@ export function tickPlayerTimers(body, dt) {
   body.slideTimer = Math.max(0, body.slideTimer - dt);
   body.jumpBufferTimer = Math.max(0, body.jumpBufferTimer - dt);
   body.spinTimer = Math.max(0, body.spinTimer - dt);
+  body.autoChargeTimer = Math.max(0, body.autoChargeTimer - dt);
   body.multiplierTimer = Math.max(0, body.multiplierTimer - dt);
   if (body.multiplierTimer <= 0 && body.multiplier > 1) {
     body.multiplier = 1;
@@ -21,7 +22,8 @@ export function tickPlayerTimers(body, dt) {
 
 export function getPlayerInputIntent(body, keys, playing) {
   const wantsReverse = playing && keys.ArrowDown && body.grounded;
-  const wantsForward = playing && keys.ArrowUp && !wantsReverse;
+  const hasStartAssist = body.autoChargeTimer > 0;
+  const wantsForward = playing && (keys.ArrowUp || hasStartAssist) && !wantsReverse;
   return { wantsReverse, wantsForward };
 }
 

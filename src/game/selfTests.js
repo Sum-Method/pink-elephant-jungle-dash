@@ -483,6 +483,10 @@ export function runSelfTests() {
     comboBody.coyoteTimer <= 0.000001 && comboBody.multiplier === 1 && comboBody.multiplierCombo === 0,
   );
 
+  const startAssistTimerBody = createPlayerBody({ autoChargeTimer: 0.05 });
+  tickPlayerTimers(startAssistTimerBody, 0.1);
+  assert("movement helper expires startup charge assist", startAssistTimerBody.autoChargeTimer === 0);
+
   const bufferedAirBody = createPlayerBody({ grounded: false, yVelocity: -2, jumpBufferTimer: 0.05 });
   const bufferedAir = updatePlayerAir(bufferedAirBody, CONFIG.playerSize / 2 + 0.01, 0.1);
   assert(
@@ -521,6 +525,15 @@ export function runSelfTests() {
   assert(
     "player helper accelerates reverse from rest",
     reverseIntent.wantsReverse && reverseBody.speed < 0 && reverseBody.speed >= -MOVEMENT.reverseMaxSpeed,
+  );
+
+  const startAssistBody = createPlayerBody({ autoChargeTimer: MOVEMENT.startAssistDuration });
+  const startAssistKeys = createKeys();
+  const startAssistIntent = getPlayerInputIntent(startAssistBody, startAssistKeys, true);
+  updatePlayerSpeed(startAssistBody, 0.5, true, startAssistIntent);
+  assert(
+    "startup charge assist moves the player without held input",
+    startAssistIntent.wantsForward && startAssistBody.speed > 0,
   );
 
   const fastReverseBody = createPlayerBody({ speed: 8 });

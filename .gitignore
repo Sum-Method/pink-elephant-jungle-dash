@@ -1,1 +1,19 @@
 node_modules
+
+# Local environment files. Keep .env.example committed as the safe template.
+.env
+.env.*
+!.env.example
+*.local
+
+# Local logs, test output, and operating-system files.
+*.log
+vite-dev*.log
+coverage/
+playwright-report/
+test-results/
+.DS_Store
+Thumbs.db
+
+# Local editor folders that are not part of this repo.
+.idea/

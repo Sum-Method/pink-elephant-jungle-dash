@@ -119,6 +119,12 @@ function getVisualViewportHeight() {
   if (typeof window === "undefined") return null;
   return window.visualViewport?.height ?? window.innerHeight ?? null;
 }
+
+function getVisualViewportWidth() {
+  if (typeof window === "undefined") return null;
+  return window.visualViewport?.width ?? window.innerWidth ?? null;
+}
+
 function getIsPortraitViewport() {
   if (typeof window === "undefined") return false;
   const orientationType = window.screen?.orientation?.type;
@@ -347,6 +353,7 @@ export default function App() {
   const [isLevelTransitioning, setIsLevelTransitioning] = useState(false);
   const [completeInputLocked, setCompleteInputLocked] = useState(false);
   const [immersiveReady, setImmersiveReady] = useState(false);
+  const [viewportWidth, setViewportWidth] = useState(() => getVisualViewportWidth());
   const [viewportHeight, setViewportHeight] = useState(() => getVisualViewportHeight());
   const [isPortrait, setIsPortrait] = useState(() => getIsPortraitViewport());
   const [showRotateOverlay, setShowRotateOverlay] = useState(false);
@@ -750,11 +757,14 @@ export default function App() {
       }, 120);
     };
 
-    const updateViewportHeight = () => setViewportHeight(getVisualViewportHeight());
+    const updateViewportSize = () => {
+      setViewportWidth(getVisualViewportWidth());
+      setViewportHeight(getVisualViewportHeight());
+    };
 
     const handleVisibilityChange = () => {
       if (document.visibilityState === "visible") refreshImmersiveMode();
-      updateViewportHeight();
+      updateViewportSize();
     };
 
     const viewport = window.visualViewport;
@@ -762,17 +772,17 @@ export default function App() {
     window.addEventListener("focus", refreshImmersiveMode);
     window.addEventListener("pageshow", refreshImmersiveMode);
     window.addEventListener("orientationchange", refreshImmersiveMode);
-    window.addEventListener("resize", updateViewportHeight);
+    window.addEventListener("resize", updateViewportSize);
     document.addEventListener("visibilitychange", handleVisibilityChange);
-    viewport?.addEventListener?.("resize", updateViewportHeight);
+    viewport?.addEventListener?.("resize", updateViewportSize);
 
     return () => {
       window.removeEventListener("focus", refreshImmersiveMode);
       window.removeEventListener("pageshow", refreshImmersiveMode);
       window.removeEventListener("orientationchange", refreshImmersiveMode);
-      window.removeEventListener("resize", updateViewportHeight);
+      window.removeEventListener("resize", updateViewportSize);
       document.removeEventListener("visibilitychange", handleVisibilityChange);
-      viewport?.removeEventListener?.("resize", updateViewportHeight);
+      viewport?.removeEventListener?.("resize", updateViewportSize);
     };
   }, [tryImmersiveMode]);
 
@@ -792,6 +802,7 @@ export default function App() {
   }, [complete, gameOver, paused, started]);
 
   useEffect(() => {
+    setViewportWidth(getVisualViewportWidth());
     setViewportHeight(getVisualViewportHeight());
   }, []);
 
@@ -1779,6 +1790,7 @@ export default function App() {
     const branchLeafMat = makeMaterial("#1d7a42", { map: textures.leafVeins, roughness: 0.86, emissive: "#0b351b", emissiveIntensity: 0.12 });
     const branchVineMat = makeMaterial("#2f5f2d", { roughness: 0.9 });
     const snakeBodyMat = makeMaterial("#708625", { roughness: 0.62, emissive: "#2f3f16", emissiveIntensity: 0.2 });
+    const snakeCopperMat = makeMaterial("#9b4f24", { roughness: 0.68, emissive: "#3f1a0e", emissiveIntensity: 0.18 });
     const branchWarningStripeMat = makeMaterial("#f2cf4f", { roughness: 0.66, emissive: "#8a5d00", emissiveIntensity: 0.38 });
     const snakeBellyMat = makeMaterial("#c9ab63", { roughness: 0.68, emissive: "#4b3f1f", emissiveIntensity: 0.12 });
     const snakeTongueMat = new THREE.MeshStandardMaterial({ color: "#ff4b7a", emissive: "#cc2d56", emissiveIntensity: 0.5 });
@@ -2040,6 +2052,50 @@ export default function App() {
         angledLimb.castShadow = true;
         angledLimb.receiveShadow = true;
         group.add(angledLimb);
+
+        [
+          { y: branchBottomY + 2.35, z: -1.35, length: 3.4, rotZ: -0.28 },
+          { y: branchBottomY + 5.5, z: 1.25, length: 4.2, rotZ: 0.22 },
+          { y: branchTopY - 1.2, z: -0.55, length: 3.8, rotZ: -0.16 },
+        ].forEach((wrap, wrapIndex) => {
+          const trunkVine = new THREE.Mesh(sharedGeometries.hangingVine, branchVineMat);
+          trunkVine.position.set(side * (supportOffset - 0.18 + wrapIndex * 0.08), wrap.y, wrap.z);
+          trunkVine.scale.set(2.0, wrap.length, 2.0);
+          trunkVine.rotation.set(side * 0.34, side * (0.42 + wrapIndex * 0.22), side * wrap.rotZ);
+          trunkVine.castShadow = true;
+          trunkVine.receiveShadow = true;
+          group.add(trunkVine);
+        });
+
+        [
+          { x: -0.95, y: 2.35, z: -0.85, sx: 2.55, sy: 1.18, sz: 1.95 },
+          { x: 0.35, y: 2.85, z: 0.65, sx: 2.2, sy: 1.02, sz: 1.65 },
+          { x: 1.25, y: 2.15, z: -0.05, sx: 1.9, sy: 0.9, sz: 1.5 },
+        ].forEach((crown, crownIndex) => {
+          const canopy = new THREE.Mesh(sharedGeometries.canopy, leafMats[(crownIndex + (side > 0 ? 1 : 0)) % leafMats.length]);
+          canopy.position.set(side * (supportOffset + crown.x), branchTopY + crown.y, crown.z);
+          canopy.scale.set(crown.sx, crown.sy, crown.sz);
+          canopy.rotation.set(0.12 * crownIndex, crownIndex * 0.72, side * 0.12);
+          canopy.castShadow = true;
+          canopy.receiveShadow = true;
+          group.add(canopy);
+
+          if (crownIndex !== 2) {
+            const hangingFruit = new THREE.Mesh(sharedGeometries.fruit, fruitMat);
+            hangingFruit.position.set(side * (supportOffset + crown.x * 0.92), branchTopY + crown.y - 0.9, crown.z + 0.38);
+            hangingFruit.scale.set(0.38, 0.48, 0.38);
+            hangingFruit.castShadow = true;
+            group.add(hangingFruit);
+          }
+        });
+
+        const baseRock = new THREE.Mesh(sharedGeometries.foregroundRock, stoneBlockMat);
+        baseRock.position.set(side * (supportOffset - 0.28), branchBottomY + 0.06, 1.45);
+        baseRock.scale.set(1.2, 0.68, 0.92);
+        baseRock.rotation.y = side * 0.42;
+        baseRock.castShadow = true;
+        baseRock.receiveShadow = true;
+        group.add(baseRock);
       });
 
       // Overhead mass: dense stacked branches + leafy fill.
@@ -2062,6 +2118,16 @@ export default function App() {
       tangledMass.castShadow = true;
       tangledMass.receiveShadow = true;
       group.add(tangledMass);
+
+      [-0.42, -0.2, 0, 0.2, 0.42].forEach((offset, index) => {
+        const leafClump = new THREE.Mesh(sharedGeometries.canopy, leafMats[(index + 2) % leafMats.length]);
+        leafClump.position.set(offset * branch.width, branchTopY + 1.55 + (index % 2) * 0.34, (index % 2 === 0 ? -1.55 : 1.35));
+        leafClump.scale.set(2.3 - Math.abs(offset) * 1.5, 0.92, 1.55);
+        leafClump.rotation.set(index * 0.08, index * 0.58, offset * 0.35);
+        leafClump.castShadow = true;
+        leafClump.receiveShadow = true;
+        group.add(leafClump);
+      });
 
       // Snake silhouettes across the top to match the "Snake Gate" concept.
       [
@@ -2119,8 +2185,26 @@ export default function App() {
         });
       });
 
+      // A drooping snake on the curtain makes the belly-slide read closer to the reference art.
+      const hangingSnakeX = -branch.width * 0.34;
+      const hangingSnakeZ = 1.42;
+      for (let i = 0; i < 7; i += 1) {
+        const segment = new THREE.Mesh(sharedGeometries.unitBox, i % 2 === 0 ? snakeBodyMat : snakeCopperMat);
+        segment.position.set(hangingSnakeX + Math.sin(i * 0.9) * 0.28, branchTopY + 0.52 - i * 0.56, hangingSnakeZ + Math.cos(i * 0.85) * 0.16);
+        segment.scale.set(0.62, 0.74, 0.58);
+        segment.rotation.set(0.12, i * 0.42, Math.sin(i) * 0.2);
+        segment.castShadow = true;
+        segment.receiveShadow = true;
+
+        const belly = new THREE.Mesh(sharedGeometries.unitBox, snakeBellyMat);
+        belly.position.set(0, -0.16, 0.18);
+        belly.scale.set(0.34, 0.14, 0.28);
+        segment.add(belly);
+        group.add(segment);
+      }
+
       // Hanging vines: visual slide zone. Bottom aligns with collider bottom edge.
-      const hangCount = 21;
+      const hangCount = 27;
       const hangingTopY = branchTopY - 0.25 - visualHazardDrop;
       for (let i = 0; i < hangCount; i += 1) {
         const t = i / (hangCount - 1);
@@ -2531,7 +2615,9 @@ export default function App() {
     }
 
     function resetGame({ start = false } = {}) {
-      Object.assign(body, createPlayerBody());
+      Object.assign(body, createPlayerBody({
+        autoChargeTimer: start ? (levelSpeed.startAssistDuration ?? MOVEMENT.startAssistDuration) : 0,
+      }));
       keyRef.current = createKeys();
       resetTransientEffects();
       resetSceneEntities();
@@ -3806,7 +3892,7 @@ export default function App() {
       {import.meta.env.DEV && isGameplayActive && layoutMode === "phone-landscape" && (
         <div className="hud-debug-mini" aria-hidden="true">
           <div>layout: {layoutMode}</div>
-          <div>viewport: {Math.round(viewportWidth)}x{Math.round(viewportHeight)}</div>
+          <div>viewport: {Math.round(viewportWidth ?? 0)}x{Math.round(viewportHeight ?? 0)}</div>
           <div>touch visible: {String(touchControlsVisible)}</div>
           <div>touch mode: {touchControlsMode}</div>
           <div>fullscreen: {String(Boolean(document.fullscreenElement))}</div>

@@ -1,6 +1,7 @@
 export const MOVEMENT = {
   acceleration: 4.3,
   maxSpeed: 40,
+  startAssistDuration: 1.6,
   reverseAcceleration: 5.2,
   reverseMaxSpeed: 7.5,
   friction: 2.5,

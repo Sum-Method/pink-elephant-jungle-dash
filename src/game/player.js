@@ -8,6 +8,7 @@ export function createPlayerBody(overrides = {}) {
     y: CONFIG.playerSize / 2,
     z: CONFIG.startZ,
     speed: 0,
+    autoChargeTimer: 0,
     yVelocity: 0,
     coyoteTimer: MOVEMENT.coyoteTime,
     jumpBufferTimer: 0,

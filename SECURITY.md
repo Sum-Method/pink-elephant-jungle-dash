@@ -1,17 +1,43 @@
-# Security Policy
+# Security
 
-## Supported Versions
+The most important rule: do not commit real secrets.
 
-Use this section to tell people about which versions of your project are
-currently being supported with security updates.
+Anything in this browser game can become visible to players, including:
 
-| Version | Supported          |
-| ------- | ------------------ |
-| 5.1.x   | :white_check_mark: |
-| 5.0.x   | :x:                |
-| 4.0.x   | :white_check_mark: |
-| < 4.0   | :x:                |
+- `src/`
+- `public/`
+- built JavaScript files
+- GitHub Pages output in `docs/`
+- `VITE_*` environment variables
 
-## Reporting a Vulnerability
+## What Counts As A Secret
 
-jedbcov@gmail.com
+- private API keys
+- database passwords
+- service-account JSON
+- payment secrets
+- GitHub tokens
+- private keys
+- production credentials
+
+## What Is Safe To Commit
+
+- fake example values in `.env.example`
+- public config such as a game title
+- public asset paths
+- docs and setup instructions
+
+## Secret Leak Response
+
+If a secret is accidentally committed:
+
+1. Assume the secret is compromised.
+2. Revoke or rotate it immediately.
+3. Remove it from the code.
+4. Check GitHub secret scanning alerts.
+5. Review workflow logs.
+6. Do not assume deleting the file makes the old secret safe.
+
+## Frontend And Backend Boundary
+
+A frontend-only GitHub Pages game cannot hide private credentials. If the game needs private API calls, accounts, payments, database writes, or protected admin actions, use a trusted backend, serverless function, or edge function.

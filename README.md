@@ -36,6 +36,25 @@ Pink Elephant Jungle Dash is a beginner-friendly 3D browser runner game where yo
 5. Open the local URL shown in the terminal (usually `http://localhost:5173`).
 
 
+### Latest startup viewport fix (2026-05-30)
+
+- Fixed the startup crash that showed `viewportWidth is not defined` after pressing **Begin the Trail** in local development.
+- Added safe viewport width tracking for the phone-landscape debug panel instead of removing the panel.
+- Updated the release marker to `1.0.9` and bumped the service worker cache to `v9` for the next GitHub Pages build.
+
+### Latest repo defaults alignment (2026-05-30)
+
+- Added a post-build marker helper so `npm run build:pages` keeps `docs/.nojekyll` present for GitHub Pages.
+- Added `.env.example` and refreshed `SECURITY.md` with browser-game secret safety guidance.
+- Expanded `.gitignore` for local env files, logs, test output, and OS clutter while keeping deploy output rules unchanged.
+
+### Latest startup movement assist update (2026-05-29)
+
+- Added a brief automatic charge assist after pressing **Begin the Trail** so the game visibly starts instead of looking frozen at zero speed.
+- The normal controls are unchanged: hold **Up/W** or the on-screen **Charge** control to keep moving, and use reverse to slow/back up.
+- Updated the release marker to `1.0.8` and bumped the service worker cache to `v8` so GitHub Pages users receive the new startup behavior.
+
+
 ### Latest Level 1 to Level 2 reset order fix (2026-05-29)
 
 - Moved the pending Level 2 start reset later in `src/App.jsx` so the HUD, camera shake, DOM update, and animation helpers are ready before `resetGame()` runs.
