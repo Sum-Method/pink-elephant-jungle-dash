@@ -2558,27 +2558,6 @@ export default function App() {
       setPaused(false);
     }
 
-    logScenePhase("reset-function-ready");
-    resetGameRef.current = resetGame;
-    if (pendingLevelStartRef.current && pendingLevelStartRef.current.levelId === currentLevelId) {
-      const pendingStart = pendingLevelStartRef.current;
-      const { start } = pendingStart;
-      pendingLevelStartRef.current = null;
-      resetGame({ start });
-      setIsLevelTransitioning(false);
-      isLevelTransitioningRef.current = false;
-      if (levelTransitionWatchRef.current?.transitionId === pendingStart.transitionId) {
-        levelTransitionWatchRef.current.completed = true;
-      }
-      logLevelTransition("[level-transition-pending-start-consumed]", "reset-function-ready", {
-        transitionId: pendingStart.transitionId,
-        fromLevelId: pendingStart.fromLevelId,
-        toLevelId: pendingStart.levelId,
-        "pendingLevelStartRef.current": null,
-        isLevelTransitioning: false,
-      });
-    }
-
     function activateParticle(x, y, z, colour, scale = 0.28, life = 1, velocity = {}) {
       let particle = particlePool.find((entry) => !entry.active);
       if (!particle) particle = particles.shift();
@@ -3509,6 +3488,27 @@ export default function App() {
       updateDom(now);
       renderFrame();
       frame = requestAnimationFrame(animate);
+    }
+
+    logScenePhase("reset-function-ready");
+    resetGameRef.current = resetGame;
+    if (pendingLevelStartRef.current && pendingLevelStartRef.current.levelId === currentLevelId) {
+      const pendingStart = pendingLevelStartRef.current;
+      const { start } = pendingStart;
+      pendingLevelStartRef.current = null;
+      resetGame({ start });
+      setIsLevelTransitioning(false);
+      isLevelTransitioningRef.current = false;
+      if (levelTransitionWatchRef.current?.transitionId === pendingStart.transitionId) {
+        levelTransitionWatchRef.current.completed = true;
+      }
+      logLevelTransition("[level-transition-pending-start-consumed]", "reset-function-ready", {
+        transitionId: pendingStart.transitionId,
+        fromLevelId: pendingStart.fromLevelId,
+        toLevelId: pendingStart.levelId,
+        "pendingLevelStartRef.current": null,
+        isLevelTransitioning: false,
+      });
     }
 
     logLevelTransition("[level-transition-scene-ready]", "reset-function-ready", {

@@ -36,6 +36,12 @@ Pink Elephant Jungle Dash is a beginner-friendly 3D browser runner game where yo
 5. Open the local URL shown in the terminal (usually `http://localhost:5173`).
 
 
+### Latest Level 1 to Level 2 reset order fix (2026-05-29)
+
+- Moved the pending Level 2 start reset later in `src/App.jsx` so the HUD, camera shake, DOM update, and animation helpers are ready before `resetGame()` runs.
+- This fixes the local `Cannot access 'hudRefresh' before initialization` crash during the Level 1 to Level 2 transition without changing level data, caching, or chunk mode.
+
+
 ### Latest Level 1 → Level 2 PWA cache refresh (2026-05-29)
 
 - Updated the service worker cache from `v5` to `v6` so installed PWA users get a clean cache refresh instead of older cached game files.
