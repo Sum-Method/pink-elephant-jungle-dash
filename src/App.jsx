@@ -1,5 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import * as THREE from "three";
+import { SpeedInsights } from "@vercel/speed-insights/react";
+import { Analytics } from "@vercel/analytics/react";
 
 import { Icon } from "./components/Icon.jsx";
 import { CreditsOverlay } from "./components/game-ui/CreditsOverlay.jsx";
@@ -4405,6 +4407,8 @@ export default function App() {
           style={{ background: "rgba(0,0,0,0.75)", border: "1px solid rgba(100,220,80,0.18)" }} />
       )}
       </div>
+      <SpeedInsights />
+      <Analytics />
     </main>
   );
 }
