@@ -134,7 +134,7 @@ function runTransaction(storeName, mode, operation) {
 
       transaction.onerror = () => reject(transaction.error || new Error('IndexedDB transaction failed.'));
 
-      if (operationResult && typeof operationResult.onsuccess === 'function') {
+      if (operationResult && 'onsuccess' in operationResult && 'onerror' in operationResult) {
         operationResult.onsuccess = () => resolve(operationResult.result);
         operationResult.onerror = () => reject(operationResult.error || new Error('IndexedDB request failed.'));
       }

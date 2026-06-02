@@ -41,6 +41,12 @@ Pink Elephant Jungle Dash is a beginner-friendly 3D browser runner game where yo
 5. Open the local URL shown in the terminal (usually `http://localhost:5173`).
 
 
+### Latest start-button load fix (2026-06-02)
+
+- Fixed the issue where **Begin the Trail** could appear to do nothing because the save system got stuck while loading achievements.
+- The game now reaches the title screen properly, creates the 3D canvas, and starts gameplay after pressing **Begin the Trail**.
+- Updated the release marker to `1.0.15` and bumped the service worker cache to `v15` for the next GitHub Pages publish.
+
 ### Latest template architecture defaults pass (2026-05-30)
 
 - Added a formal game-state machine and template config file for future PWA game projects.
