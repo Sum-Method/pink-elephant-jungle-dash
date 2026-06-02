@@ -98,6 +98,12 @@ const DEFAULT_ACCESSIBILITY_SETTINGS = {
 const HAPTICS_DEFAULT_ENABLED = true;
 // Before adding Level 2, ensure Level 1 is loaded from level config (this is that checkpoint).
 
+function isVercelHost() {
+  if (typeof window === "undefined") return false;
+  const hostname = window.location.hostname;
+  return hostname.endsWith(".vercel.app") || hostname.endsWith(".vercel.dev");
+}
+
 function normalizeTouchControlsMode(mode) {
   if (mode === "on") return "always";
   return TOUCH_CONTROLS_MODES.includes(mode) ? mode : "always";
@@ -418,6 +424,7 @@ export default function App() {
   const prevCompleteRef = useRef(false);
   const prevCompleteLevelIdRef = useRef("level-1");
   const achievementToastTimerRef = useRef(null);
+  const enableVercelObservability = isVercelHost();
 
   if (!inputManagerRef.current) {
     inputManagerRef.current = createInputManager({ onStatusChange: setGamepadStatus });
@@ -4407,8 +4414,12 @@ export default function App() {
           style={{ background: "rgba(0,0,0,0.75)", border: "1px solid rgba(100,220,80,0.18)" }} />
       )}
       </div>
-      <SpeedInsights />
-      <Analytics />
+      {enableVercelObservability && (
+        <>
+          <SpeedInsights />
+          <Analytics />
+        </>
+      )}
     </main>
   );
 }

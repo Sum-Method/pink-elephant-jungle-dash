@@ -127,7 +127,7 @@ export function runSelfTests() {
   assert("intentionally invalid fake level fails validation", !validateLevelConfig({ id: "broken-level", loops: "not-an-array" }));
   assert("no required playable level exists after level-3", getLevelConfigStrict("level-3")?.nextLevel === null);
   assert("loadLevelConfigStrict('unknown-id') returns null", loadLevelConfigStrict("unknown-id") === null);
-  assert("loadLevelConfig('unknown-id') falls back to level-1", loadLevelConfig("unknown-id")?.id === "level-1");
+  assert("loadLevelConfig('unknown-id') falls back to level-1", loadLevelConfig("unknown-id", { warnOnFallback: false })?.id === "level-1");
   assert("strict unknown level lookup returns null", getLevelConfigStrict("unknown-level-id") === null);
   assert("normal unknown level lookup falls back to level-1", getLevelConfig("unknown-level-id")?.id === "level-1");
   assert("validateChunkDefinition rejects clearly invalid chunk object", !validateChunkDefinition({ id: "", type: "", length: -1, difficulty: "hard", hazards: {} }));

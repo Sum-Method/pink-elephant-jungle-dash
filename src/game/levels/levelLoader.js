@@ -36,14 +36,14 @@ export function loadLevelConfigStrict(levelId) {
   return validateAndNormaliseLevel(rawConfig, levelId);
 }
 
-export function loadLevelConfig(levelId) {
+export function loadLevelConfig(levelId, { warnOnFallback = true } = {}) {
   const strictConfig = loadLevelConfigStrict(levelId);
 
   if (strictConfig) {
     return strictConfig;
   }
 
-  if (levelId !== FALLBACK_LEVEL_ID) {
+  if (warnOnFallback && levelId !== FALLBACK_LEVEL_ID) {
     console.warn(
       `[levels] Falling back to "${FALLBACK_LEVEL_ID}" for level id "${String(levelId)}".`,
     );
