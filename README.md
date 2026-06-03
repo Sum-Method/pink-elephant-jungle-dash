@@ -46,6 +46,12 @@ Pink Elephant Jungle Dash is a beginner-friendly 3D browser runner game where yo
 5. Open the local URL shown in the terminal (usually `http://localhost:5173`).
 
 
+### Latest UI scaling and composition pass (2026-06-03)
+
+- Kept the same jungle-glass look, colors, mascot badge, and fonts while improving title-card scale and spacing.
+- Restored normal desktop/laptop title proportions so the start screen no longer looks squeezed into a cramped box.
+- Lightly harmonized menu card padding, button size, and border radius across Settings, Level Select, Credits, Complete, and Game Over.
+
 ### Latest UI scroll-rule pass (2026-06-03)
 
 - Locked the app shell, game frame, and gameplay area to the viewport so page-level scrolling stays off.

@@ -15,7 +15,7 @@
     "name": "three"
   },
   "index.html": {
-    "file": "assets/index-TXSErr5k.js",
+    "file": "assets/index-D9qfsGuJ.js",
     "name": "index",
     "src": "index.html",
     "isEntry": true,
@@ -27,11 +27,11 @@
       "src/App.jsx"
     ],
     "css": [
-      "assets/index-DKZMcDG3.css"
+      "assets/index-vCLGxqBj.css"
     ]
   },
   "src/App.jsx": {
-    "file": "assets/App-BG_iJoms.js",
+    "file": "assets/App-CuS_J1cu.js",
     "name": "App",
     "src": "src/App.jsx",
     "isDynamicEntry": true,
