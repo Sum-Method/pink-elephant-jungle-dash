@@ -3900,8 +3900,11 @@ export default function App() {
     startAudio();
     pendingLevelStartRef.current = { levelId: "level-1", start: true };
     if (currentLevelId === "level-1") {
-      resetGameRef.current?.({ start: true });
-      pendingLevelStartRef.current = null;
+      const resetGame = resetGameRef.current;
+      if (resetGame) {
+        resetGame({ start: true });
+        pendingLevelStartRef.current = null;
+      }
       return;
     }
     setCurrentLevelId("level-1");

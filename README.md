@@ -45,9 +45,10 @@ Pink Elephant Jungle Dash is a beginner-friendly 3D browser runner game where yo
 
 - Fixed the issue where **Begin the Trail** could appear to do nothing because the save system got stuck while loading achievements.
 - The game now reaches the title screen properly, creates the 3D canvas, and starts gameplay after pressing **Begin the Trail**.
+- **Begin the Trail** now queues the start safely if the browser is still finishing the first 3D scene setup.
 - Stopped the intentional unknown-level self-test from printing fallback warnings during normal startup.
 - Stopped Vercel-only analytics scripts from loading on GitHub Pages, which prevents the production `Unexpected token '<'` script error.
-- Updated the release marker to `1.0.15` and bumped the service worker cache to `v15` for the next GitHub Pages publish.
+- Updated the release marker to `1.0.18` and bumped the service worker cache to `v18` so old cached pages refresh into the fixed build without freezing the browser.
 
 ### Latest template architecture defaults pass (2026-05-30)
 

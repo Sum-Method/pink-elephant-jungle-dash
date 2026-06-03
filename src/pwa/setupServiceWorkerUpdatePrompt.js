@@ -1,9 +1,42 @@
 export function setupServiceWorkerUpdatePrompt({ appVersion, baseUrl }) {
   if (typeof window === "undefined" || !("serviceWorker" in navigator)) return;
 
+  const refreshParam = "pejd-sw-refresh";
+  const refreshStorageKey = `pejd-sw-refreshed-${appVersion}`;
   let updateBannerElement = null;
   let hasDismissedForSession = false;
   let hasTriggeredRefresh = false;
+  let hasReloaded = false;
+
+  const clearRefreshMarker = () => {
+    const url = new URL(window.location.href);
+    if (!url.searchParams.has(refreshParam)) return;
+
+    url.searchParams.delete(refreshParam);
+    window.history.replaceState(null, "", `${url.pathname}${url.search}${url.hash}`);
+  };
+
+  const hasAutoRefreshedForVersion = () => {
+    try {
+      return window.sessionStorage.getItem(refreshStorageKey) === "1";
+    } catch {
+      return false;
+    }
+  };
+
+  const markAutoRefreshedForVersion = () => {
+    try {
+      window.sessionStorage.setItem(refreshStorageKey, "1");
+    } catch {
+      // Storage can be unavailable in restricted browser modes.
+    }
+  };
+
+  const reloadPage = () => {
+    if (hasReloaded) return;
+    hasReloaded = true;
+    window.location.reload();
+  };
 
   const removeUpdateBanner = () => {
     if (updateBannerElement) {
@@ -70,16 +103,31 @@ export function setupServiceWorkerUpdatePrompt({ appVersion, baseUrl }) {
 
   window.addEventListener("load", async () => {
     try {
+      clearRefreshMarker();
+
       const swUrl = `${baseUrl}service-worker.js?build=${appVersion}`;
       const registration = await navigator.serviceWorker.register(swUrl, { updateViaCache: "none" });
 
-      const promptForUpdate = () => {
-        showUpdateBanner(() => {
-          const waitingWorker = registration.waiting;
-          if (!waitingWorker || hasTriggeredRefresh) return;
+      const refreshWithWaitingWorker = ({ automatic = false } = {}) => {
+        const waitingWorker = registration.waiting;
+        if (!waitingWorker || hasTriggeredRefresh) return false;
 
-          hasTriggeredRefresh = true;
-          waitingWorker.postMessage({ type: "SKIP_WAITING" });
+        if (automatic) {
+          if (hasAutoRefreshedForVersion()) return false;
+          markAutoRefreshedForVersion();
+        }
+
+        hasTriggeredRefresh = true;
+        waitingWorker.postMessage({ type: "SKIP_WAITING" });
+        window.setTimeout(reloadPage, 2000);
+        return true;
+      };
+
+      const promptForUpdate = () => {
+        if (refreshWithWaitingWorker({ automatic: true })) return;
+
+        showUpdateBanner(() => {
+          refreshWithWaitingWorker();
         });
       };
 
@@ -104,7 +152,7 @@ export function setupServiceWorkerUpdatePrompt({ appVersion, baseUrl }) {
 
       navigator.serviceWorker.addEventListener("controllerchange", () => {
         if (!hasTriggeredRefresh) return;
-        window.location.reload();
+        reloadPage();
       });
     } catch (error) {
       console.warn("Service worker registration failed", error);
