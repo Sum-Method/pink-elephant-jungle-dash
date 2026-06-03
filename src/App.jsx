@@ -3320,7 +3320,10 @@ export default function App() {
           } else {
             body.health = Math.min(100, body.health + PICKUPS.healthRestore);
             burst(item.x, item.y, item.z, "#4ade80", PARTICLES.healBurstCount, 0.22);
-            popText("SUGAR CANE!", item.x, item.y + 1.4, item.z, "#a7ffbf");
+            const canePop = { x: item.x, y: item.y + 1.4, z: item.z };
+            window.requestAnimationFrame(() => {
+              if (!disposed) popText("SUGAR CANE!", canePop.x, canePop.y, canePop.z, "#a7ffbf");
+            });
             playTone("heal");
             pulseHaptic("pickup");
           }

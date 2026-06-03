@@ -45,8 +45,9 @@ Pink Elephant Jungle Dash is a beginner-friendly 3D browser runner game where yo
 
 - Replaced sugar cane and pineapple pickup point lights with lightweight glow sprites to reduce collection stutter on GitHub Pages.
 - Reduced sugar cane pickup particles from 10 to 4 so the heal pickup behaves closer to a normal fruit pickup.
+- Delayed the **SUGAR CANE!** text by one frame so it does not run in the exact same frame as the heal burst, heal sound, and pickup hide.
 - Guarded the early-start transition watcher so very fast **Begin the Trail** clicks do not trigger a startup error.
-- Updated the release marker to `1.0.20` and bumped the service worker cache to `v20` for the next GitHub Pages publish.
+- Updated the release marker to `1.0.21` and bumped the service worker cache to `v21` for the next GitHub Pages publish.
 
 ### Latest start-button load fix (2026-06-02)
 
