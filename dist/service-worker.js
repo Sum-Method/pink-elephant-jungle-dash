@@ -1,5 +1,5 @@
 const CACHE_PREFIX = "jungle-dash-offline";
-const CACHE_VERSION = "v14";
+const CACHE_VERSION = "v21";
 const CACHE_NAME = `${CACHE_PREFIX}-${CACHE_VERSION}`;
 
 const STATIC_FILES = [

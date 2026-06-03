@@ -17,6 +17,11 @@ Pink Elephant Jungle Dash is a beginner-friendly 3D browser runner game where yo
 - **Touch devices:** Use the on-screen touch controls
 - **Gamepad:** Left stick or D-pad to move, A to jump, B/X/L/R to smash or spin, Start/Menu to pause
 
+## Screen and menus
+- The game page itself stays locked to the browser viewport, so gameplay inputs should not scroll the page.
+- The start screen is designed to fit without scrolling on normal desktop, tablet landscape, and phone landscape screens.
+- Longer menus, such as Settings, Level Select, Credits, Complete, and Game Over, may scroll inside their own card if their content grows.
+
 ## Main features
 - 3 playable handcrafted levels with increasing challenge
 - Fruit collection, hazards, and level progression
@@ -40,6 +45,12 @@ Pink Elephant Jungle Dash is a beginner-friendly 3D browser runner game where yo
    ```
 5. Open the local URL shown in the terminal (usually `http://localhost:5173`).
 
+
+### Latest UI scroll-rule pass (2026-06-03)
+
+- Locked the app shell, game frame, and gameplay area to the viewport so page-level scrolling stays off.
+- Made the start screen fixed by default, with fallback scrolling only for cramped portrait or larger-text cases.
+- Standardized Settings, Level Select, Credits, Complete, and Game Over so long content scrolls inside the menu card instead of moving the page.
 
 ### Latest pickup performance fix (2026-06-03)
 

@@ -4214,7 +4214,7 @@ export default function App() {
         <section className="complete-overlay pointer-events-auto absolute inset-0 z-40 flex items-center justify-center px-6"
           style={{ background: "rgba(0,0,0,0.52)", backdropFilter: "blur(4px)" }}>
           <div className="complete-card rounded-[2rem] p-10 text-center"
-            style={{ background: "rgba(12,20,10,0.88)", border: "1px solid rgba(255,200,80,0.35)", boxShadow: "0 0 65px rgba(255,190,80,0.22)", maxHeight: "92vh", overflowY: "auto" }}>
+            style={{ background: "rgba(12,20,10,0.88)", border: "1px solid rgba(255,200,80,0.35)", boxShadow: "0 0 65px rgba(255,190,80,0.22)" }}>
             <div className="complete-trophy mb-4 text-6xl">🏆</div>
             <h2 className="complete-title display-title text-4xl font-black text-amber-200">
               {showFinalReward ? "Final Trail Complete" : `${currentLevelConfig.name} Complete!`}
@@ -4287,7 +4287,7 @@ export default function App() {
         <section className="complete-overlay pointer-events-auto absolute inset-0 z-40 flex items-center justify-center px-6"
           style={{ background: "rgba(42,5,10,0.72)", backdropFilter: "blur(4px)" }}>
           <div className="complete-card rounded-[2rem] p-10 text-center"
-            style={{ background: "rgba(24,10,12,0.9)", border: "1px solid rgba(255,120,140,0.35)", boxShadow: "0 0 65px rgba(255,80,120,0.18)", maxHeight: "92vh", overflowY: "auto" }}>
+            style={{ background: "rgba(24,10,12,0.9)", border: "1px solid rgba(255,120,140,0.35)", boxShadow: "0 0 65px rgba(255,80,120,0.18)" }}>
             <div className="mb-4 text-6xl">⚠️</div>
             <h2 className="display-title text-4xl font-black text-red-100">The Herd Needs Rest</h2>
             <p className="mt-3 max-w-sm text-sm leading-relaxed text-red-50/70">
