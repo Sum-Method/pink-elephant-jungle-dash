@@ -2968,19 +2968,21 @@ button:disabled {
 }
 
 .settings-modal-card {
-  width: min(94vw, 62rem);
-  max-height: min(92vh, 52rem);
-  max-height: min(calc(100dvh - var(--hud-safe-top) - var(--hud-safe-bottom) - 1rem), 52rem);
+  display: grid;
+  grid-template-rows: auto auto minmax(0, 1fr) auto;
+  gap: clamp(0.55rem, 1.2dvh, 0.85rem);
+  width: min(94vw, 66rem);
+  height: min(calc(100dvh - var(--hud-safe-top) - var(--hud-safe-bottom) - 1rem), 43rem);
+  max-height: min(calc(100dvh - var(--hud-safe-top) - var(--hud-safe-bottom) - 1rem), 43rem);
   overflow-x: hidden;
-  overflow-y: auto;
-  overscroll-behavior: contain;
-  -webkit-overflow-scrolling: touch;
+  overflow-y: hidden;
+  overscroll-behavior: none;
   scrollbar-gutter: auto;
   scrollbar-color: rgba(167, 243, 208, 0.42) rgba(4, 14, 9, 0.24);
   scrollbar-width: thin;
-  padding: clamp(1.15rem, 2.5vw, 1.85rem);
+  padding: clamp(0.95rem, 2vw, 1.45rem);
   text-align: left;
-  touch-action: pan-y;
+  touch-action: manipulation;
 }
 
 .settings-modal-header {
@@ -3011,6 +3013,68 @@ button:disabled {
   font-size: 0.78rem;
 }
 
+.settings-tab-list {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: clamp(0.28rem, 0.7vw, 0.45rem);
+  min-width: 0;
+}
+
+.settings-tab {
+  min-width: 0;
+  min-height: 2.35rem;
+  border: 1px solid rgba(167, 243, 208, 0.28);
+  border-radius: 0.8rem;
+  background: rgba(6, 78, 59, 0.34);
+  color: #d1fae5;
+  padding: 0.45rem 0.5rem;
+  font-size: clamp(0.62rem, 0.18vw + 0.58rem, 0.74rem);
+  font-weight: 900;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+  transition: transform 120ms ease, background-color 120ms ease, border-color 120ms ease, color 120ms ease;
+}
+
+.settings-tab:hover {
+  transform: translateY(-1px);
+  background: rgba(6, 95, 70, 0.54);
+}
+
+.settings-tab.is-active {
+  border-color: rgba(167, 243, 208, 0.72);
+  background: rgba(167, 243, 208, 0.92);
+  color: #022c22;
+}
+
+.settings-active-panel {
+  min-height: 0;
+  overflow: hidden;
+}
+
+.settings-panel-grid {
+  display: grid;
+  gap: clamp(0.58rem, 1vw, 0.8rem);
+  min-height: 0;
+  height: 100%;
+  margin: 0;
+  align-content: start;
+}
+
+.settings-panel-grid-single {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.settings-panel-grid-two {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.settings-option-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(0.55rem, 1vw, 0.75rem);
+  margin-top: clamp(0.7rem, 1.4dvh, 0.95rem);
+}
+
 .settings-modal-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -3022,7 +3086,7 @@ button:disabled {
   border: 1px solid rgba(253, 230, 138, 0.2);
   border-radius: 1.05rem;
   background: rgba(0, 0, 0, 0.22);
-  padding: clamp(0.9rem, 1.5vw, 1.1rem);
+  padding: clamp(0.78rem, 1.3vw, 1rem);
 }
 
 .settings-section-title {
@@ -3061,7 +3125,7 @@ button:disabled {
   border: 1px solid rgba(253, 230, 138, 0.18);
   border-radius: 0.85rem;
   background: rgba(0, 0, 0, 0.22);
-  padding: 0.72rem 0.8rem;
+  padding: 0.62rem 0.72rem;
 }
 
 .settings-option-row {
@@ -3096,7 +3160,7 @@ button:disabled {
 
 .settings-info-card p,
 .settings-info-card dd {
-  margin: 0.28rem 0 0;
+  margin: 0.22rem 0 0;
   color: rgba(255, 251, 235, 0.78);
   font-size: 0.78rem;
   line-height: 1.35;
@@ -3136,12 +3200,12 @@ button:disabled {
 
 .settings-segmented-button {
   min-width: 4.625rem;
-  min-height: 2.75rem;
+  min-height: 2.45rem;
   border: 1px solid rgba(167, 243, 208, 0.3);
   border-radius: 0.75rem;
   background: rgba(6, 78, 59, 0.45);
   color: #d1fae5;
-  padding: 0.55rem 0.75rem;
+  padding: 0.45rem 0.65rem;
   font-size: 0.74rem;
   font-weight: 900;
   letter-spacing: 0.1em;
@@ -3172,7 +3236,7 @@ button:disabled {
 }
 
 .settings-graphics-button {
-  min-height: 3.5rem;
+  min-height: 3.05rem;
   text-transform: none;
   letter-spacing: 0;
 }
@@ -3204,12 +3268,12 @@ button:disabled {
 }
 
 .settings-footer {
-  margin-top: 1rem;
+  margin-top: 0;
   border-top: 1px solid rgba(253, 230, 138, 0.2);
-  padding-top: 0.65rem;
+  padding-top: 0.45rem;
   text-align: center;
   color: rgba(255, 251, 235, 0.52);
-  font-size: 0.7rem;
+  font-size: 0.66rem;
 }
 
 .settings-footer p {
@@ -3218,6 +3282,226 @@ button:disabled {
 
 .settings-footer p:nth-child(2) {
   color: rgba(255, 251, 235, 0.68);
+}
+
+.settings-info-divider {
+  margin-top: 0.55rem;
+  border-top: 1px solid rgba(253, 230, 138, 0.16);
+  padding-top: 0.55rem;
+}
+
+.settings-access-panel {
+  grid-template-rows: repeat(2, minmax(0, 1fr));
+}
+
+.settings-audio-panel {
+  align-self: start;
+}
+
+.settings-data-panel .mt-3 {
+  margin-top: 0.55rem;
+}
+
+.settings-data-panel .grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.45rem;
+}
+
+.settings-data-panel button.rounded-xl,
+.settings-data-panel .title-install-card button {
+  min-height: 2.55rem;
+  border: 1px solid rgba(167, 243, 208, 0.3);
+  background: rgba(6, 78, 59, 0.45);
+  color: #d1fae5;
+  padding: 0.45rem 0.7rem;
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.settings-data-panel .title-install-card {
+  margin-top: 0.55rem;
+  padding: 0.65rem;
+}
+
+.settings-about-panel .achievements-panel {
+  margin-top: 0.55rem;
+}
+
+.settings-about-panel .achievements-summary {
+  padding: 0.48rem 0.6rem;
+}
+
+.settings-about-panel .achievements-list {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.38rem;
+  margin-top: 0.48rem;
+}
+
+.settings-about-panel .achievement-row {
+  gap: 0.42rem;
+  padding: 0.42rem 0.5rem;
+}
+
+.settings-about-panel .achievement-title {
+  font-size: 0.76rem;
+}
+
+.settings-about-panel .achievement-description {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+  font-size: 0.66rem;
+}
+
+.settings-about-panel {
+  grid-template-rows: auto minmax(0, 1fr);
+}
+
+.settings-about-tab-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(0.42rem, 0.8vw, 0.58rem);
+  width: min(100%, 24rem);
+}
+
+.settings-about-tab {
+  min-height: 2.25rem;
+  border: 1px solid rgba(167, 243, 208, 0.28);
+  border-radius: 0.75rem;
+  background: rgba(6, 78, 59, 0.34);
+  color: #d1fae5;
+  padding: 0.4rem 0.55rem;
+  font-size: 0.7rem;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  transition: transform 120ms ease, background-color 120ms ease, border-color 120ms ease, color 120ms ease;
+}
+
+.settings-about-tab:hover {
+  transform: translateY(-1px);
+  background: rgba(6, 95, 70, 0.54);
+}
+
+.settings-about-tab.is-active {
+  border-color: rgba(167, 243, 208, 0.72);
+  background: rgba(167, 243, 208, 0.92);
+  color: #022c22;
+}
+
+.settings-about-active-panel {
+  min-height: 0;
+  overflow: hidden;
+}
+
+.settings-about-active-panel > .settings-panel-grid,
+.settings-about-active-panel > .settings-section-card {
+  height: 100%;
+}
+
+.credits-modal {
+  display: grid;
+  grid-template-rows: auto auto minmax(0, 1fr);
+  gap: clamp(0.6rem, 1.2dvh, 0.85rem);
+  width: min(94vw, 66rem);
+  height: min(calc(100dvh - var(--hud-safe-top) - var(--hud-safe-bottom) - 1rem), 36rem);
+  max-height: min(calc(100dvh - var(--hud-safe-top) - var(--hud-safe-bottom) - 1rem), 36rem);
+  overflow: hidden;
+  touch-action: manipulation;
+}
+
+.credits-modal .game-modal-header {
+  flex-direction: row;
+}
+
+.credits-modal .game-modal-close {
+  width: auto;
+}
+
+.credits-tab-list {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: clamp(0.3rem, 0.7vw, 0.45rem);
+  min-width: 0;
+}
+
+.credits-tab {
+  min-width: 0;
+  min-height: 2.3rem;
+  border: 1px solid rgba(167, 243, 208, 0.28);
+  border-radius: 0.78rem;
+  background: rgba(6, 78, 59, 0.34);
+  color: #d1fae5;
+  padding: 0.42rem 0.46rem;
+  font-size: clamp(0.58rem, 0.18vw + 0.55rem, 0.72rem);
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  transition: transform 120ms ease, background-color 120ms ease, border-color 120ms ease, color 120ms ease;
+}
+
+.credits-tab:hover {
+  transform: translateY(-1px);
+  background: rgba(6, 95, 70, 0.54);
+}
+
+.credits-tab.is-active {
+  border-color: rgba(167, 243, 208, 0.72);
+  background: rgba(167, 243, 208, 0.92);
+  color: #022c22;
+}
+
+.credits-active-panel {
+  min-height: 0;
+  overflow: hidden;
+}
+
+.credits-panel-grid {
+  display: grid;
+  gap: clamp(0.65rem, 1vw, 0.85rem);
+  height: 100%;
+  min-height: 0;
+  margin: 0;
+  align-content: start;
+}
+
+.credits-panel-grid-two {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.credits-card {
+  display: flex;
+  flex-direction: column;
+  min-height: clamp(7rem, 18dvh, 9rem);
+  border: 1px solid rgba(253, 230, 138, 0.18);
+  border-radius: 1rem;
+  background: rgba(0, 0, 0, 0.24);
+  padding: clamp(0.85rem, 1.2vw, 1rem);
+}
+
+.credits-card h3 {
+  margin: 0;
+  color: #fde68a;
+  font-size: 0.95rem;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+.credits-card p {
+  margin: 0.45rem 0 0;
+  color: rgba(255, 251, 235, 0.72);
+  font-size: 0.82rem;
+  line-height: 1.45;
+}
+
+.credits-build-card p {
+  overflow-wrap: anywhere;
 }
 
 .level-select-grid,
@@ -3636,6 +3920,7 @@ button:disabled {
 .app-shell.accessibility-high-contrast .settings-option-row,
 .app-shell.accessibility-high-contrast .settings-toggle-row,
 .app-shell.accessibility-high-contrast .level-select-card,
+.app-shell.accessibility-high-contrast .credits-card,
 .app-shell.accessibility-high-contrast .credits-grid article {
   border-color: rgba(255, 255, 255, 0.45) !important;
 }
@@ -3655,19 +3940,49 @@ button:disabled {
 }
 
 @media (max-width: 900px) {
-  .game-modal-header,
-  .settings-modal-header {
+  .game-modal-header {
     flex-direction: column;
   }
 
-  .game-modal-close,
-  .settings-modal-header .jungle-menu-button-secondary {
+  .game-modal-close {
     width: 100%;
+  }
+
+  .credits-modal .game-modal-header {
+    flex-direction: row;
+  }
+
+  .credits-modal .game-modal-close {
+    width: auto;
+    min-width: 5rem;
+  }
+
+  .settings-modal-header {
+    flex-direction: row;
+  }
+
+  .settings-modal-header .jungle-menu-button-secondary {
+    width: auto;
+    min-width: 5rem;
   }
 
   .settings-modal-grid,
   .settings-card-grid-two,
-  .settings-button-grid-three {
+  .settings-button-grid-three,
+  .settings-panel-grid-two,
+  .settings-option-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .settings-tab-list {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .credits-tab-list {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .credits-panel-grid-two {
     grid-template-columns: 1fr;
   }
 }
@@ -3681,10 +3996,24 @@ button:disabled {
 
 .layout-phone-landscape .game-modal-card,
 .layout-phone-landscape .settings-modal-card {
-  width: min(96vw, 42rem);
+  width: min(calc(100vw - var(--hud-safe-left) - var(--hud-safe-right) - 0.8rem), 55rem);
   max-height: calc(100dvh - var(--hud-safe-top) - var(--hud-safe-bottom) - 0.8rem);
-  padding: 0.75rem;
+  padding: 0.62rem 0.7rem;
   border-radius: 1rem;
+}
+
+.layout-phone-landscape .settings-modal-card {
+  grid-template-rows: auto auto minmax(0, 1fr);
+  gap: 0.42rem;
+  height: calc(100dvh - var(--hud-safe-top) - var(--hud-safe-bottom) - 0.8rem);
+}
+
+.layout-phone-landscape .credits-modal {
+  grid-template-rows: auto auto minmax(0, 1fr);
+  gap: 0.42rem;
+  height: calc(100dvh - var(--hud-safe-top) - var(--hud-safe-bottom) - 0.8rem);
+  overflow: hidden;
+  touch-action: manipulation;
 }
 
 .layout-phone-landscape .jungle-menu-card:not(.settings-modal-card) {
@@ -3725,6 +4054,116 @@ button:disabled {
 .layout-phone-landscape .game-modal-title,
 .layout-phone-landscape .settings-title {
   font-size: clamp(1.1rem, 3.6vw, 1.45rem);
+}
+
+.layout-phone-landscape .credits-modal .game-modal-header {
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 0.55rem;
+}
+
+.layout-phone-landscape .credits-modal .game-modal-kicker {
+  font-size: 0.58rem;
+  letter-spacing: 0.18em;
+}
+
+.layout-phone-landscape .credits-modal .game-modal-title {
+  font-size: clamp(1.05rem, 3vw, 1.28rem);
+}
+
+.layout-phone-landscape .credits-modal .game-modal-copy {
+  display: none;
+}
+
+.layout-phone-landscape .credits-modal .game-modal-close {
+  min-width: 4.5rem;
+  min-height: 2rem;
+  padding: 0.42rem 0.7rem;
+}
+
+.layout-phone-landscape .credits-tab-list {
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 0.26rem;
+}
+
+.layout-phone-landscape .credits-tab {
+  min-height: 2rem;
+  border-radius: 0.58rem;
+  padding: 0.3rem 0.16rem;
+  font-size: 0.48rem;
+  letter-spacing: 0.07em;
+}
+
+.layout-phone-landscape .credits-panel-grid {
+  gap: 0.45rem;
+}
+
+.layout-phone-landscape .credits-panel-grid-two {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.layout-phone-landscape .credits-card {
+  min-height: 0;
+  padding: 0.48rem 0.52rem;
+  border-radius: 0.78rem;
+}
+
+.layout-phone-landscape .credits-card h3 {
+  font-size: 0.58rem;
+  letter-spacing: 0.1em;
+}
+
+.layout-phone-landscape .credits-card p {
+  font-size: 0.62rem;
+  line-height: 1.25;
+}
+
+.layout-phone-landscape .settings-modal-header {
+  align-items: flex-start;
+  gap: 0.55rem;
+}
+
+.layout-phone-landscape .settings-kicker {
+  font-size: 0.58rem;
+  letter-spacing: 0.18em;
+}
+
+.layout-phone-landscape .settings-context-note,
+.layout-phone-landscape .settings-footer {
+  display: none;
+}
+
+.layout-phone-landscape .settings-modal-header .game-modal-close {
+  min-width: 4.5rem;
+  min-height: 2rem;
+  padding: 0.42rem 0.7rem;
+}
+
+.layout-phone-landscape .settings-tab-list {
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 0.26rem;
+}
+
+.layout-phone-landscape .settings-tab {
+  min-height: 2rem;
+  border-radius: 0.58rem;
+  padding: 0.3rem 0.18rem;
+  font-size: 0.5rem;
+  letter-spacing: 0.08em;
+}
+
+.layout-phone-landscape .settings-panel-grid {
+  gap: 0.45rem;
+}
+
+.layout-phone-landscape .settings-panel-grid-two,
+.layout-phone-landscape .settings-button-grid-three,
+.layout-phone-landscape .settings-option-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.layout-phone-landscape .settings-option-grid {
+  margin-top: 0.5rem;
 }
 
 .layout-phone-landscape .game-modal-copy,
@@ -3781,8 +4220,72 @@ button:disabled {
 
 .layout-phone-landscape .settings-section-card,
 .layout-phone-landscape .settings-info-card,
-.layout-phone-landscape .settings-option-row {
-  padding: 0.55rem;
+.layout-phone-landscape .settings-option-row,
+.layout-phone-landscape .settings-toggle-row {
+  padding: 0.48rem 0.52rem;
+}
+
+.layout-phone-landscape .settings-section-title,
+.layout-phone-landscape .settings-info-title,
+.layout-phone-landscape .settings-info-card dt {
+  font-size: 0.58rem;
+  letter-spacing: 0.1em;
+}
+
+.layout-phone-landscape .settings-toggle-label,
+.layout-phone-landscape .settings-option-label {
+  font-size: 0.68rem;
+}
+
+.layout-phone-landscape .settings-toggle-description,
+.layout-phone-landscape .settings-info-muted {
+  font-size: 0.58rem;
+  line-height: 1.22;
+}
+
+.layout-phone-landscape .settings-segmented-button,
+.layout-phone-landscape .settings-data-panel button.rounded-xl {
+  min-width: 3.6rem;
+  min-height: 2rem;
+  padding: 0.3rem 0.42rem;
+  font-size: 0.56rem;
+}
+
+.layout-phone-landscape .settings-graphics-button {
+  min-height: 2.4rem;
+}
+
+.layout-phone-landscape .settings-about-panel .achievements-list {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.layout-phone-landscape .settings-about-panel .achievement-description {
+  display: none;
+}
+
+.layout-phone-landscape .settings-about-panel .achievement-title {
+  font-size: 0.58rem;
+}
+
+.layout-phone-landscape .settings-about-panel .achievement-row {
+  padding: 0.3rem 0.36rem;
+}
+
+.layout-phone-landscape .settings-about-panel .achievement-medal {
+  width: 1.1rem;
+  height: 1.1rem;
+  font-size: 0.62rem;
+}
+
+.layout-phone-landscape .settings-about-tab-list {
+  width: min(100%, 18rem);
+  gap: 0.34rem;
+}
+
+.layout-phone-landscape .settings-about-tab {
+  min-height: 1.95rem;
+  padding: 0.3rem 0.42rem;
+  font-size: 0.56rem;
 }
 
 .layout-phone-landscape .level-select-grid {
@@ -3847,4 +4350,115 @@ button:disabled {
   margin-top: auto;
   padding: 0.38rem 0.35rem;
   font-size: 0.58rem;
+}
+
+.layout-phone-portrait .settings-modal-card {
+  width: min(calc(100vw - var(--hud-safe-left) - var(--hud-safe-right) - 1.4rem), 32rem);
+  height: calc(100dvh - var(--hud-safe-top) - var(--hud-safe-bottom) - 1.4rem);
+  max-height: calc(100dvh - var(--hud-safe-top) - var(--hud-safe-bottom) - 1.4rem);
+  padding: 0.85rem;
+}
+
+.layout-phone-portrait .credits-modal {
+  width: min(calc(100vw - var(--hud-safe-left) - var(--hud-safe-right) - 1.4rem), 32rem);
+  height: calc(100dvh - var(--hud-safe-top) - var(--hud-safe-bottom) - 1.4rem);
+  max-height: calc(100dvh - var(--hud-safe-top) - var(--hud-safe-bottom) - 1.4rem);
+  padding: 0.85rem;
+  overflow: hidden;
+  touch-action: manipulation;
+}
+
+.layout-phone-portrait .settings-footer {
+  display: none;
+}
+
+.layout-phone-portrait .settings-modal-header {
+  align-items: flex-start;
+  gap: 0.65rem;
+}
+
+.layout-phone-portrait .credits-modal .game-modal-header {
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 0.65rem;
+}
+
+.layout-phone-portrait .settings-modal-header .game-modal-close {
+  min-width: 4.5rem;
+  min-height: 2.25rem;
+  padding: 0.42rem 0.7rem;
+}
+
+.layout-phone-portrait .credits-modal .game-modal-close {
+  width: auto;
+  min-width: 4.5rem;
+  min-height: 2.25rem;
+  padding: 0.42rem 0.7rem;
+}
+
+.layout-phone-portrait .settings-title {
+  font-size: clamp(1.35rem, 8vw, 1.9rem);
+}
+
+.layout-phone-portrait .credits-modal .game-modal-title {
+  font-size: clamp(1.2rem, 6.8vw, 1.8rem);
+}
+
+.layout-phone-portrait .credits-modal .game-modal-copy {
+  display: none;
+}
+
+.layout-phone-portrait .settings-tab-list {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.36rem;
+}
+
+.layout-phone-portrait .credits-tab-list {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.36rem;
+}
+
+.layout-phone-portrait .settings-tab {
+  min-height: 2.2rem;
+  padding: 0.35rem 0.25rem;
+  font-size: 0.56rem;
+}
+
+.layout-phone-portrait .credits-tab {
+  min-height: 2.15rem;
+  padding: 0.35rem 0.22rem;
+  font-size: 0.54rem;
+}
+
+.layout-phone-portrait .settings-panel-grid {
+  gap: 0.52rem;
+}
+
+.layout-phone-portrait .credits-panel-grid {
+  gap: 0.52rem;
+}
+
+.layout-phone-portrait .credits-panel-grid-two {
+  grid-template-columns: 1fr;
+}
+
+.layout-phone-portrait .settings-info-card,
+.layout-phone-portrait .settings-section-card,
+.layout-phone-portrait .settings-option-row,
+.layout-phone-portrait .settings-toggle-row {
+  padding: 0.56rem 0.62rem;
+}
+
+.layout-phone-portrait .credits-card {
+  min-height: 0;
+  padding: 0.56rem 0.62rem;
+}
+
+.layout-phone-portrait .credits-card h3 {
+  font-size: 0.72rem;
+}
+
+.layout-phone-portrait .credits-card p {
+  font-size: 0.72rem;
+  line-height: 1.35;
 }

@@ -52,6 +52,8 @@ Pink Elephant Jungle Dash is a beginner-friendly 3D browser runner game where yo
 - Removed the reserved native grey scrollbar gutter from modal cards and replaced active menu scrolling with themed thin scrollbars.
 - Tightened Level Select card spacing on phone landscape while keeping portrait menus scrollable inside their card.
 - Follow-up polish reduced the title-screen button scale and gave the start card more balanced inner spacing while keeping the same fonts and jungle-glass style.
+- Simplified **Settings** into one-screen tabbed submenus so common options no longer require scrolling through one long panel.
+- Applied the same tabbed one-screen treatment to **Credits & About** and the Settings **About** section.
 
 ### Latest UI scaling and composition pass (2026-06-03)
 
