@@ -58,7 +58,7 @@ export const PARTICLES = {
   crateWoodCount: 13,
   crateSparkleCount: 5,
   fruitCollectCount: 4,
-  healBurstCount: 10,
+  healBurstCount: 4,
   monkeyBurstCount: 14,
   monkeySparkleCount: 6,
   pineappleBurstCount: 16,

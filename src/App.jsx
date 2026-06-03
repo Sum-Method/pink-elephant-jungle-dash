@@ -1326,8 +1326,9 @@ export default function App() {
       setIsLevelTransitioning(false);
       isLevelTransitioningRef.current = false;
       pendingLevelStartRef.current = null;
-      if (levelTransitionWatchRef.current) {
-        levelTransitionWatchRef.current.completed = true;
+      const transitionWatch = levelTransitionWatchRef.current;
+      if (transitionWatch?.transitionId) {
+        transitionWatch.completed = true;
       }
       try {
         safeRemoveRendererDomElement(renderer, mount);
@@ -1426,13 +1427,6 @@ export default function App() {
       createLargeForegroundRockGeometry,
       createRuinBlockClusterGeometry,
     }));
-    const MAX_PICKUP_POINT_LIGHTS = 4;
-    let pickupPointLights = 0;
-    const createLimitedPickupLight = (color, intensity, distance) => {
-      if (pickupPointLights >= MAX_PICKUP_POINT_LIGHTS) return null;
-      pickupPointLights += 1;
-      return new THREE.PointLight(color, intensity, distance);
-    };
     const pickupPopPresets = [
       ["SUGAR CANE!", "#a7ffbf", 3],
       ["BONUS ELEPHANT!", "#b7ffb7", 2],
@@ -1446,6 +1440,14 @@ export default function App() {
       ["HERD NEEDS REST", "#ff9aa9", 1],
       ["RECOVERING!", "#b7ffb7", 1],
     ];
+
+    function createPickupGlowSprite(material, scale, yOffset = 0) {
+      const sprite = new THREE.Sprite(material);
+      sprite.position.y = yOffset;
+      sprite.scale.set(scale, scale, 1);
+      sprite.renderOrder = 1;
+      return sprite;
+    }
 
     for (let i = 0; i < 96; i++) {
       const mesh = new THREE.Mesh(
@@ -1967,6 +1969,7 @@ export default function App() {
     const caneMat = makeMaterial("#a9d678", { roughness: 0.54, emissive: "#ffde8f", emissiveIntensity: 0.38 });
     const caneNodeMat = makeMaterial("#ecd9aa", { roughness: 0.42, emissive: "#ffe2a0", emissiveIntensity: 0.4 });
     const caneLeafMat = makeMaterial("#4b9a42", { roughness: 0.5, emissive: "#dfc56e", emissiveIntensity: 0.26 });
+    const caneGlowMat = new THREE.SpriteMaterial({ map: textures.collectibleGlow, color: "#9cff96", transparent: true, opacity: 0.74, depthWrite: false });
     logScenePhase("health");
     activeLevelRef.current.health.forEach((pos) => {
       const posOnPath = worldPosition(pos.localX, pos.z);
@@ -1994,9 +1997,8 @@ export default function App() {
         frond.rotation.x = -0.24;
         group.add(frond);
       });
-      const glow = createLimitedPickupLight("#ffd86f", 1.9, 8);
       group.add(cane);
-      if (glow) group.add(glow);
+      group.add(createPickupGlowSprite(caneGlowMat, 2.35, 0.05));
       scene.add(group);
       pickups.push({ type: "health", mesh: group, active: true, x: posOnPath.x, y: 1.25, z: posOnPath.z, radius: PICKUPS.healthRadius });
     });
@@ -2591,6 +2593,7 @@ export default function App() {
     const pineappleMat = makeMaterial("#f4b449", { map: textures.collectibleGlow, emissive: "#ffe08b", emissiveIntensity: 1.14, metalness: 0.1, roughness: 0.35, envMapIntensity: 1.24 });
     const pineappleScaleMat = makeMaterial("#d18a2a", { roughness: 0.48, emissive: "#f4c56d", emissiveIntensity: 0.44 });
     const pineappleLeafMat = makeMaterial("#4d9b45", { roughness: 0.56, emissive: "#e2c96e", emissiveIntensity: 0.34 });
+    const pineappleGlowMat = new THREE.SpriteMaterial({ map: textures.collectibleGlow, color: "#ffc35a", transparent: true, opacity: 0.76, depthWrite: false });
     logScenePhase("collectibles");
     activeLevelRef.current.collectibles.forEach((col) => {
       const posOnPath = worldPosition(col.localX, col.z);
@@ -2621,9 +2624,8 @@ export default function App() {
         leaf.scale.set(0.85 + (i % 2) * 0.22, 1 + (i % 3) * 0.14, 0.85);
         knot.add(leaf);
       }
-      const glow = createLimitedPickupLight("#f5a623", 2.2, 7);
       group.add(knot);
-      if (glow) group.add(glow);
+      group.add(createPickupGlowSprite(pineappleGlowMat, 2.5, 0.04));
       scene.add(group);
       collectibleMeshes.push({ mesh: group, knot, active: true, x: posOnPath.x, y: col.y, z: posOnPath.z, radius: PICKUPS.pineappleRadius });
     });
@@ -3835,8 +3837,9 @@ export default function App() {
       resetGame({ start });
       setIsLevelTransitioning(false);
       isLevelTransitioningRef.current = false;
-      if (levelTransitionWatchRef.current?.transitionId === pendingStart.transitionId) {
-        levelTransitionWatchRef.current.completed = true;
+      const transitionWatch = levelTransitionWatchRef.current;
+      if (transitionWatch?.transitionId && transitionWatch.transitionId === pendingStart.transitionId) {
+        transitionWatch.completed = true;
       }
       logLevelTransition("[level-transition-pending-start-consumed]", "reset-function-ready", {
         transitionId: pendingStart.transitionId,

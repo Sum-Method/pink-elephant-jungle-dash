@@ -41,6 +41,13 @@ Pink Elephant Jungle Dash is a beginner-friendly 3D browser runner game where yo
 5. Open the local URL shown in the terminal (usually `http://localhost:5173`).
 
 
+### Latest pickup performance fix (2026-06-03)
+
+- Replaced sugar cane and pineapple pickup point lights with lightweight glow sprites to reduce collection stutter on GitHub Pages.
+- Reduced sugar cane pickup particles from 10 to 4 so the heal pickup behaves closer to a normal fruit pickup.
+- Guarded the early-start transition watcher so very fast **Begin the Trail** clicks do not trigger a startup error.
+- Updated the release marker to `1.0.20` and bumped the service worker cache to `v20` for the next GitHub Pages publish.
+
 ### Latest start-button load fix (2026-06-02)
 
 - Fixed the issue where **Begin the Trail** could appear to do nothing because the save system got stuck while loading achievements.
