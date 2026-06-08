@@ -38,7 +38,7 @@ export function CreditsOverlay({ open, onClose }) {
           <div className="credits-panel-grid credits-panel-grid-two">
             <article className="credits-card">
               <h3>Template Defaults</h3>
-              <p>Start, settings, pause, level complete, game over, level select, credits, save tools, PWA install, offline cache, and update prompts.</p>
+              <p>Start, settings, pause, level complete, game over, credits, save tools, PWA install, offline cache, and update prompts.</p>
             </article>
             <article className="credits-card">
               <h3>Reusable Shell</h3>

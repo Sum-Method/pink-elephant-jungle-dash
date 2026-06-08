@@ -7,7 +7,6 @@ import { Analytics } from "@vercel/analytics/react";
 
 import { Icon } from "./components/Icon.jsx";
 import { CreditsOverlay } from "./components/game-ui/CreditsOverlay.jsx";
-import { LevelSelectOverlay } from "./components/game-ui/LevelSelectOverlay.jsx";
 import { OpeningCutsceneOverlay } from "./components/game-ui/OpeningCutsceneOverlay.jsx";
 import { RotateOverlay } from "./components/game-ui/RotateOverlay.jsx";
 import { SettingsPanel } from "./components/game-ui/SettingsPanel.jsx";
@@ -30,7 +29,7 @@ import {
 } from "./game/collisionHelpers.js";
 import { createKeys, isAllowedKey, setKeyState } from "./game/input.js";
 import { buildLevelById } from "./game/level.js";
-import { getAllLevelConfigs, getLevelConfig, getLevelConfigStrict } from "./game/levels/index.js";
+import { getLevelConfig, getLevelConfigStrict } from "./game/levels/index.js";
 import { promptForZ } from "./game/prompts.js";
 import { aabb, clamp, createSeededRandom, lerp } from "./game/math.js";
 import { DEFAULT_AUDIO_STATE, createAudioManager, normalizeAudioState } from "./game/audio/audioManager.js";
@@ -445,7 +444,6 @@ export default function App() {
   const [showSaveTools, setShowSaveTools] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [settingsContext, setSettingsContext] = useState("title");
-  const [levelSelectOpen, setLevelSelectOpen] = useState(false);
   const [creditsOpen, setCreditsOpen] = useState(false);
   const [isStandaloneApp, setIsStandaloneApp] = useState(false);
   const [finalResults, setFinalResults] = useState(null);
@@ -500,7 +498,6 @@ export default function App() {
   const currentLevelConfig = getLevelConfig(currentLevelId);
   const nextLevelId = currentLevelConfig.nextLevel;
   const nextLevelConfig = nextLevelId ? getLevelConfigStrict(nextLevelId) : null;
-  const levelSelectOptions = getAllLevelConfigs();
   const hasNextLevel = Boolean(nextLevelId);
   const hasPlayableNextLevel = Boolean(nextLevelId && nextLevelConfig);
   const isGameplayActive = started && !paused && !complete && !gameOver;
@@ -528,7 +525,6 @@ export default function App() {
     complete,
     gameOver,
     settingsOpen,
-    levelSelectOpen,
     creditsOpen,
   });
 
@@ -629,39 +625,19 @@ export default function App() {
   function openSettings(context) {
     if (completeRef.current || gameOverRef.current || isLevelTransitioning) return;
     pulseHaptic("ui");
-    setLevelSelectOpen(false);
     setCreditsOpen(false);
     setSettingsContext(context);
     setSettingsOpen(true);
   }
 
-  function openLevelSelect() {
-    pulseHaptic("ui");
-    closeSettingsPanel();
-    setCreditsOpen(false);
-    setLevelSelectOpen(true);
-  }
-
-  function closeLevelSelect() {
-    setLevelSelectOpen(false);
-  }
-
   function openCredits() {
     pulseHaptic("ui");
     closeSettingsPanel();
-    setLevelSelectOpen(false);
     setCreditsOpen(true);
   }
 
   function closeCredits() {
     setCreditsOpen(false);
-  }
-
-  function handleLevelSelectStart(levelId) {
-    pulseHaptic("action");
-    closeLevelSelect();
-    closeCredits();
-    startLevelById(levelId);
   }
 
   function updateAccessibilitySetting(key, enabled) {
@@ -874,6 +850,32 @@ export default function App() {
   function restartGame() {
     closeSettingsPanel();
     resetGameRef.current?.({ start: true });
+  }
+
+  function quitGameToHome() {
+    pulseHaptic("ui");
+    setSceneError(null);
+    resetCompleteScreenInputLock();
+    closeSettingsPanel();
+    closeCredits();
+    setOpeningCutsceneOpen(false);
+    setLevel1RewardCutsceneOpen(false);
+    setFinaleCutsceneOpen(false);
+    setShowFinalReward(false);
+    setFinalResults(null);
+    pendingLevelStartRef.current = null;
+    isLevelTransitioningRef.current = false;
+    setIsLevelTransitioning(false);
+    keyRef.current = createKeys();
+    touchJoystickRef.current = TOUCH_JOYSTICK_ZERO;
+    releaseTouchInputs();
+    audioManagerRef.current?.updateGameplayMusic({ charge: 0, isPlaying: false });
+    resetGameRef.current?.({ start: false });
+    if (currentLevelIdRef.current !== "level-1") {
+      pendingLevelStartRef.current = { levelId: "level-1", start: false };
+      setCurrentLevelId("level-1");
+    }
+    startTitleTheme();
   }
 
   async function handleResetSaveData() {
@@ -4012,7 +4014,6 @@ export default function App() {
     setSceneError(null);
     resetCompleteScreenInputLock();
     closeSettingsPanel();
-    closeLevelSelect();
     closeCredits();
     stopGameAudioForCutscene();
     openingCutsceneFinishingRef.current = false;
@@ -4036,7 +4037,6 @@ export default function App() {
     }
     setSceneError(null);
     closeSettingsPanel();
-    closeLevelSelect();
     closeCredits();
     stopGameAudioForCutscene();
     level1RewardCutsceneFinishingRef.current = false;
@@ -4258,10 +4258,10 @@ export default function App() {
                 type="button"
                 className="hud-settings-button hud-settings-icon-button"
                 onClick={requestPauseSafely}
-                aria-label="Pause game and open settings"
-                title="Pause / Settings"
+                aria-label="Pause game"
+                title="Pause"
               >
-                ⚙
+                <span className="hud-pause-symbol" aria-hidden="true">II</span>
               </button>
             </div>
           </div>
@@ -4363,7 +4363,6 @@ export default function App() {
               </button>
               <button type="button" onClick={() => openSettings("title")} className="title-settings-action hud-settings-button rounded-full px-6 py-3 text-xs font-black uppercase tracking-wider transition hover:scale-105 active:scale-95">Settings</button>
               <div className="title-secondary-actions">
-                <button type="button" onClick={openLevelSelect} className="hud-settings-button rounded-full px-4 py-2 text-xs font-black uppercase tracking-wider transition hover:scale-105 active:scale-95">Level Select</button>
                 <button type="button" onClick={openCredits} className="hud-settings-button rounded-full px-4 py-2 text-xs font-black uppercase tracking-wider transition hover:scale-105 active:scale-95">Credits</button>
               </div>
             </div>
@@ -4431,9 +4430,6 @@ export default function App() {
                   {completeInputLocked ? "Get Ready..." : "Restart the Trail"}
                 </button>
               )}
-              <button type="button" onClick={openLevelSelect} disabled={completeButtonDisabled} className="jungle-focus-ring jungle-menu-button-secondary text-sm">
-                Level Select
-              </button>
             </div>
           </div>
         </section>
@@ -4464,9 +4460,6 @@ export default function App() {
                 className="rounded-full bg-white px-8 py-3 font-black text-slate-950 transition hover:scale-105 active:scale-95">
                 {completeInputLocked ? "Get Ready..." : "Try Again"}
               </button>
-              <button type="button" onClick={openLevelSelect} disabled={completeButtonDisabled} className="jungle-focus-ring jungle-menu-button-secondary text-sm">
-                Level Select
-              </button>
             </div>
           </div>
         </section>
@@ -4489,13 +4482,9 @@ export default function App() {
                 className="jungle-focus-ring jungle-menu-button-secondary text-sm">
                 Settings
               </button>
-              <button type="button" onClick={openLevelSelect}
+              <button type="button" onClick={quitGameToHome}
                 className="jungle-focus-ring jungle-menu-button-secondary text-sm">
-                Level Select
-              </button>
-              <button type="button" onClick={openCredits}
-                className="jungle-focus-ring jungle-menu-button-secondary text-sm">
-                Credits
+                Quit Game and Return to Home
               </button>
               <button type="button" onClick={restartGame}
                 className="jungle-focus-ring jungle-menu-button-warning text-sm">
@@ -4545,15 +4534,6 @@ export default function App() {
         onResetSave={handleResetSaveData}
         achievementRecords={achievementRecords}
         onOpenCredits={openCredits}
-      />
-
-      <LevelSelectOverlay
-        open={levelSelectOpen}
-        levels={levelSelectOptions}
-        currentLevelId={currentLevelId}
-        isBusy={isLevelTransitioning}
-        onClose={closeLevelSelect}
-        onStartLevel={handleLevelSelectStart}
       />
 
       <CreditsOverlay

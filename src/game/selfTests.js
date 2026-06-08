@@ -115,7 +115,7 @@ export function runSelfTests() {
 
   const levelIds = Object.keys(LEVEL_REGISTRY);
   assert("all registered levels exist", levelIds.every((levelId) => Boolean(getLevelConfigStrict(levelId))));
-  assert("level select exposes all valid registered levels", getAllLevelConfigs().length === levelIds.length);
+  assert("level registry exposes all valid registered levels", getAllLevelConfigs().length === levelIds.length);
   assert(
     "level chain is exactly level-1 -> level-2 -> level-3 -> null",
     getLevelConfigStrict("level-1")?.nextLevel === "level-2"

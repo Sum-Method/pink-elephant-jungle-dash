@@ -24,7 +24,7 @@ The belly-slide Snake Gate now uses a real GLB 3D model while keeping the same s
 ## Screen and menus
 - The game page itself stays locked to the browser viewport, so gameplay inputs should not scroll the page.
 - The start screen is designed to fit without scrolling on normal desktop, tablet landscape, and phone landscape screens.
-- Longer menus, such as Settings, Level Select, Credits, Complete, and Game Over, may scroll inside their own card if their content grows.
+- Longer menus, such as Settings, Credits, Complete, and Game Over, may scroll inside their own card if their content grows.
 
 ## Main features
 - 3 playable handcrafted levels with increasing challenge
@@ -54,10 +54,29 @@ The belly-slide Snake Gate now uses a real GLB 3D model while keeping the same s
 5. Open the local URL shown in the terminal (usually `http://localhost:5173`).
 
 
+### Latest pause menu cleanup (2026-06-08)
+
+- Changed the top-right gameplay HUD button from a cog to a clear **II** pause symbol.
+- Removed **Credits** from the pause menu so the in-run pause choices stay focused.
+- Added **Quit Game and Return to Home** to the pause menu for leaving the current run without starting a new one.
+- Updated the release marker to `1.0.33` and bumped the service worker cache to `v33`.
+
+### Latest menu option cleanup (2026-06-08)
+
+- Removed the direct level-picking buttons from the title screen, pause menu, level-complete screen, and game-over screen.
+- Kept normal trail progression intact through **Begin the Trail**, **Continue**, **Try Again**, and **Restart the Trail**.
+- Updated the release marker to `1.0.31` and bumped the service worker cache to `v31`.
+
+### Latest always-visible joystick update (2026-06-08)
+
+- Kept the mobile/tablet floating joystick visible even when the player is not touching it, so younger players always know where movement is.
+- The joystick still brightens while being used, keeps its nub inside the ring, and feeds analog movement strength into the game.
+- Updated the release marker to `1.0.30` and bumped the service worker cache to `v30`.
+
 ### Latest mobile joystick update (2026-06-08)
 
 - Replaced the old left-side Charge/Reverse touch buttons with a floating omnidirectional thumb joystick on phones and tablets.
-- The joystick appears under the first left-side touch, keeps its nub inside the ring, uses a dead zone, fades out on release, and feeds analog movement strength into the game.
+- The joystick appears under the first left-side touch, keeps its nub inside the ring, uses a dead zone, and feeds analog movement strength into the game.
 - Kept the right-side Jump and Smash buttons, preserved desktop keyboard/gamepad controls, updated the release marker to `1.0.29`, and bumped the service worker cache to `v29`.
 
 ### Latest player-facing debug text cleanup (2026-06-07)
@@ -83,13 +102,13 @@ The belly-slide Snake Gate now uses a real GLB 3D model while keeping the same s
 
 - Added the blue butterfly MP4 as a skippable reward cut scene after Level 1 completion and before Level 2 starts.
 - Updated cut scene playback so the player's **Begin the Trail** / **Continue** tap directly starts the MP4 with its own sound instead of relying on muted autoplay.
-- Kept restart, retry, final restart, same-level reset, and Level Select flows from replaying the opening cut scene.
+- Kept restart, retry, final restart, same-level reset, and direct level-picking flows from replaying the opening cut scene.
 - Updated the release marker to `1.0.25` and bumped the service worker cache to `v25`.
 
 ### Latest opening cut scene update (2026-06-07)
 
 - Added the `Home_in_the_Herd_.mp4` video as a skippable opening cut scene before Level 1 starts from the title screen.
-- Kept restart, retry, final restart, same-level reset, and Level Select flows starting Level 1 directly without replaying the cut scene.
+- Kept restart, retry, final restart, same-level reset, and direct level-picking flows starting Level 1 directly without replaying the cut scene.
 - Added the video to the asset manifest and allowed MP4 files to be cached after first use without forcing the video into the initial offline install.
 
 ### Latest Snake Gate GLB fit pass (2026-06-07)
@@ -108,9 +127,9 @@ The belly-slide Snake Gate now uses a real GLB 3D model while keeping the same s
 
 ### Latest menu sizing pass (2026-06-03)
 
-- Refined menu sizing again so **Level Select** uses a horizontal card layout in landscape instead of a tall vertical stack.
+- Refined multi-card menu sizing again so wide modal layouts use a horizontal card layout in landscape instead of a tall vertical stack.
 - Removed the reserved native grey scrollbar gutter from modal cards and replaced active menu scrolling with themed thin scrollbars.
-- Tightened Level Select card spacing on phone landscape while keeping portrait menus scrollable inside their card.
+- Tightened modal card spacing on phone landscape while keeping portrait menus scrollable inside their card.
 - Follow-up polish reduced the title-screen button scale and gave the start card more balanced inner spacing while keeping the same fonts and jungle-glass style.
 - Simplified **Settings** into one-screen tabbed submenus so common options no longer require scrolling through one long panel.
 - Applied the same tabbed one-screen treatment to **Credits & About** and the Settings **About** section.
@@ -119,13 +138,13 @@ The belly-slide Snake Gate now uses a real GLB 3D model while keeping the same s
 
 - Kept the same jungle-glass look, colors, mascot badge, and fonts while improving title-card scale and spacing.
 - Restored normal desktop/laptop title proportions so the start screen no longer looks squeezed into a cramped box.
-- Lightly harmonized menu card padding, button size, and border radius across Settings, Level Select, Credits, Complete, and Game Over.
+- Lightly harmonized menu card padding, button size, and border radius across Settings, Credits, Complete, and Game Over.
 
 ### Latest UI scroll-rule pass (2026-06-03)
 
 - Locked the app shell, game frame, and gameplay area to the viewport so page-level scrolling stays off.
 - Made the start screen fixed by default, with fallback scrolling only for cramped portrait or larger-text cases.
-- Standardized Settings, Level Select, Credits, Complete, and Game Over so long content scrolls inside the menu card instead of moving the page.
+- Standardized Settings, Credits, Complete, and Game Over so long content scrolls inside the menu card instead of moving the page.
 
 ### Latest pickup performance fix (2026-06-03)
 
@@ -180,7 +199,7 @@ The belly-slide Snake Gate now uses a real GLB 3D model while keeping the same s
 
 ### Latest template screen defaults pass (2026-05-30)
 
-- Added a dedicated **Level Select** screen from the title, pause, complete, and game-over flows.
+- Added a dedicated level-picking screen from the title, pause, complete, and game-over flows; the player-facing menu buttons for that screen were removed in the 2026-06-08 menu cleanup.
 - Added a dedicated **Credits & About** screen with slots for game, template, audio, engine, and attribution notes.
 - Added saved Accessibility settings for reduced motion, softer flashes, high contrast, and larger menu text.
 - Updated the release marker to `1.0.12` and bumped the service worker cache to `v12`.
@@ -640,7 +659,7 @@ The belly-slide Snake Gate now uses a real GLB 3D model while keeping the same s
 
 - Root cause fixed: the in-game pause/settings shortcut was combining `hud-gold-frame-button` (gold/bright style) with `hud-settings-button`, causing style conflicts and occasional white/pale-yellow rendering in some layouts.
 - Added one shared Settings button theme for both `.hud-settings-button` and legacy `.title-settings-button`, including readable hover/focus/active/disabled states.
-- Added `.hud-settings-icon-button` so icon-only Settings/Pause stays dark, bordered, high-contrast, and touch-friendly on desktop/tablet/phone-landscape.
+- Added `.hud-settings-icon-button` so the icon-only gameplay pause shortcut stays dark, bordered, high-contrast, and touch-friendly on desktop/tablet/phone-landscape.
 
 ### Latest timer stability fix
 

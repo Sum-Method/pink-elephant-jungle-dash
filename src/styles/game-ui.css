@@ -1459,7 +1459,7 @@ button:disabled {
     inset 0 1px 0 rgba(255, 255, 255, 0.16);
   height: clamp(120px, 18vmin, 156px);
   left: 18%;
-  opacity: 0;
+  opacity: 0.68;
   overflow: hidden;
   pointer-events: none;
   position: fixed;
@@ -1471,7 +1471,7 @@ button:disabled {
 }
 
 .mobile-joystick.active {
-  opacity: 0.86;
+  opacity: 0.92;
 }
 
 .joystick-direction-glow {
@@ -1965,6 +1965,15 @@ button:disabled {
   font-size: 1.2rem;
   font-weight: 800;
   line-height: 1;
+}
+
+.hud-pause-symbol {
+  display: inline-block;
+  font-size: 1.05rem;
+  font-weight: 950;
+  line-height: 1;
+  letter-spacing: 0;
+  transform: scaleX(0.9);
 }
 
 .jungle-focus-ring:focus-visible {
@@ -2481,6 +2490,9 @@ button:disabled {
   display: block !important;
   position: fixed;
   inset: 0;
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: none;
   z-index: 60;
 }
 
