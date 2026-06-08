@@ -18,7 +18,7 @@ The belly-slide Snake Gate now uses a real GLB 3D model while keeping the same s
 - **Jump:** `W`, Up arrow, or `Space`
 - **Slide:** `S` or Down arrow
 - **Pause:** `Esc` or `P`
-- **Touch devices:** Use the on-screen touch controls
+- **Touch devices:** Use the floating left-thumb joystick to move, with Jump and Smash buttons on the right
 - **Gamepad:** Left stick or D-pad to move, A to jump, B/X/L/R to smash or spin, Start/Menu to pause
 
 ## Screen and menus
@@ -33,7 +33,7 @@ The belly-slide Snake Gate now uses a real GLB 3D model while keeping the same s
 - Skippable finale cut scene after Level 3 before the final reward panel
 - Fruit collection, hazards, and level progression
 - GLB Snake Gate belly-slide obstacles, with the proven invisible collider kept separate from the model
-- Touch controls and keyboard controls
+- Floating mobile/tablet joystick, touch action buttons, keyboard controls, and gamepad controls
 - Basic gamepad support
 - Optional haptic feedback on supported devices
 - Unlockable achievements with saved progress
@@ -53,6 +53,12 @@ The belly-slide Snake Gate now uses a real GLB 3D model while keeping the same s
    ```
 5. Open the local URL shown in the terminal (usually `http://localhost:5173`).
 
+
+### Latest mobile joystick update (2026-06-08)
+
+- Replaced the old left-side Charge/Reverse touch buttons with a floating omnidirectional thumb joystick on phones and tablets.
+- The joystick appears under the first left-side touch, keeps its nub inside the ring, uses a dead zone, fades out on release, and feeds analog movement strength into the game.
+- Kept the right-side Jump and Smash buttons, preserved desktop keyboard/gamepad controls, updated the release marker to `1.0.29`, and bumped the service worker cache to `v29`.
 
 ### Latest player-facing debug text cleanup (2026-06-07)
 
@@ -856,9 +862,9 @@ Quick beginner-friendly checks for save persistence:
 
 Use this quick checklist after gameplay input changes:
 
-- Tap controls: each touch button responds instantly.
-- Hold controls: charge/slide stay active while your finger stays down.
-- Swipe across controls: no stuck input after finger leaves a button.
+- Joystick controls: left-side drag moves the nub, changes movement strength, and resets on release.
+- Tap controls: right-side Jump and Smash buttons respond instantly.
+- Hold controls: slide/smash behavior stays active while your finger stays down.
 - Multi-touch combo: hold movement + tap Jump/Smash at the same time.
 - Virtual joystick/buttons area: no page scroll, pull-to-refresh, pinch zoom, or double-tap zoom while playing.
 - Pause/resume: pausing clears held inputs; resuming does not keep phantom movement.
@@ -945,13 +951,12 @@ Before release, re-test every fixed mobile issue on at least **two real devices*
 - **Jump:** tap `Space`
 - **Slide:** hold `Space`
 - **Trunk smash:** `Shift`
-- **Phone/mobile (landscape):** controls appear immediately after you press **Begin the Trail** (when Touch mode is Auto or Always). Left thumb: **Run + Left/Right steering**. Right thumb: **Jump/Slide, Charge, Smash**.
-- **Phone/mobile (landscape):** controls appear immediately after you press **Begin the Trail** (when Touch mode is Auto or Always). Left thumb: **Run/Charge**. Right thumb: **Left, Right, Slide, Smash**.
-- **Tablet:** touch controls stay enabled with **tablet-optimized spacing and button sizing** for easier taps.
+- **Phone/mobile (landscape):** controls appear after you press **Begin the Trail** when Touch mode is Auto or Always. Left thumb: floating joystick for forward, back-up, and steering. Right thumb: Jump and Smash buttons.
+- **Tablet:** touch controls use the same floating joystick with tablet-friendly spacing and button sizing.
 - **Desktop:** **keyboard-first controls are preserved** (same key mappings as before).
 - **2-in-1 laptops:** default behavior is **Auto** (touch controls on tablet/phone-like layouts, keyboard-first on desktop-wide layouts). You can override this in **Settings → Controls** with **Touch: Auto / Always / Off**.
 - **How to turn on Always mode:** open **Settings** (title screen or pause menu) → **Controls** → set **Touch** to **Always**.
-- **What Always mode does:** on-screen touch buttons stay visible during active gameplay, including desktop/laptop if you want touch buttons shown at all times.
+- **What Always mode does:** on-screen touch controls stay visible during active gameplay on touch phone/tablet layouts, while desktop keyboard-first play stays uncluttered.
 
 ## Mobile layout notes
 

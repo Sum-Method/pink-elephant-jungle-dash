@@ -1427,6 +1427,92 @@ button:disabled {
   z-index: 24;
 }
 
+.mobile-joystick-touch-zone {
+  bottom: 0;
+  left: 0;
+  pointer-events: auto;
+  position: absolute;
+  top: 0;
+  touch-action: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  width: 50vw;
+  z-index: 1;
+}
+
+.mobile-joystick {
+  --joystick-glow-x: 0%;
+  --joystick-glow-y: 0%;
+  --joystick-nub-x: 0px;
+  --joystick-nub-y: 0px;
+  --joystick-strength: 0;
+  aspect-ratio: 1;
+  background:
+    radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.08), transparent 44%),
+    rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(6px);
+  border: 2px solid rgba(255, 255, 255, 0.35);
+  border-radius: 50%;
+  box-shadow:
+    0 16px 34px rgba(0, 0, 0, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.16);
+  height: clamp(120px, 18vmin, 156px);
+  left: 18%;
+  opacity: 0;
+  overflow: hidden;
+  pointer-events: none;
+  position: fixed;
+  top: 72%;
+  transform: translate(-50%, -50%);
+  transition: opacity 120ms ease;
+  width: clamp(120px, 18vmin, 156px);
+  z-index: 74;
+}
+
+.mobile-joystick.active {
+  opacity: 0.86;
+}
+
+.joystick-direction-glow {
+  background: radial-gradient(
+    circle at calc(50% + var(--joystick-glow-x)) calc(50% + var(--joystick-glow-y)),
+    rgba(255, 243, 176, 0.78) 0,
+    rgba(93, 237, 173, 0.34) 26%,
+    transparent 60%
+  );
+  border-radius: 50%;
+  inset: 8px;
+  opacity: var(--joystick-strength);
+  position: absolute;
+  transition: opacity 80ms ease;
+}
+
+.joystick-nub {
+  background:
+    radial-gradient(circle at 36% 28%, rgba(255, 255, 255, 0.72), transparent 34%),
+    rgba(255, 255, 255, 0.45);
+  border: 2px solid rgba(255, 255, 255, 0.8);
+  border-radius: 50%;
+  box-shadow:
+    0 0 18px rgba(255, 255, 255, 0.25),
+    0 8px 18px rgba(0, 0, 0, 0.22);
+  height: clamp(48px, 7.2vmin, 64px);
+  left: 50%;
+  position: absolute;
+  top: 50%;
+  transform: translate(calc(-50% + var(--joystick-nub-x)), calc(-50% + var(--joystick-nub-y)));
+  transition: transform 120ms ease, box-shadow 120ms ease;
+  width: clamp(48px, 7.2vmin, 64px);
+}
+
+.mobile-joystick.active .joystick-nub {
+  box-shadow:
+    0 0 30px rgba(255, 255, 255, 0.36),
+    0 8px 18px rgba(0, 0, 0, 0.28);
+  transition: transform 34ms linear, box-shadow 80ms ease;
+}
+
 .mobile-controls button {
   pointer-events: auto;
   touch-action: none;
@@ -1522,6 +1608,7 @@ button:disabled {
   display: grid;
   grid-template-columns: 1fr;
   gap: clamp(8px, 1.4vw, 12px);
+  z-index: 2;
 }
 
 .mobile-right-cluster button {
@@ -2626,6 +2713,14 @@ button:disabled {
 .layout-tablet-landscape .touch-control-button {
   min-width: clamp(94px, 13vw, 122px);
   min-height: clamp(94px, 13vw, 122px);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .mobile-controls {
+    display: none !important;
+    pointer-events: none !important;
+    visibility: hidden !important;
+  }
 }
 
 .layout-tablet-landscape .hud-score-stack { padding: 0.36rem 0.58rem; }

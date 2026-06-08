@@ -90,6 +90,7 @@ const OPENING_CUTSCENE_VIDEO_PATH = "assets/videos/Home_in_the_Herd_.mp4";
 const LEVEL_1_REWARD_CUTSCENE_VIDEO_PATH = "assets/videos/Blue-Butterly-cutscene.%20mp4.mp4";
 const FINALE_CUTSCENE_VIDEO_PATH = "assets/videos/finale.mp4";
 const CUTSCENE_CONTROL_SELECTOR = "[data-cutscene-control]";
+const TOUCH_JOYSTICK_ZERO = Object.freeze({ x: 0, y: 0, strength: 0 });
 const SNAKE_GATE_VISUAL_WIDTH_MULTIPLIER = 1.35;
 const SNAKE_GATE_VISUAL_DEPTH_MULTIPLIER = 1.08;
 const SNAKE_GATE_VISUAL_Y_OFFSET = -1.25;
@@ -417,6 +418,7 @@ export default function App() {
   const stampedeRef = useRef({ nextStepTime: 0 });
   const gameStartTimeRef = useRef(null);
   const touchInputDetectedRef = useRef(false);
+  const touchJoystickRef = useRef(TOUCH_JOYSTICK_ZERO);
   const immersiveRequestedRef = useRef(false);
   const pendingLevelStartRef = useRef(null);
   const transitionCounterRef = useRef(0);
@@ -809,12 +811,16 @@ export default function App() {
   function setPausedState(nextPaused) {
     const shouldPause = Boolean(nextPaused) && startedRef.current && !completeRef.current && !gameOverRef.current;
     if (pausedRef.current === shouldPause) {
-      if (shouldPause) keyRef.current = createKeys();
+      if (shouldPause) {
+        keyRef.current = createKeys();
+        touchJoystickRef.current = TOUCH_JOYSTICK_ZERO;
+      }
       return;
     }
 
     pausedRef.current = shouldPause;
     keyRef.current = createKeys();
+    touchJoystickRef.current = TOUCH_JOYSTICK_ZERO;
     if (shouldPause) {
       pauseStartedAtRef.current = performance.now();
       audioManagerRef.current?.updateGameplayMusic({ charge: 0, isPlaying: false });
@@ -953,10 +959,6 @@ export default function App() {
     const tabletLikeQuery = window.matchMedia("(max-width: 1280px) and (orientation: landscape)");
     const phoneLikeQuery = window.matchMedia("(max-width: 900px)");
     const updateVisibility = () => {
-      if (touchControlsMode === "always") {
-        setTouchControlsVisible(true);
-        return;
-      }
       if (touchControlsMode === "off") {
         setTouchControlsVisible(false);
         return;
@@ -965,8 +967,8 @@ export default function App() {
       const touchDetected = touchDeviceQuery.matches || hasTouchCapability || touchInputDetectedRef.current;
       const isLandscape = (window.visualViewport?.width ?? window.innerWidth) >= (window.visualViewport?.height ?? window.innerHeight);
       const isPhoneOrTabletWidth = phoneLikeQuery.matches || tabletLikeQuery.matches;
-      const shouldShowAuto = touchDetected && (layoutMode === "phone-landscape" || layoutMode === "tablet-landscape" || (isLandscape && isPhoneOrTabletWidth));
-      setTouchControlsVisible(shouldShowAuto);
+      const isPhoneOrTabletLayout = layoutMode === "phone-landscape" || layoutMode === "tablet-landscape" || (isLandscape && isPhoneOrTabletWidth);
+      setTouchControlsVisible(touchDetected && isPhoneOrTabletLayout);
     };
     const showForTouchInput = (event) => {
       if (event.pointerType === "touch" || event.pointerType === "pen") {
@@ -1003,9 +1005,16 @@ export default function App() {
   useEffect(() => {
     const gameplayActive = started && !paused && !complete && !gameOver;
     if (!gameplayActive) return;
-    const autoShouldShow = layoutMode === "phone-landscape" || layoutMode === "tablet-landscape" || (navigator.maxTouchPoints > 0 && layoutMode === "desktop");
+    const coarsePointer = window.matchMedia?.("(hover: none) and (pointer: coarse)")?.matches ?? false;
+    const touchCapable = navigator.maxTouchPoints > 0 || coarsePointer || touchInputDetectedRef.current;
+    const touchLayout = layoutMode === "phone-landscape" || layoutMode === "tablet-landscape";
 
-    if (touchControlsMode === "always" || (touchControlsMode === "auto" && autoShouldShow)) {
+    if (touchControlsMode === "off" || !touchCapable || !touchLayout) {
+      setTouchControlsVisible(false);
+      return;
+    }
+
+    if (touchControlsMode === "always" || touchControlsMode === "auto") {
       touchInputDetectedRef.current = true;
       setTouchControlsVisible(true);
     }
@@ -1181,16 +1190,26 @@ export default function App() {
     return () => window.clearInterval(timer);
   }, [complete, gameOver, paused, started, tryImmersiveMode]);
 
-  function handleTouchControlChange(code, isPressed) {
+  const handleTouchControlChange = useCallback((code, isPressed) => {
     if (pausedRef.current || completeRef.current || gameOverRef.current) {
       setKeyState(keyRef.current, code, false, "touch");
       return;
     }
     setKeyState(keyRef.current, code, isPressed, "touch");
-  }
+  }, []);
+
+  const handleTouchJoystickChange = useCallback((values) => {
+    if (pausedRef.current || completeRef.current || gameOverRef.current) {
+      touchJoystickRef.current = TOUCH_JOYSTICK_ZERO;
+      return;
+    }
+    touchJoystickRef.current = values;
+  }, []);
 
   function releaseTouchInputs() {
+    touchJoystickRef.current = TOUCH_JOYSTICK_ZERO;
     setKeyState(keyRef.current, "ArrowUp", false, "touch");
+    setKeyState(keyRef.current, "ArrowDown", false, "touch");
     setKeyState(keyRef.current, "ArrowLeft", false, "touch");
     setKeyState(keyRef.current, "ArrowRight", false, "touch");
     setKeyState(keyRef.current, "Space", false, "touch");
@@ -2935,6 +2954,7 @@ export default function App() {
         autoChargeTimer: start ? (levelSpeed.startAssistDuration ?? MOVEMENT.startAssistDuration) : 0,
       }));
       keyRef.current = createKeys();
+      touchJoystickRef.current = TOUCH_JOYSTICK_ZERO;
       resetTransientEffects();
       resetSceneEntities();
       hudRefresh.values.clear();
@@ -3188,6 +3208,7 @@ export default function App() {
 
     function suspendGameplay(reason = "background") {
       keyRef.current = createKeys();
+      touchJoystickRef.current = TOUCH_JOYSTICK_ZERO;
       captureLifecycleSnapshot(reason);
       if (startedRef.current && !completeRef.current && !gameOverRef.current) setPausedState(true);
     }
@@ -3261,18 +3282,19 @@ export default function App() {
 
     function updatePhysics(dt) {
       const k = keyRef.current;
+      const joystick = touchJoystickRef.current;
       const playing = startedRef.current && !completeRef.current && !gameOverRef.current && !pausedRef.current && body.lives > 0;
       const charge = clamp(body.speed / levelMaxSpeed, 0, 1);
       const wasGrounded = body.grounded;
 
       tickPlayerTimers(body, dt);
 
-      const intent = getPlayerInputIntent(body, k, playing);
+      const intent = getPlayerInputIntent(body, k, playing, joystick);
       updatePlayerSpeed(body, dt, playing, intent, levelSpeed);
 
       let ny = body.y;
       let nz = body.z - body.speed * dt;
-      let nextLocalX = updatePlayerSteering(body, k, dt, playing, nz);
+      let nextLocalX = updatePlayerSteering(body, k, dt, playing, nz, joystick);
       let nx = worldX(nextLocalX, nz);
 
       function playJumpEvent(event) {
@@ -4269,6 +4291,7 @@ export default function App() {
           disabled={!started || paused || complete || gameOver || settingsOpen}
           interactionLocked={paused || complete || gameOver || settingsOpen || !started}
           onControlChange={handleTouchControlChange}
+          onJoystickChange={handleTouchJoystickChange}
         />
       )}
 

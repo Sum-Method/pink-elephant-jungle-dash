@@ -110,8 +110,8 @@ export function SettingsPanel({
             </div>
             <div className={infoCardClass}>
               <p className="settings-info-title">Mobile</p>
-              <p>Drag: Steer</p>
-              <p>Buttons: Jump / Smash</p>
+              <p>Left thumb: Joystick</p>
+              <p>Right thumb: Jump / Smash</p>
             </div>
             <div className={`${infoCardClass} settings-touch-card`}>
               <p id="settings-touch-title" className="settings-info-title">Touch Controls</p>

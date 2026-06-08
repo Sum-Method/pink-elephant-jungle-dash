@@ -20,19 +20,31 @@ export function tickPlayerTimers(body, dt) {
   return body;
 }
 
-export function getPlayerInputIntent(body, keys, playing) {
-  const wantsReverse = playing && keys.ArrowDown && body.grounded;
+function joystickAxis(joystick, axis) {
+  if (!joystick || joystick.strength <= 0) return 0;
+  return clamp(Number(joystick[axis] ?? 0), -1, 1);
+}
+
+export function getPlayerInputIntent(body, keys, playing, joystick = null) {
+  const joystickY = joystickAxis(joystick, "y");
+  const joystickForwardStrength = Math.max(0, -joystickY);
+  const joystickReverseStrength = Math.max(0, joystickY);
+  const wantsReverse = playing && body.grounded && (keys.ArrowDown || joystickReverseStrength > 0);
   const hasStartAssist = body.autoChargeTimer > 0;
-  const wantsForward = playing && (keys.ArrowUp || hasStartAssist) && !wantsReverse;
-  return { wantsReverse, wantsForward };
+  const forwardStrength = keys.ArrowUp || hasStartAssist ? 1 : joystickForwardStrength;
+  const reverseStrength = keys.ArrowDown ? 1 : joystickReverseStrength;
+  const wantsForward = playing && forwardStrength > 0 && !wantsReverse;
+  return { wantsReverse, wantsForward, forwardStrength, reverseStrength };
 }
 
 export function updatePlayerSpeed(body, dt, playing, intent, speedConfig = MOVEMENT) {
   if (playing && (body.hurtTimer === 0 || intent.wantsReverse)) {
     if (intent.wantsForward) {
-      body.speed = Math.min(speedConfig.maxSpeed, body.speed + speedConfig.acceleration * dt);
+      const strength = clamp(intent.forwardStrength ?? 1, 0, 1);
+      body.speed = Math.min(speedConfig.maxSpeed, body.speed + speedConfig.acceleration * strength * dt);
     } else if (intent.wantsReverse) {
-      body.speed = Math.max(-speedConfig.reverseMaxSpeed, body.speed - speedConfig.reverseAcceleration * dt);
+      const strength = clamp(intent.reverseStrength ?? 1, 0, 1);
+      body.speed = Math.max(-speedConfig.reverseMaxSpeed, body.speed - speedConfig.reverseAcceleration * strength * dt);
     } else {
       body.speed *= Math.exp(-speedConfig.friction * dt);
       const idleStep = speedConfig.idleDeceleration * dt;
@@ -48,10 +60,11 @@ export function updatePlayerSpeed(body, dt, playing, intent, speedConfig = MOVEM
   return body.speed;
 }
 
-export function updatePlayerSteering(body, keys, dt, playing, z) {
+export function updatePlayerSteering(body, keys, dt, playing, z, joystick = null) {
   let nextLocalX = body.localX;
   if (playing && body.hurtTimer === 0) {
-    const steer = (keys.ArrowRight ? 1 : 0) - (keys.ArrowLeft ? 1 : 0);
+    const joystickX = joystickAxis(joystick, "x");
+    const steer = Math.abs(joystickX) > 0 ? joystickX : (keys.ArrowRight ? 1 : 0) - (keys.ArrowLeft ? 1 : 0);
     nextLocalX = clamp(nextLocalX + steer * MOVEMENT.steerSpeed * dt, -CONFIG.corridorHalfWidth, CONFIG.corridorHalfWidth);
     body.yaw = lerp(body.yaw, steer * MOVEMENT.steeringYawLean + trackAngle(z), 1 - Math.exp(-MOVEMENT.turnDamping * dt));
   }

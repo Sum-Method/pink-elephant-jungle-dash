@@ -506,6 +506,21 @@ export function runSelfTests() {
     clampedLocalX === CONFIG.corridorHalfWidth && steeringBody.yaw !== 0,
   );
 
+  const analogSteeringBody = createPlayerBody();
+  const analogSteeringKeys = createKeys();
+  const analogSteeringX = updatePlayerSteering(
+    analogSteeringBody,
+    analogSteeringKeys,
+    0.2,
+    true,
+    analogSteeringBody.z,
+    { x: 0.5, y: 0, strength: 0.5 },
+  );
+  assert(
+    "mobile joystick steers with analog strength",
+    analogSteeringX > 0 && analogSteeringX < MOVEMENT.steerSpeed * 0.2,
+  );
+
   const comboBody = createPlayerBody({ grounded: false, coyoteTimer: 0.08, multiplier: 3, multiplierCombo: 9, multiplierTimer: 0.01 });
   tickPlayerTimers(comboBody, 0.1);
   assert(
@@ -555,6 +570,32 @@ export function runSelfTests() {
   assert(
     "player helper accelerates reverse from rest",
     reverseIntent.wantsReverse && reverseBody.speed < 0 && reverseBody.speed >= -MOVEMENT.reverseMaxSpeed,
+  );
+
+  const analogForwardBody = createPlayerBody();
+  const analogForwardIntent = getPlayerInputIntent(
+    analogForwardBody,
+    createKeys(),
+    true,
+    { x: 0.25, y: -0.5, strength: 0.56 },
+  );
+  updatePlayerSpeed(analogForwardBody, 0.5, true, analogForwardIntent);
+  assert(
+    "mobile joystick forward drag uses partial speed strength",
+    analogForwardIntent.wantsForward && analogForwardBody.speed > 0 && analogForwardBody.speed < MOVEMENT.acceleration * 0.5,
+  );
+
+  const analogReverseBody = createPlayerBody();
+  const analogReverseIntent = getPlayerInputIntent(
+    analogReverseBody,
+    createKeys(),
+    true,
+    { x: 0, y: 0.45, strength: 0.45 },
+  );
+  updatePlayerSpeed(analogReverseBody, 0.5, true, analogReverseIntent);
+  assert(
+    "mobile joystick downward drag backs up with partial strength",
+    analogReverseIntent.wantsReverse && analogReverseBody.speed < 0 && analogReverseBody.speed > -MOVEMENT.reverseAcceleration * 0.5,
   );
 
   const startAssistBody = createPlayerBody({ autoChargeTimer: MOVEMENT.startAssistDuration });
