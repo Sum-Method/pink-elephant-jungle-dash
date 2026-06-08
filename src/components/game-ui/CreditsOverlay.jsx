@@ -6,10 +6,9 @@ const creditsTabs = [
   ["audio", "Audio"],
   ["engine", "Engine"],
   ["attribution", "Credits"],
-  ["build", "Build"],
 ];
 
-export function CreditsOverlay({ open, appVersion, appBuildLabel, onClose }) {
+export function CreditsOverlay({ open, onClose }) {
   const [activeSection, setActiveSection] = useState("game");
 
   useEffect(() => {
@@ -83,19 +82,6 @@ export function CreditsOverlay({ open, appVersion, appBuildLabel, onClose }) {
             <article className="credits-card">
               <h3>Project Notes</h3>
               <p>Keep third-party asset names, license links, and creator credits here when final assets are chosen.</p>
-            </article>
-          </div>
-        );
-      case "build":
-        return (
-          <div className="credits-panel-grid credits-panel-grid-two">
-            <article className="credits-card credits-build-card">
-              <h3>Version</h3>
-              <p>{appVersion}</p>
-            </article>
-            <article className="credits-card credits-build-card">
-              <h3>Build</h3>
-              <p>{appBuildLabel}</p>
             </article>
           </div>
         );

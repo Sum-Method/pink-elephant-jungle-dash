@@ -1,11 +1,14 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
+import { flushSync } from "react-dom";
 import * as THREE from "three";
+import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { SpeedInsights } from "@vercel/speed-insights/react";
 import { Analytics } from "@vercel/analytics/react";
 
 import { Icon } from "./components/Icon.jsx";
 import { CreditsOverlay } from "./components/game-ui/CreditsOverlay.jsx";
 import { LevelSelectOverlay } from "./components/game-ui/LevelSelectOverlay.jsx";
+import { OpeningCutsceneOverlay } from "./components/game-ui/OpeningCutsceneOverlay.jsx";
 import { RotateOverlay } from "./components/game-ui/RotateOverlay.jsx";
 import { SettingsPanel } from "./components/game-ui/SettingsPanel.jsx";
 import { TouchControls } from "./components/game-ui/TouchControls.jsx";
@@ -76,14 +79,62 @@ import {
   unlockAchievement,
 } from "./game/save/saveManager.js";
 import { trackAngle, trackCenter, worldPosition, worldX } from "./game/track.js";
-import { APP_BUILD_LABEL, APP_UPDATE_NOTE, APP_VERSION } from "./appInfo.js";
 import { createCourseGeometry, createTrackRibbonGeometry } from "./game/scene/createCourseGeometry.js";
 import { createRenderer } from "./game/scene/createRenderer.js";
 import { createSceneBasics } from "./game/scene/createSceneBasics.js";
 import { createSceneCleanup } from "./game/scene/createSceneCleanup.js";
 import { createSharedResources } from "./game/scene/createSharedResources.js";
 
-const nl = String.fromCharCode(10);
+const SNAKE_GATE_MODEL_PATH = "assets/models/obstacles/snake-gate.glb";
+const OPENING_CUTSCENE_VIDEO_PATH = "assets/videos/Home_in_the_Herd_.mp4";
+const LEVEL_1_REWARD_CUTSCENE_VIDEO_PATH = "assets/videos/Blue-Butterly-cutscene.%20mp4.mp4";
+const FINALE_CUTSCENE_VIDEO_PATH = "assets/videos/finale.mp4";
+const CUTSCENE_CONTROL_SELECTOR = "[data-cutscene-control]";
+const SNAKE_GATE_VISUAL_WIDTH_MULTIPLIER = 1.35;
+const SNAKE_GATE_VISUAL_DEPTH_MULTIPLIER = 1.08;
+const SNAKE_GATE_VISUAL_Y_OFFSET = -1.25;
+
+function resolvePublicAssetUrl(path) {
+  const base = import.meta.env.BASE_URL || "/";
+  return `${base.endsWith("/") ? base : `${base}/`}${path.replace(/^\/+/, "")}`;
+}
+
+function prepareSnakeGateTemplate(template) {
+  template.traverse((node) => {
+    if (!node.isMesh) return;
+    node.castShadow = true;
+    node.receiveShadow = true;
+    node.frustumCulled = false;
+  });
+  return template;
+}
+
+function loadSnakeGateModelTemplate() {
+  const loader = new GLTFLoader();
+  return loader.loadAsync(resolvePublicAssetUrl(SNAKE_GATE_MODEL_PATH)).then((gltf) => prepareSnakeGateTemplate(gltf.scene));
+}
+
+function createSnakeGateModelRoot(template, branch) {
+  const clone = template.clone(true);
+  const bounds = new THREE.Box3().setFromObject(clone);
+  const size = new THREE.Vector3();
+  const center = new THREE.Vector3();
+  bounds.getSize(size);
+  bounds.getCenter(center);
+
+  const root = new THREE.Group();
+  root.name = "snake-gate-glb";
+  clone.position.sub(center);
+  root.add(clone);
+  root.position.y = SNAKE_GATE_VISUAL_Y_OFFSET;
+  root.scale.set(
+    size.x > 0 ? (branch.width * SNAKE_GATE_VISUAL_WIDTH_MULTIPLIER) / size.x : 1,
+    size.y > 0 ? branch.height / size.y : 1,
+    size.z > 0 ? (branch.depth * SNAKE_GATE_VISUAL_DEPTH_MULTIPLIER) / size.z : 1,
+  );
+  return root;
+}
+
 // Development-only helper: turn this on locally to inspect generated texture canvases.
 const SHOW_TEXTURE_PREVIEW = false;
 const JUNGLE_LAYOUT_SEED = 0x5eed2026;
@@ -326,7 +377,7 @@ function getSafeElapsedMs(startTime, now = performance.now()) {
   return Math.max(0, now - safeStartTime);
 }
 
-function StatusMarker() {
+function SelfTestRunner() {
   useEffect(() => {
     const results = runSelfTests();
     const passCount = results.filter((r) => r.pass).length;
@@ -344,13 +395,7 @@ function StatusMarker() {
     }
   }, []);
 
-  return (
-    <div className="mt-4 space-y-0.5 text-[10px] font-semibold tracking-wide text-emerald-100/45" aria-label="Build status marker">
-      <div>Version: {APP_VERSION}</div>
-      <div>Build: {APP_BUILD_LABEL}</div>
-      <div>Update: {APP_UPDATE_NOTE}</div>
-    </div>
-  );
+  return null;
 }
 
 export default function App() {
@@ -359,7 +404,6 @@ export default function App() {
   const startedRef = useRef(false);
   const completeRef = useRef(false);
   const gameOverRef = useRef(false);
-  const debugRef = useRef(false);
   const pausedRef = useRef(false);
   const pauseStartedAtRef = useRef(null);
   const lifecycleSnapshotRef = useRef(null);
@@ -382,18 +426,21 @@ export default function App() {
   const sceneErrorRef = useRef(null);
   const debugLevelBootedRef = useRef(false);
   const completeScreenOpenedAtRef = useRef(0);
+  const openingCutsceneRef = useRef(null);
+  const openingCutsceneFinishingRef = useRef(false);
+  const level1RewardCutsceneRef = useRef(null);
+  const level1RewardCutsceneFinishingRef = useRef(false);
+  const finaleCutsceneFinishingRef = useRef(false);
+  const cutsceneOpenRef = useRef(false);
   const activeLevelRef = useRef(buildLevelById("level-1"));
   const profileSnapshotRef = useRef(null);
   const saveSystemReadyRef = useRef(false);
-  const testSummaryRef = useRef("Self-tests pending");
-
   const [started, setStarted] = useState(false);
   const [complete, setComplete] = useState(false);
   const [gameOver, setGameOver] = useState(false);
-  const [debug, setDebug] = useState(false);
   const [paused, setPaused] = useState(false);
   const [sceneError, setSceneError] = useState(null);
-  const [showSaveDebugTools, setShowSaveDebugTools] = useState(false);
+  const [showSaveTools, setShowSaveTools] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [settingsContext, setSettingsContext] = useState("title");
   const [levelSelectOpen, setLevelSelectOpen] = useState(false);
@@ -412,6 +459,9 @@ export default function App() {
   const [currentLevelId, setCurrentLevelId] = useState("level-1");
   const [isLevelTransitioning, setIsLevelTransitioning] = useState(false);
   const [completeInputLocked, setCompleteInputLocked] = useState(false);
+  const [openingCutsceneOpen, setOpeningCutsceneOpen] = useState(false);
+  const [level1RewardCutsceneOpen, setLevel1RewardCutsceneOpen] = useState(false);
+  const [finaleCutsceneOpen, setFinaleCutsceneOpen] = useState(false);
   const [immersiveReady, setImmersiveReady] = useState(false);
   const [viewportWidth, setViewportWidth] = useState(() => getVisualViewportWidth());
   const [viewportHeight, setViewportHeight] = useState(() => getVisualViewportHeight());
@@ -451,8 +501,13 @@ export default function App() {
   const levelSelectOptions = getAllLevelConfigs();
   const hasNextLevel = Boolean(nextLevelId);
   const hasPlayableNextLevel = Boolean(nextLevelId && nextLevelConfig);
-  const hasNextLevelConfigMismatch = Boolean(hasNextLevel && (!nextLevelId || !nextLevelConfig));
   const isGameplayActive = started && !paused && !complete && !gameOver;
+  const openingCutsceneVideoSrc = resolvePublicAssetUrl(OPENING_CUTSCENE_VIDEO_PATH);
+  const level1RewardCutsceneVideoSrc = resolvePublicAssetUrl(LEVEL_1_REWARD_CUTSCENE_VIDEO_PATH);
+  const finaleCutsceneVideoSrc = resolvePublicAssetUrl(FINALE_CUTSCENE_VIDEO_PATH);
+  const shouldPlayLevel1RewardCutscene = currentLevelId === "level-1" && nextLevelId === "level-2";
+  const level1RewardCutsceneActive = level1RewardCutsceneOpen && complete && currentLevelId === "level-1" && !sceneError;
+  const finaleCutsceneActive = finaleCutsceneOpen && complete && currentLevelId === "level-3" && !sceneError;
   const COMPLETE_SCREEN_INPUT_LOCK_MS = 900;
 
   const completeButtonDisabled = isLevelTransitioning || completeInputLocked;
@@ -748,7 +803,6 @@ export default function App() {
     cratesTally: useRef(null),
     multiplierBadge: useRef(null),
     scoreTally: useRef(null),
-    debug: useRef(null),
   };
 
 
@@ -867,6 +921,11 @@ export default function App() {
 
   function startAudio() {
     return audioManagerRef.current?.startAudio() ?? null;
+  }
+
+  function stopGameAudioForCutscene() {
+    stopTitleTheme(0);
+    audioManagerRef.current?.updateGameplayMusic({ charge: 0, isPlaying: false });
   }
 
   useEffect(() => {
@@ -1251,6 +1310,10 @@ export default function App() {
   useEffect(() => {
     function beginTitleThemeFromGesture(event) {
       if (event?.type === "keydown" && event.code === "F12") return;
+      const target = event?.target;
+      const elementTarget = typeof Element !== "undefined" && target instanceof Element ? target : null;
+      if (elementTarget?.closest(CUTSCENE_CONTROL_SELECTOR)) return;
+      if (cutsceneOpenRef.current) return;
       startTitleTheme();
     }
 
@@ -1262,6 +1325,12 @@ export default function App() {
       audioManagerRef.current?.dispose();
     };
   }, []);
+
+  useEffect(() => {
+    const cutsceneOpen = openingCutsceneOpen || level1RewardCutsceneOpen || finaleCutsceneOpen;
+    cutsceneOpenRef.current = cutsceneOpen;
+    if (cutsceneOpen) stopGameAudioForCutscene();
+  }, [openingCutsceneOpen, level1RewardCutsceneOpen, finaleCutsceneOpen]);
 
 
   useEffect(() => {
@@ -1374,6 +1443,11 @@ export default function App() {
 
     logScenePhase("textures");
     textures = createSceneTextures();
+    const snakeGateModelPromise = loadSnakeGateModelTemplate()
+      .catch((error) => {
+        console.warn("[snake-gate-model-fallback] Using procedural Snake Gate fallback.", error);
+        return null;
+      });
 
     logScenePhase("course-geometry");
     const jungle = new THREE.Mesh(new THREE.BoxGeometry(CONFIG.floorWidth, 1.2, courseFloorLength), new THREE.MeshStandardMaterial({ map: textures.ground, roughness: 0.98 }));
@@ -2480,6 +2554,15 @@ export default function App() {
           group.add(leafTassel);
         }
       }
+      const proceduralSnakeGateChildren = [...group.children];
+      snakeGateModelPromise.then((template) => {
+        if (disposed || !template) return;
+        const modelRoot = createSnakeGateModelRoot(template, branch);
+        proceduralSnakeGateChildren.forEach((child) => {
+          child.visible = false;
+        });
+        group.add(modelRoot);
+      });
       scene.add(group);
       colliders.push({ type: "branch", active: true, mesh: group, x: posOnPath.x, y: branch.yOffset, z: posOnPath.z, w: branch.width, h: branch.height, d: branch.depth });
     });
@@ -3010,9 +3093,10 @@ export default function App() {
       popText("JUNGLE GATE!", body.x, body.y + 3, popZ - 2, "#fff1a6");
       playTone("gate");
       pulseHaptic("success");
+      const shouldPlayFinaleCutscene = currentLevelId === "level-3" && !hasPlayableNextLevel;
       void recordRunOutcome("complete", results, { levelId: currentLevelId, levelName: currentLevelConfig?.name, hasNextLevel: hasPlayableNextLevel });
       setFinalResults(results);
-      setShowFinalReward(!hasPlayableNextLevel);
+      setShowFinalReward(false);
       closeSettingsPanel();
       setSettingsContext("title");
       keyRef.current = createKeys();
@@ -3021,6 +3105,10 @@ export default function App() {
       console.debug("[complete-screen-opened] complete overlay opened", { at: completeScreenOpenedAtRef.current });
       setCompleteInputLocked(true);
       setCompleteInputLocked(true);
+      if (shouldPlayFinaleCutscene) {
+        finaleCutsceneFinishingRef.current = false;
+        setFinaleCutsceneOpen(true);
+      }
       setComplete(true);
     }
 
@@ -3075,10 +3163,6 @@ export default function App() {
       if (!isAllowedKey(e.code)) return;
       e.preventDefault();
       const wasPressed = Boolean(keyRef.current.__pressed[e.code]);
-      if (e.code === "Backquote" && !wasPressed) {
-        debugRef.current = !debugRef.current;
-        setDebug(debugRef.current);
-      }
       if (e.code === "KeyM") {
         if (!e.repeat && !wasPressed) toggleAudioState("muted");
         return;
@@ -3735,7 +3819,6 @@ export default function App() {
 
       setTextIfChanged(ui.scoreTally, "scoreTally", body.score);
 
-      const roundedCharge = Math.round(charge * 100);
       const wasSpeedometerGlowing = hudRefresh.lastSpeedometerCharge !== null && hudRefresh.lastSpeedometerCharge > MOVEMENT.mightyChargeThreshold;
       const isSpeedometerGlowing = charge > MOVEMENT.mightyChargeThreshold;
       const crossedChargeGlow = wasSpeedometerGlowing !== isSpeedometerGlowing;
@@ -3761,19 +3844,6 @@ export default function App() {
         setTextIfChanged(ui.prompt, "prompt", prompt);
       }
 
-      if (ui.debug.current) {
-        setTextIfChanged(ui.debug, "debug", [
-          `FPS ${fps}`,
-          `Perf ${perfState.windowFps}fps / FX ${Math.round(perfState.effectQuality * 100)}% / Near obs ${perfState.nearbyObstacleCount}`,
-          `Section ${section}`,
-          `X ${body.x.toFixed(2)}  Y ${body.y.toFixed(2)}  Z ${body.z.toFixed(2)}`,
-          `Speed ${body.speed.toFixed(2)}  Charge ${roundedCharge}%`,
-          `Grounded ${body.grounded}  Slide ${body.slideTimer > 0}`,
-          `Lives ${body.lives}  Health ${body.health}`,
-          `Fruit ${body.fruitLifeCounter}/100`,
-          testSummaryRef.current,
-        ].join(nl));
-      }
     }
 
     function updateDom(now) {
@@ -3916,6 +3986,59 @@ export default function App() {
     setCurrentLevelId("level-1");
   }
 
+  function startNewGameWithOpeningCutscene() {
+    setSceneError(null);
+    resetCompleteScreenInputLock();
+    closeSettingsPanel();
+    closeLevelSelect();
+    closeCredits();
+    stopGameAudioForCutscene();
+    openingCutsceneFinishingRef.current = false;
+    flushSync(() => {
+      setOpeningCutsceneOpen(true);
+    });
+    openingCutsceneRef.current?.playWithSound();
+  }
+
+  function finishOpeningCutscene() {
+    if (openingCutsceneFinishingRef.current) return;
+    openingCutsceneFinishingRef.current = true;
+    setOpeningCutsceneOpen(false);
+    startNewGame();
+  }
+
+  function startLevel1RewardCutsceneBeforeNextLevel(levelId) {
+    if (levelId !== "level-2") {
+      startLevelById(levelId);
+      return;
+    }
+    setSceneError(null);
+    closeSettingsPanel();
+    closeLevelSelect();
+    closeCredits();
+    stopGameAudioForCutscene();
+    level1RewardCutsceneFinishingRef.current = false;
+    pendingLevelStartRef.current = null;
+    flushSync(() => {
+      setLevel1RewardCutsceneOpen(true);
+    });
+    level1RewardCutsceneRef.current?.playWithSound();
+  }
+
+  function finishLevel1RewardCutscene() {
+    if (level1RewardCutsceneFinishingRef.current) return;
+    level1RewardCutsceneFinishingRef.current = true;
+    setLevel1RewardCutsceneOpen(false);
+    startLevelById("level-2");
+  }
+
+  function finishFinaleCutscene() {
+    if (finaleCutsceneFinishingRef.current) return;
+    finaleCutsceneFinishingRef.current = true;
+    setFinaleCutsceneOpen(false);
+    setShowFinalReward(true);
+  }
+
   function startDemo() {
     startNewGame();
   }
@@ -4017,6 +4140,7 @@ export default function App() {
 
   return (
     <main className={`app-shell layout-${layoutMode} touch-mode-${touchControlsMode} ${accessibilityClassNames} ${touchControlsVisible ? "touch-controls-active" : ""} relative h-screen w-screen overflow-hidden bg-[#04140a] text-white ${immersiveReady ? "immersive-ready" : ""} ${paused ? "pause-overlay-active" : ""}`} data-game-state={gameShellState} data-template-title={GAME_TEMPLATE_CONFIG.title} data-orientation={isPortrait ? "portrait" : "landscape"} style={{ fontFamily: "system-ui, -apple-system, sans-serif", width: "100%", maxWidth: "100%", height: "100dvh", minHeight: viewportHeight ? `${Math.round(viewportHeight)}px` : "100dvh" }}>
+      <SelfTestRunner />
       <div className="app-frame" data-orientation={isPortrait ? "portrait" : "landscape"} style={{ paddingTop: "var(--hud-safe-top)", paddingRight: layoutMode === "phone-landscape" ? "0px" : "var(--hud-safe-right)", paddingBottom: "var(--hud-safe-bottom)", paddingLeft: layoutMode === "phone-landscape" ? "0px" : "var(--hud-safe-left)" }}>
         <div className="game-frame-stage" aria-hidden="true" />
         <div ref={mountRef} className={`absolute inset-0 h-full w-full ${isGameplayActive ? "gameplay-touch-zone" : ""}`} />
@@ -4148,15 +4272,40 @@ export default function App() {
         />
       )}
 
-      {import.meta.env.DEV && isGameplayActive && layoutMode === "phone-landscape" && (
-        <div className="hud-debug-mini" aria-hidden="true">
-          <div>layout: {layoutMode}</div>
-          <div>viewport: {Math.round(viewportWidth ?? 0)}x{Math.round(viewportHeight ?? 0)}</div>
-          <div>touch visible: {String(touchControlsVisible)}</div>
-          <div>touch mode: {touchControlsMode}</div>
-          <div>fullscreen: {String(Boolean(document.fullscreenElement))}</div>
-        </div>
-      )}
+      <OpeningCutsceneOverlay
+        ref={openingCutsceneRef}
+        open={openingCutsceneOpen && !started && !complete && !gameOver && !sceneError}
+        videoSrc={openingCutsceneVideoSrc}
+        title="Home in the Herd"
+        muted={audioState.muted}
+        playLabel="Play With Sound"
+        fallbackLabel="Start Level 1"
+        onPlaybackStart={stopGameAudioForCutscene}
+        onFinish={finishOpeningCutscene}
+      />
+
+      <OpeningCutsceneOverlay
+        ref={level1RewardCutsceneRef}
+        open={level1RewardCutsceneActive}
+        videoSrc={level1RewardCutsceneVideoSrc}
+        title="Blue Butterfly Reward"
+        muted={audioState.muted}
+        playLabel="Play With Sound"
+        fallbackLabel="Start Level 2"
+        onPlaybackStart={stopGameAudioForCutscene}
+        onFinish={finishLevel1RewardCutscene}
+      />
+
+      <OpeningCutsceneOverlay
+        open={finaleCutsceneActive}
+        videoSrc={finaleCutsceneVideoSrc}
+        title="Finale"
+        muted={audioState.muted}
+        playLabel="Play With Sound"
+        fallbackLabel="Show Final Reward"
+        onPlaybackStart={stopGameAudioForCutscene}
+        onFinish={finishFinaleCutscene}
+      />
 
       {/* START SCREEN */}
       {!started && !complete && !gameOver && !sceneError && (
@@ -4183,7 +4332,8 @@ export default function App() {
               <p className="mt-1 text-[11px] font-bold uppercase tracking-[0.14em] text-pink-200/80">Difficulty: Intro Trail</p>
             </section>
             <div className="title-main-actions mt-7 flex flex-col items-center gap-3">
-              <button onClick={startDemo}
+              <button onClick={startNewGameWithOpeningCutscene}
+              data-cutscene-control="true"
               className="title-begin-action rounded-full px-10 py-4 text-base font-black text-slate-950 transition hover:scale-105 active:scale-95"
               style={{ background: "#f472b6", boxShadow: "0 0 30px rgba(244,114,182,0.45)" }}>
               Begin the Trail
@@ -4204,13 +4354,12 @@ export default function App() {
             <div className="title-advanced-note mx-auto mt-3 rounded-full px-4 py-2 text-center text-[11px] font-bold tracking-wide text-emerald-100/50">
               Trail markings telegraph hazards early; smash crates for score streaks without covering the road.
             </div>
-            <div className="title-selftest-note"><StatusMarker /></div>
           </div>
         </section>
       )}
 
       {/* COMPLETE SCREEN */}
-      {complete && (
+      {complete && !level1RewardCutsceneActive && !finaleCutsceneActive && (
         <section className="complete-overlay pointer-events-auto absolute inset-0 z-40 flex items-center justify-center px-6"
           style={{ background: "rgba(0,0,0,0.52)", backdropFilter: "blur(4px)" }}>
           <div className="complete-card rounded-[2rem] p-10 text-center"
@@ -4224,21 +4373,6 @@ export default function App() {
                 ? "The Pink Elephant has completed the jungle trail."
                 : `Great run! You're ready for ${nextLevelConfig?.name ?? "the next level"}.`}
             </p>
-            <section
-              className="mx-auto mt-4 max-w-sm rounded-xl border border-amber-100/20 bg-black/20 px-3 py-2 text-left text-[11px] text-amber-100/70"
-              aria-label="Complete-screen transition debug marker"
-            >
-              <div className="font-semibold">Transition debug</div>
-              <ul className="mt-1 space-y-0.5">
-                <li>currentLevelId: {currentLevelId}</li>
-                <li>nextLevelId: {nextLevelId ?? "(none)"}</li>
-                <li>isLevelTransitioning: {String(isLevelTransitioning)}</li>
-                <li>sceneError: {sceneError ?? "(none)"}</li>
-              </ul>
-              {hasNextLevelConfigMismatch && (
-                <div className="mt-1 text-[11px] font-semibold text-amber-200">Next level config missing.</div>
-              )}
-            </section>
             {showFinalReward && (
               <section className="final-reward-screen mt-5 rounded-2xl border border-amber-200/35 bg-black/30 p-4 text-left">
                 <h3 className="text-sm font-black uppercase tracking-[0.18em] text-amber-100">Reward sequence unlocked</h3>
@@ -4260,7 +4394,7 @@ export default function App() {
             </div>
             <div className="complete-actions mt-8 flex flex-wrap items-center justify-center gap-3">
               {hasPlayableNextLevel ? (
-                <button onClick={(event) => handleContinueClick(event, () => { startLevelById(nextLevelId); }, "[continue-clicked]", { currentLevelId, nextLevelId, actionLabel: "startLevelById" })}
+                <button onClick={(event) => handleContinueClick(event, () => { shouldPlayLevel1RewardCutscene ? startLevel1RewardCutsceneBeforeNextLevel(nextLevelId) : startLevelById(nextLevelId); }, "[continue-clicked]", { currentLevelId, nextLevelId, actionLabel: shouldPlayLevel1RewardCutscene ? "level1RewardCutscene" : "startLevelById" })}
                   onKeyDown={handleCompleteActionKeyDown}
                   disabled={completeButtonDisabled}
                   className="complete-primary-action rounded-full bg-emerald-200 px-8 py-3 font-black text-emerald-950 transition hover:scale-105 active:scale-95">
@@ -4381,14 +4515,13 @@ export default function App() {
         showInstallCard={showInstallCard}
         onInstall={handleInstallGame}
         onDismissInstall={dismissInstallCard}
-        showSaveTools={showSaveDebugTools}
-        onToggleSaveTools={() => setShowSaveDebugTools((value) => !value)}
+        showSaveTools={showSaveTools}
+        onToggleSaveTools={() => setShowSaveTools((value) => !value)}
         onExportSave={handleExportSaveData}
         onImportSave={handleImportSaveData}
         onResetSave={handleResetSaveData}
         achievementRecords={achievementRecords}
         onOpenCredits={openCredits}
-        appVersion={APP_VERSION}
       />
 
       <LevelSelectOverlay
@@ -4402,8 +4535,6 @@ export default function App() {
 
       <CreditsOverlay
         open={creditsOpen}
-        appVersion={APP_VERSION}
-        appBuildLabel={APP_BUILD_LABEL}
         onClose={closeCredits}
       />
 
@@ -4417,11 +4548,6 @@ export default function App() {
 
       <RotateOverlay visible={showRotateOverlay} />
 
-      {/* DEBUG PANEL */}
-      {debug && isGameplayActive && (
-        <pre ref={ui.debug} className="pointer-events-none absolute bottom-4 right-4 z-10 min-w-56 rounded-2xl p-4 text-xs leading-relaxed text-lime-200"
-          style={{ background: "rgba(0,0,0,0.75)", border: "1px solid rgba(100,220,80,0.18)" }} />
-      )}
       </div>
       {enableVercelObservability && (
         <>

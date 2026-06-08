@@ -22,7 +22,7 @@ if (!window.__PEJD_BOOT__.versionLogged) {
 class AppErrorBoundary extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { error: null, copiedDebugInfo: false, copyDebugInfoFailed: false };
+    this.state = { error: null, copiedErrorInfo: false, copyErrorInfoFailed: false };
   }
 
   static getDerivedStateFromError(error) {
@@ -33,7 +33,7 @@ class AppErrorBoundary extends React.Component {
     console.error("Pink Elephant failed to render", error, info);
   }
 
-  buildDebugInfo() {
+  buildErrorInfo() {
     const error = this.state.error;
     return JSON.stringify({
       appVersion: APP_VERSION,
@@ -55,12 +55,12 @@ class AppErrorBoundary extends React.Component {
     window.location.assign(APP_BASE_URL);
   };
 
-  handleCopyDebugInfo = async () => {
+  handleCopyErrorInfo = async () => {
     try {
-      await navigator.clipboard.writeText(this.buildDebugInfo());
-      this.setState({ copiedDebugInfo: true, copyDebugInfoFailed: false });
+      await navigator.clipboard.writeText(this.buildErrorInfo());
+      this.setState({ copiedErrorInfo: true, copyErrorInfoFailed: false });
     } catch {
-      this.setState({ copiedDebugInfo: false, copyDebugInfoFailed: true });
+      this.setState({ copiedErrorInfo: false, copyErrorInfoFailed: true });
     }
   };
 
@@ -78,12 +78,12 @@ class AppErrorBoundary extends React.Component {
           React.createElement("div", { className: "app-fallback-actions" },
             React.createElement("button", { type: "button", className: "jungle-focus-ring jungle-menu-button-primary", onClick: this.handleRestartGame }, "Restart Game"),
             React.createElement("button", { type: "button", className: "jungle-focus-ring jungle-menu-button-secondary", onClick: this.handleReturnToMenu }, "Return to Menu"),
-            React.createElement("button", { type: "button", className: "jungle-focus-ring jungle-menu-button-secondary", onClick: this.handleCopyDebugInfo }, "Copy Debug Info"),
+            React.createElement("button", { type: "button", className: "jungle-focus-ring jungle-menu-button-secondary", onClick: this.handleCopyErrorInfo }, "Copy Error Details"),
           ),
-          this.state.copiedDebugInfo
-            ? React.createElement("p", { className: "app-fallback-status" }, "Debug info copied.")
+          this.state.copiedErrorInfo
+            ? React.createElement("p", { className: "app-fallback-status" }, "Error details copied.")
             : null,
-          this.state.copyDebugInfoFailed
+          this.state.copyErrorInfoFailed
             ? React.createElement("p", { className: "app-fallback-status" }, "Copy did not work in this browser. The short error message above is still visible.")
             : null,
         ),

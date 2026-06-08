@@ -175,8 +175,7 @@ main.immersive-ready {
   .app-shell.layout-desktop .title-logo-main { font-size: 1.65rem; }
   .app-shell.layout-desktop .title-logo-sub { font-size: 1.05rem; }
   .app-shell.layout-desktop .title-primary-controls,
-  .app-shell.layout-desktop .title-advanced-note,
-  .app-shell.layout-desktop .title-selftest-note { display: none; }
+  .app-shell.layout-desktop .title-advanced-note { display: none; }
 }
 
 /* Title menu hierarchy: keep primary/secondary actions vertically stacked on all screen sizes. */
@@ -195,6 +194,3 @@ main.immersive-ready {
   min-height: 3rem;
 }
 
-.title-selftest-note {
-  margin-top: 1rem;
-}

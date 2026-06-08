@@ -8,6 +8,10 @@ Live playable version: https://jedbcov-coder.github.io/pink-elephant-jungle-dash
 
 ## About the game
 Pink Elephant Jungle Dash is a beginner-friendly 3D browser runner game where you guide a pink elephant through jungle paths, collect fruit, and avoid hazards.
+The title-screen **Begin the Trail** flow now plays a skippable **Home in the Herd** opening cut scene with its own MP4 audio before Level 1 begins.
+Finishing Level 1 now unlocks a skippable blue butterfly reward cut scene before Level 2 begins, with the complete screen hidden while the video plays.
+Completing Level 3 now plays a skippable finale cut scene before the final reward panel.
+The belly-slide Snake Gate now uses a real GLB 3D model while keeping the same slide timing and collision rules.
 
 ## Controls
 - **Move:** `A` / `D` or Left / Right arrow keys
@@ -24,7 +28,11 @@ Pink Elephant Jungle Dash is a beginner-friendly 3D browser runner game where yo
 
 ## Main features
 - 3 playable handcrafted levels with increasing challenge
+- Skippable opening cut scene before the first Level 1 run from the title screen
+- Skippable blue butterfly reward cut scene after Level 1 before Level 2
+- Skippable finale cut scene after Level 3 before the final reward panel
 - Fruit collection, hazards, and level progression
+- GLB Snake Gate belly-slide obstacles, with the proven invisible collider kept separate from the model
 - Touch controls and keyboard controls
 - Basic gamepad support
 - Optional haptic feedback on supported devices
@@ -45,6 +53,52 @@ Pink Elephant Jungle Dash is a beginner-friendly 3D browser runner game where yo
    ```
 5. Open the local URL shown in the terminal (usually `http://localhost:5173`).
 
+
+### Latest player-facing debug text cleanup (2026-06-07)
+
+- Removed the title-screen version/build/update marker, complete-screen transition debug card, phone-landscape diagnostic HUD, and backquote gameplay debug panel from player-facing screens.
+- Removed build/version wording from Settings and Credits so menus stay focused on game info, controls, save tools, and credits.
+- Kept internal console self-tests and maintenance logs available, then updated the release marker to `1.0.28` and bumped the service worker cache to `v28`.
+
+### Latest cut scene audio and layering fix (2026-06-07)
+
+- Stopped the game title music from starting underneath the **Home in the Herd** opening video, so the intro uses its native MP4 audio.
+- Raised cut scene overlays above complete screens and hid the Level 1 complete screen while the blue butterfly reward video plays.
+- Kept the Level 1 reward video sequenced before Level 2 starts, with its native MP4 audio enabled unless the player has muted master audio.
+- Updated the release marker to `1.0.27` and bumped the service worker cache to `v27`.
+
+### Latest finale cut scene update (2026-06-07)
+
+- Added `finale.mp4` as a skippable finale cut scene after Level 3 completion and before the final reward panel.
+- Kept the existing final reward and **Restart the Trail** screen after the finale ends or is skipped.
+- Updated the release marker to `1.0.26` and bumped the service worker cache to `v26`.
+
+### Latest cut scene reward and sound update (2026-06-07)
+
+- Added the blue butterfly MP4 as a skippable reward cut scene after Level 1 completion and before Level 2 starts.
+- Updated cut scene playback so the player's **Begin the Trail** / **Continue** tap directly starts the MP4 with its own sound instead of relying on muted autoplay.
+- Kept restart, retry, final restart, same-level reset, and Level Select flows from replaying the opening cut scene.
+- Updated the release marker to `1.0.25` and bumped the service worker cache to `v25`.
+
+### Latest opening cut scene update (2026-06-07)
+
+- Added the `Home_in_the_Herd_.mp4` video as a skippable opening cut scene before Level 1 starts from the title screen.
+- Kept restart, retry, final restart, same-level reset, and Level Select flows starting Level 1 directly without replaying the cut scene.
+- Added the video to the asset manifest and allowed MP4 files to be cached after first use without forcing the video into the initial offline install.
+
+### Latest Snake Gate GLB fit pass (2026-06-07)
+
+- Made the Snake Gate GLB stretch wider across the jungle path and hang lower into the player's slide route.
+- Kept the existing branch collider, slide timing, fruit telegraphs, controls, and fallback gate behavior unchanged.
+- Updated the release marker to `1.0.24` and bumped the service worker cache to `v24`.
+
+### Latest Snake Gate GLB asset pass (2026-06-07)
+
+- Moved `snake-gate.glb` into `public/assets/models/obstacles/` as the runtime Snake Gate model.
+- Loaded the GLB model for belly-slide Snake Gate obstacles while keeping the existing slide collision, level timing, fruit telegraphs, and controls unchanged.
+- Kept the older handmade branch/vine gate as a loading/failure fallback if the GLB cannot load.
+- Added the Snake Gate model to the asset manifest and bumped the service worker cache to `v22` for the next GitHub Pages publish.
+- Updated the release marker to `1.0.22`.
 
 ### Latest menu sizing pass (2026-06-03)
 
@@ -88,13 +142,13 @@ Pink Elephant Jungle Dash is a beginner-friendly 3D browser runner game where yo
 
 - Added a formal game-state machine and template config file for future PWA game projects.
 - Expanded the reusable game UI primitive library with buttons, sliders, tabs, tooltips, meters, level cards, dialogs, counters, and toasts.
-- Added a custom offline fallback page to the service worker cache and improved the startup error screen with restart, menu, and copy-debug actions.
+- Added a custom offline fallback page to the service worker cache and improved the startup error screen with restart, menu, and copy-error-details actions.
 - Updated the release marker to `1.0.14` and bumped the service worker cache to `v14`.
 
 ### Latest startup viewport fix (2026-05-30)
 
 - Fixed the startup crash that showed `viewportWidth is not defined` after pressing **Begin the Trail** in local development.
-- Added safe viewport width tracking for the phone-landscape debug panel instead of removing the panel.
+- Added safe viewport width tracking for the old phone-landscape debug panel, which has since been removed from player-facing screens.
 - Updated the release marker to `1.0.9` and bumped the service worker cache to `v9` for the next GitHub Pages build.
 
 ### Latest repo defaults alignment (2026-05-30)
@@ -121,7 +175,7 @@ Pink Elephant Jungle Dash is a beginner-friendly 3D browser runner game where yo
 ### Latest template screen defaults pass (2026-05-30)
 
 - Added a dedicated **Level Select** screen from the title, pause, complete, and game-over flows.
-- Added a dedicated **Credits & About** screen with slots for game, template, audio, engine, attribution, and build details.
+- Added a dedicated **Credits & About** screen with slots for game, template, audio, engine, and attribution notes.
 - Added saved Accessibility settings for reduced motion, softer flashes, high contrast, and larger menu text.
 - Updated the release marker to `1.0.12` and bumped the service worker cache to `v12`.
 
@@ -150,7 +204,7 @@ Pink Elephant Jungle Dash is a beginner-friendly 3D browser runner game where yo
 - Updated the service worker cache from `v5` to `v6` so installed PWA users get a clean cache refresh instead of older cached game files.
 - Changed JavaScript and CSS files to load network-first, with cache fallback only when offline. This helps GitHub Pages serve the newest game bundle after deployment.
 - Updated the app release marker to `1.0.6` and made service-worker registration use that app marker so future releases request the newest service worker URL.
-- Added a small live transition debug marker on the complete screen showing `currentLevelId`, `nextLevelId`, `isLevelTransitioning`, and `sceneError` for easier Level 1 → Level 2 checks.
+- Previously added a small live transition debug marker on the complete screen for Level 1 → Level 2 checks; that marker has since been removed from player-facing screens.
 
 ### Latest Level 1 → Level 2 transition parse-fix update (2026-05-26)
 
@@ -167,7 +221,7 @@ Pink Elephant Jungle Dash is a beginner-friendly 3D browser runner game where yo
 
 ### Latest complete-overlay DEV state panel update (2026-05-26)
 
-- Added a tiny development-only complete-screen panel in `src/App.jsx` (guarded by `import.meta.env.DEV`) showing current level, next level id, has-next-level flag, transition state, and input-lock state.
+- Previously added a tiny development-only complete-screen panel in `src/App.jsx`; that panel has since been removed from player-facing screens.
 - Added a DEV warning line that shows `Next level config missing.` when the state indicates a next level but config linkage is inconsistent.
 - Kept styling intentionally subtle so normal gameplay UI remains unchanged.
 
@@ -728,7 +782,7 @@ If you publish updates and a browser shows an older cached version, follow `OFFL
 - Cleaned up duplicate PWA install card wiring: `App.jsx` now imports `PwaInstallCard` only once from `src/components/game-ui/PwaInstallCard.jsx`, and removed the old duplicate component file.
 - Separated PWA concerns by moving service-worker update prompt setup into `src/pwa/setupServiceWorkerUpdatePrompt.js` while keeping install-prompt hook logic in `src/hooks/usePwaInstallPrompt.js`.
 - Moved service-worker update prompt and registration logic out of `src/main.jsx` into `src/hooks/usePwaInstallPrompt.js` to keep the main boot file cleaner without changing behavior.
-- Split `App.jsx` UI responsibilities into focused game UI components (`TouchControls`, `PwaInstallCard`, `SaveDebugTools`, `RotateOverlay`) to keep the main app file easier to maintain without changing gameplay behavior.
+- Split `App.jsx` UI responsibilities into focused game UI components (`TouchControls`, `PwaInstallCard`, `SaveTools`, `RotateOverlay`) to keep the main app file easier to maintain without changing gameplay behavior.
 - Improved service-worker update reliability by registering with `updateViaCache: "none"`, which helps browsers fetch fresh worker code during new deployments.
 - Added save utility controls for debugging: reset all save data, export save JSON (settings/profile/IndexedDB records), and import save JSON with schema validation + migration before safe replacement.
 - App startup now initializes the save system before gameplay loops begin, safely loads settings/profile snapshot, applies saved audio preferences through the save manager path, and falls back to defaults if loading fails.

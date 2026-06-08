@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 
 import { AchievementsPanel } from "./AchievementsPanel.jsx";
 import { PwaInstallCard } from "./PwaInstallCard.jsx";
-import { SaveDebugTools } from "./SaveDebugTools.jsx";
+import { SaveTools } from "./SaveTools.jsx";
 
 const sectionCardClass = "settings-section-card";
 const infoCardClass = "settings-info-card";
@@ -55,7 +55,6 @@ export function SettingsPanel({
   onResetSave,
   achievementRecords,
   onOpenCredits,
-  appVersion,
 }) {
   const [activeSection, setActiveSection] = useState("audio");
   const [activeAboutSection, setActiveAboutSection] = useState("progress");
@@ -220,7 +219,7 @@ export function SettingsPanel({
           <div className="settings-panel-grid settings-panel-grid-two settings-data-panel">
             <div className={sectionCardClass}>
               <h3 className="settings-section-title">Save Data</h3>
-              <SaveDebugTools visible={showSaveTools} onToggle={onToggleSaveTools} onExport={onExportSave} onImport={onImportSave} onReset={onResetSave} />
+              <SaveTools visible={showSaveTools} onToggle={onToggleSaveTools} onExport={onExportSave} onImport={onImportSave} onReset={onResetSave} />
             </div>
             <div className={sectionCardClass}>
               <h3 className="settings-section-title">Install</h3>
@@ -270,13 +269,13 @@ export function SettingsPanel({
                       </div>
                       <div className={infoCardClass}>
                         <dt>Template Defaults</dt>
-                        <dd>PWA install, offline cache, save tools, audio, touch controls, and release markers.</dd>
+                        <dd>PWA install, offline cache, save tools, audio, touch controls, and menu defaults.</dd>
                       </div>
                     </dl>
                   </div>
                   <div className={sectionCardClass}>
                     <h3 className="settings-section-title">Full Credits</h3>
-                    <p className="settings-section-copy">Open the Credits screen for game, audio, engine, build, and attribution notes.</p>
+                    <p className="settings-section-copy">Open the Credits screen for game, audio, engine, and attribution notes.</p>
                     <button type="button" onClick={onOpenCredits} className="jungle-focus-ring jungle-menu-button-secondary settings-wide-action">
                       Open Credits
                     </button>
@@ -363,7 +362,6 @@ export function SettingsPanel({
         <div className="settings-footer">
           <p>Pink Elephant Jungle Dash</p>
           <p>Made with love for Georgia, by Uncle Jed</p>
-          <p>Version {appVersion}</p>
         </div>
       </div>
     </section>

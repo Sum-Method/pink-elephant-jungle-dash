@@ -655,12 +655,20 @@ export function runSelfTests() {
 
   const assetSummary = getAssetManifestSummary();
   assert(
-    "asset manifest documents music sfx images levels and folders",
+    "asset manifest documents music sfx images videos models levels and folders",
     assetSummary.musicCount >= 4
       && assetSummary.sfxCount >= 5
       && assetSummary.imageCount >= 2
+      && assetSummary.modelCount >= 1
+      && assetSummary.videoCount >= 3
       && assetSummary.levelCount === levelIds.length
-      && ASSET_MANIFEST.recommendedFolders.includes("/assets/audio/music"),
+      && ASSET_MANIFEST.models.snakeGate.path === "/assets/models/obstacles/snake-gate.glb"
+      && ASSET_MANIFEST.videos.openingHomeInTheHerd.path === "/assets/videos/Home_in_the_Herd_.mp4"
+      && ASSET_MANIFEST.videos.level1BlueButterflyReward.path === "/assets/videos/Blue-Butterly-cutscene. mp4.mp4"
+      && ASSET_MANIFEST.videos.finale.path === "/assets/videos/finale.mp4"
+      && ASSET_MANIFEST.recommendedFolders.includes("/assets/audio/music")
+      && ASSET_MANIFEST.recommendedFolders.includes("/assets/models/obstacles")
+      && ASSET_MANIFEST.recommendedFolders.includes("/assets/videos"),
   );
 
   assert(

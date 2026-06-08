@@ -1,6 +1,6 @@
 {
-  "_react-B0ZntvhZ.js": {
-    "file": "assets/react-B0ZntvhZ.js",
+  "_react-BZfzXQPc.js": {
+    "file": "assets/react-BZfzXQPc.js",
     "name": "react",
     "imports": [
       "_rolldown-runtime-jpDsebLB.js"
@@ -10,36 +10,35 @@
     "file": "assets/rolldown-runtime-jpDsebLB.js",
     "name": "rolldown-runtime"
   },
-  "_three-C85b3rFv.js": {
-    "file": "assets/three-C85b3rFv.js",
+  "_three-CaBG5vEd.js": {
+    "file": "assets/three-CaBG5vEd.js",
     "name": "three"
   },
   "index.html": {
-    "file": "assets/index-B6nQPs6I.js",
+    "file": "assets/index-BD9UEjNm.js",
     "name": "index",
     "src": "index.html",
     "isEntry": true,
     "imports": [
       "_rolldown-runtime-jpDsebLB.js",
-      "_react-B0ZntvhZ.js"
+      "_react-BZfzXQPc.js"
     ],
     "dynamicImports": [
       "src/App.jsx"
     ],
     "css": [
-      "assets/index-DsQNXML3.css"
+      "assets/index-C8HKcXbJ.css"
     ]
   },
   "src/App.jsx": {
-    "file": "assets/App-DCx2v8lZ.js",
+    "file": "assets/App-C_ZUrWKT.js",
     "name": "App",
     "src": "src/App.jsx",
     "isDynamicEntry": true,
     "imports": [
       "_rolldown-runtime-jpDsebLB.js",
-      "index.html",
-      "_react-B0ZntvhZ.js",
-      "_three-C85b3rFv.js"
+      "_react-BZfzXQPc.js",
+      "_three-CaBG5vEd.js"
     ]
   }
 }

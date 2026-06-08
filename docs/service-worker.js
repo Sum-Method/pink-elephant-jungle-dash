@@ -1,5 +1,5 @@
 const CACHE_PREFIX = "jungle-dash-offline";
-const CACHE_VERSION = "v21";
+const CACHE_VERSION = "v28";
 const CACHE_NAME = `${CACHE_PREFIX}-${CACHE_VERSION}`;
 
 const STATIC_FILES = [
@@ -15,7 +15,7 @@ const STATIC_FILES = [
 const NETWORK_FIRST_EXTENSIONS = [".js", ".css"];
 
 const CACHE_FIRST_EXTENSIONS = [
-  ".png", ".jpg", ".jpeg", ".gif", ".svg", ".webp", ".ico", ".json", ".webmanifest", ".woff", ".woff2", ".mp3", ".wav", ".ogg", ".m4a", ".glb", ".gltf",
+  ".png", ".jpg", ".jpeg", ".gif", ".svg", ".webp", ".ico", ".json", ".webmanifest", ".woff", ".woff2", ".mp3", ".wav", ".ogg", ".m4a", ".mp4", ".glb", ".gltf",
 ];
 
 self.addEventListener("install", (event) => {

@@ -16,6 +16,35 @@ export const ASSET_MANIFEST = Object.freeze({
     logo: { path: "/favicon.png", role: "title-logo" },
     hero: { path: "/pe-jungledash.jpg", role: "readme-preview" },
   },
+  models: {
+    snakeGate: {
+      path: "/assets/models/obstacles/snake-gate.glb",
+      role: "slide-obstacle",
+      format: "glb",
+      optimized: false,
+      description: "Static Snake Gate GLB used as the belly-slide obstacle visual.",
+    },
+  },
+  videos: {
+    openingHomeInTheHerd: {
+      path: "/assets/videos/Home_in_the_Herd_.mp4",
+      role: "opening-cutscene",
+      format: "mp4",
+      description: "Skippable opening cut scene shown from the title-screen new-game path before Level 1 starts.",
+    },
+    level1BlueButterflyReward: {
+      path: "/assets/videos/Blue-Butterly-cutscene. mp4.mp4",
+      role: "level-1-reward-cutscene",
+      format: "mp4",
+      description: "Skippable reward cut scene shown after Level 1 completion before Level 2 starts.",
+    },
+    finale: {
+      path: "/assets/videos/finale.mp4",
+      role: "level-3-finale-cutscene",
+      format: "mp4",
+      description: "Skippable finale cut scene shown after Level 3 completion before the final reward panel.",
+    },
+  },
   levels: {
     level1: { module: "src/game/levels/level1.js" },
     level2: { module: "src/game/levels/level2.js" },
@@ -26,6 +55,8 @@ export const ASSET_MANIFEST = Object.freeze({
     "/assets/audio/sfx",
     "/assets/images/sprites",
     "/assets/images/ui",
+    "/assets/models/obstacles",
+    "/assets/videos",
     "/assets/fonts",
     "/assets/levels",
     "/assets/data",
@@ -37,6 +68,8 @@ export function getAssetManifestSummary() {
     musicCount: Object.keys(ASSET_MANIFEST.music).length,
     sfxCount: Object.keys(ASSET_MANIFEST.sfx).length,
     imageCount: Object.keys(ASSET_MANIFEST.images).length,
+    modelCount: Object.keys(ASSET_MANIFEST.models).length,
+    videoCount: Object.keys(ASSET_MANIFEST.videos).length,
     levelCount: Object.keys(ASSET_MANIFEST.levels).length,
     recommendedFolderCount: ASSET_MANIFEST.recommendedFolders.length,
   };

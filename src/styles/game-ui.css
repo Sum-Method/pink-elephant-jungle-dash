@@ -2134,9 +2134,7 @@ button:disabled {
   .app-shell.layout-desktop .title-primary-controls,
   .app-shell.layout-tablet-landscape .title-primary-controls,
   .app-shell.layout-desktop .title-advanced-note,
-  .app-shell.layout-tablet-landscape .title-advanced-note,
-  .app-shell.layout-desktop .title-selftest-note,
-  .app-shell.layout-tablet-landscape .title-selftest-note {
+  .app-shell.layout-tablet-landscape .title-advanced-note {
     display: none !important;
   }
 }
@@ -2337,21 +2335,6 @@ button:disabled {
   pointer-events: auto;
 }
 
-.layout-phone-landscape .hud-debug-mini {
-  position: absolute;
-  left: calc(var(--hud-safe-left) + 0.38rem);
-  top: calc(var(--hud-safe-top) + 2.15rem);
-  z-index: 43;
-  pointer-events: none;
-  font-size: 0.5rem;
-  line-height: 1.25;
-  padding: 0.24rem 0.3rem;
-  border-radius: 0.45rem;
-  background: rgba(8, 14, 10, 0.68);
-  color: rgba(187, 247, 208, 0.9);
-  border: 1px solid rgba(110, 231, 183, 0.25);
-}
-
 .layout-phone-landscape .app-shell,
 .app-shell.layout-phone-landscape {
   height: 100dvh;
@@ -2426,8 +2409,7 @@ button:disabled {
 .app-shell.layout-tablet-landscape.touch-controls-active .hud-top-left-score,
 .app-shell.layout-tablet-landscape.touch-controls-active .hud-center-strip,
 .app-shell.layout-tablet-landscape.touch-controls-active .hud-prompt-layer,
-.app-shell.layout-tablet-landscape.touch-controls-active .hud-elephant-ability-badge,
-.app-shell.layout-tablet-landscape.touch-controls-active .hud-debug-mini {
+.app-shell.layout-tablet-landscape.touch-controls-active .hud-elephant-ability-badge {
   display: none !important;
 }
 .layout-phone-landscape .mobile-controls {
@@ -2447,8 +2429,7 @@ button:disabled {
 .app-shell.layout-phone-landscape.touch-controls-active .hud-top-left-score,
 .app-shell.layout-phone-landscape.touch-controls-active .hud-center-strip,
 .app-shell.layout-phone-landscape.touch-controls-active .hud-prompt-layer,
-.app-shell.layout-phone-landscape.touch-controls-active .hud-elephant-ability-badge,
-.app-shell.layout-phone-landscape.touch-controls-active .hud-debug-mini {
+.app-shell.layout-phone-landscape.touch-controls-active .hud-elephant-ability-badge {
   display: none !important;
 }
 
@@ -2567,8 +2548,7 @@ button:disabled {
 }
 
 .app-shell.layout-phone-landscape .title-primary-controls,
-.app-shell.layout-phone-landscape .title-advanced-note,
-.app-shell.layout-phone-landscape .title-selftest-note {
+.app-shell.layout-phone-landscape .title-advanced-note {
   display: none !important;
 }
 
@@ -2802,6 +2782,212 @@ button:disabled {
   color: transparent;
   border-color: transparent;
   outline: none;
+}
+
+.opening-cutscene-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 120;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: calc(var(--hud-safe-top) + clamp(0.5rem, 1.6dvh, 1rem));
+  padding-right: max(0.75rem, var(--hud-safe-right));
+  padding-bottom: calc(var(--hud-safe-bottom) + clamp(0.5rem, 1.6dvh, 1rem));
+  padding-left: max(0.75rem, var(--hud-safe-left));
+  background:
+    radial-gradient(circle at 50% 12%, rgba(244, 114, 182, 0.18), transparent 34rem),
+    #020705;
+  overflow: hidden;
+  overscroll-behavior: none;
+  touch-action: manipulation;
+}
+
+.opening-cutscene-stage {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  max-width: 100rem;
+  max-height: calc(100dvh - var(--hud-safe-top) - var(--hud-safe-bottom) - 1rem);
+  background: #020403;
+  border: 1px solid rgba(255, 235, 173, 0.18);
+  border-radius: clamp(0.85rem, 1.8vw, 1.35rem);
+  box-shadow: 0 0 70px rgba(244, 114, 182, 0.18);
+  overflow: hidden;
+}
+
+.opening-cutscene-video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background: #020403;
+}
+
+.opening-cutscene-topbar {
+  position: absolute;
+  top: clamp(0.55rem, 1.4dvh, 1rem);
+  right: clamp(0.55rem, 1.4vw, 1rem);
+  left: clamp(0.55rem, 1.4vw, 1rem);
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
+  pointer-events: none;
+}
+
+.opening-cutscene-topbar h2 {
+  max-width: min(68vw, 24rem);
+  margin: 0;
+  padding: 0.5rem 0.8rem;
+  border: 1px solid rgba(255, 236, 179, 0.22);
+  border-radius: 999px;
+  background: rgba(5, 13, 8, 0.62);
+  color: rgba(255, 248, 220, 0.9);
+  font-size: clamp(0.72rem, 0.22vw + 0.68rem, 0.9rem);
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  line-height: 1.1;
+  text-transform: uppercase;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
+}
+
+.opening-cutscene-skip {
+  pointer-events: auto;
+  min-width: 5.6rem;
+  min-height: 2.55rem;
+  padding: 0.55rem 0.95rem;
+  border: 1px solid rgba(255, 236, 179, 0.32);
+  border-radius: 999px;
+  background: rgba(255, 244, 214, 0.92);
+  color: #142014;
+  font-size: clamp(0.74rem, 0.16vw + 0.7rem, 0.86rem);
+  font-weight: 950;
+  line-height: 1;
+  text-transform: uppercase;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.28);
+  transition: transform 150ms ease, background-color 150ms ease;
+}
+
+.opening-cutscene-skip:hover {
+  transform: translateY(-1px) scale(1.03);
+  background: #ffffff;
+}
+
+.opening-cutscene-skip:active {
+  transform: scale(0.97);
+}
+
+.opening-cutscene-play-panel {
+  position: absolute;
+  inset: auto clamp(1rem, 3vw, 2rem) clamp(1rem, 4dvh, 2rem);
+  display: grid;
+  justify-items: center;
+  gap: 0.7rem;
+  padding: clamp(0.85rem, 1.8dvh, 1.2rem);
+  border: 1px solid rgba(255, 236, 179, 0.24);
+  border-radius: 1.1rem;
+  background: rgba(3, 10, 6, 0.76);
+  box-shadow: 0 14px 42px rgba(0, 0, 0, 0.32);
+}
+
+.opening-cutscene-play-panel p {
+  max-width: min(82vw, 28rem);
+  margin: 0;
+  color: rgba(255, 251, 235, 0.82);
+  font-size: clamp(0.78rem, 0.2vw + 0.74rem, 0.92rem);
+  font-weight: 800;
+  line-height: 1.35;
+  text-align: center;
+}
+
+.opening-cutscene-play,
+.opening-cutscene-continue {
+  min-height: 2.6rem;
+  padding: 0.62rem 1rem;
+  border-radius: 999px;
+  font-size: clamp(0.74rem, 0.16vw + 0.7rem, 0.86rem);
+  font-weight: 950;
+  line-height: 1;
+  text-transform: uppercase;
+  transition: transform 150ms ease, background-color 150ms ease;
+}
+
+.opening-cutscene-play {
+  border: 1px solid rgba(249, 168, 212, 0.58);
+  background: #f472b6;
+  color: #142014;
+}
+
+.opening-cutscene-continue {
+  border: 1px solid rgba(255, 236, 179, 0.32);
+  background: rgba(255, 244, 214, 0.92);
+  color: #142014;
+}
+
+.opening-cutscene-play:hover,
+.opening-cutscene-continue:hover {
+  transform: translateY(-1px) scale(1.03);
+}
+
+.opening-cutscene-play:active,
+.opening-cutscene-continue:active {
+  transform: scale(0.97);
+}
+
+@media (max-width: 720px), (max-height: 520px) {
+  .opening-cutscene-overlay {
+    padding-top: calc(var(--hud-safe-top) + 0.35rem);
+    padding-right: max(0.35rem, var(--hud-safe-right));
+    padding-bottom: calc(var(--hud-safe-bottom) + 0.35rem);
+    padding-left: max(0.35rem, var(--hud-safe-left));
+  }
+
+  .opening-cutscene-stage {
+    border-radius: 0.7rem;
+  }
+
+  .opening-cutscene-topbar {
+    top: 0.45rem;
+    right: 0.45rem;
+    left: 0.45rem;
+  }
+
+  .opening-cutscene-topbar h2 {
+    max-width: 52vw;
+    padding: 0.42rem 0.58rem;
+    font-size: 0.66rem;
+  }
+
+  .opening-cutscene-skip {
+    min-width: 4.75rem;
+    min-height: 2.2rem;
+    padding: 0.45rem 0.72rem;
+    font-size: 0.68rem;
+  }
+
+  .opening-cutscene-play-panel {
+    right: 0.6rem;
+    bottom: 0.6rem;
+    left: 0.6rem;
+    gap: 0.46rem;
+    padding: 0.58rem;
+  }
+
+  .opening-cutscene-play-panel p {
+    font-size: 0.66rem;
+    line-height: 1.25;
+  }
+
+  .opening-cutscene-play,
+  .opening-cutscene-continue {
+    min-height: 2.15rem;
+    padding: 0.45rem 0.7rem;
+    font-size: 0.66rem;
+  }
 }
 
 @media (max-width: 767px) {
@@ -3500,10 +3686,6 @@ button:disabled {
   line-height: 1.45;
 }
 
-.credits-build-card p {
-  overflow-wrap: anywhere;
-}
-
 .level-select-grid,
 .credits-grid {
   display: grid;
@@ -3908,7 +4090,8 @@ button:disabled {
 .app-shell.accessibility-high-contrast .settings-modal-card,
 .app-shell.accessibility-high-contrast .game-modal-card,
 .app-shell.accessibility-high-contrast .title-card,
-.app-shell.accessibility-high-contrast .complete-card {
+.app-shell.accessibility-high-contrast .complete-card,
+.app-shell.accessibility-high-contrast .opening-cutscene-stage {
   border-color: rgba(255, 255, 255, 0.58) !important;
   background-color: rgba(3, 9, 6, 0.96) !important;
 }
@@ -3935,6 +4118,7 @@ button:disabled {
 
 .app-shell.accessibility-soft-flashes .complete-overlay,
 .app-shell.accessibility-soft-flashes .game-modal-overlay,
+.app-shell.accessibility-soft-flashes .opening-cutscene-overlay,
 .app-shell.accessibility-soft-flashes .settings-overlay {
   backdrop-filter: none;
 }
