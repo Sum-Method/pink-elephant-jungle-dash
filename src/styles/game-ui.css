@@ -1553,9 +1553,11 @@ button:disabled {
 }
 
 .mobile-right-cluster {
-  display: grid;
-  grid-template-columns: 1fr;
+  align-items: flex-end;
+  display: flex;
+  flex-direction: row;
   gap: clamp(10px, 1.8vw, 16px);
+  justify-content: flex-end;
 }
 
 .touch-control-joystick {
@@ -1605,9 +1607,11 @@ button:disabled {
   position: absolute;
   right: var(--mobile-edge-right);
   bottom: var(--mobile-edge-bottom);
-  display: grid;
-  grid-template-columns: 1fr;
+  align-items: flex-end;
+  display: flex;
+  flex-direction: row;
   gap: clamp(8px, 1.4vw, 12px);
+  justify-content: flex-end;
   z-index: 2;
 }
 
@@ -1630,7 +1634,6 @@ button:disabled {
   .mobile-right-cluster {
     --mobile-edge-right: max(16px, env(safe-area-inset-right, 0px));
     --mobile-edge-bottom: max(16px, env(safe-area-inset-bottom, 0px));
-    grid-template-columns: 1fr;
     gap: clamp(12px, 1.6vw, 18px);
   }
 
@@ -1747,10 +1750,18 @@ button:disabled {
 .touch-control-hint {
   color: rgba(255, 236, 173, 0.58);
   font-size: calc(var(--hud-font-small) * var(--hud-text-scale));
-  letter-spacing: 0.16em;
+  letter-spacing: 0;
   line-height: 1.1;
   margin-top: 0.16rem;
   text-transform: uppercase;
+}
+
+.touch-control-hitbox-smashslide {
+  order: 1;
+}
+
+.touch-control-hitbox-jump {
+  order: 2;
 }
 
 .touch-control-charge {
@@ -1902,9 +1913,11 @@ button:disabled {
     position: absolute;
     right: max(14px, env(safe-area-inset-right, 0px));
     bottom: max(14px, env(safe-area-inset-bottom, 0px));
-    display: grid;
-    grid-template-columns: repeat(2, auto);
+    align-items: flex-end;
+    display: flex;
+    flex-direction: row;
     gap: 10px;
+    justify-content: flex-end;
   }
 }
 
@@ -2420,9 +2433,11 @@ button:disabled {
 .layout-phone-landscape .mobile-right-cluster {
   right: calc(var(--hud-safe-right) + 0.75rem);
   bottom: calc(var(--hud-safe-bottom) + 0.55rem);
-  display: grid;
-  grid-template-columns: 1fr;
+  align-items: flex-end;
+  display: flex;
+  flex-direction: row;
   gap: clamp(8px, 1.2vw, 11px);
+  justify-content: flex-end;
 }
 .layout-phone-landscape .mobile-controls button,
 .layout-phone-landscape .touch-control-button,

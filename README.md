@@ -18,7 +18,7 @@ The belly-slide Snake Gate now uses a real GLB 3D model while keeping the same s
 - **Jump:** `W`, Up arrow, or `Space`
 - **Slide:** `S` or Down arrow
 - **Pause:** `Esc` or `P`
-- **Touch devices:** Use the floating left-thumb joystick to move, with Jump and Smash buttons on the right
+- **Touch devices:** Use the floating left-thumb joystick to move. The bottom-right Jump button handles jump, double jump, and hold-to-slide; Smash sits just to its left along the bottom edge.
 - **Gamepad:** Left stick or D-pad to move, A to jump, B/X/L/R to smash or spin, Start/Menu to pause
 
 ## Screen and menus
@@ -53,6 +53,12 @@ The belly-slide Snake Gate now uses a real GLB 3D model while keeping the same s
    ```
 5. Open the local URL shown in the terminal (usually `http://localhost:5173`).
 
+
+### Latest touch action layout update (2026-06-09)
+
+- Moved the Jump / Double Jump / Hold Slide button box into the bottom-right corner for right-thumb play.
+- Placed the Smash button immediately to its left along the bottom edge.
+- Updated the release marker to `1.0.34` and bumped the service worker cache to `v34`.
 
 ### Latest pause menu cleanup (2026-06-08)
 

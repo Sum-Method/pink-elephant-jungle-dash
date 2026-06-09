@@ -3,13 +3,13 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 const JOYSTICK_ZERO = Object.freeze({ x: 0, y: 0, strength: 0 });
 
 const RIGHT_CLUSTER_BUTTONS = [
-  { code: "Space", label: "Jump", icon: "JUMP", hint: "Tap" },
-  { code: "KeyF", label: "SmashSlide", displayLabel: "Smash", icon: "HIT", hint: "Hold Slide" },
+  { code: "Space", label: "Jump", icon: "JUMP", hint: "Hold Slide" },
+  { code: "KeyF", label: "SmashSlide", displayLabel: "Smash", icon: "HIT", hint: "Tap" },
 ];
 
 const BUTTON_LABELS = {
-  Jump: "Jump",
-  SmashSlide: "Smash or hold to slide",
+  Jump: "Jump, double jump, or hold to slide",
+  SmashSlide: "Smash",
 };
 
 function clampNumber(value, min, max) {
@@ -243,7 +243,7 @@ export function TouchControls({
       </div>
       <div className="mobile-right-cluster" aria-label="Action controls">
         {RIGHT_CLUSTER_BUTTONS.map(({ code, label, displayLabel, icon, hint }) => (
-          <div key={`${code}-${label}`} className="touch-control-hitbox">
+          <div key={`${code}-${label}`} className={`touch-control-hitbox touch-control-hitbox-${label.toLowerCase()}`}>
             <button
               type="button"
               className={`touch-control-button touch-control-${label.toLowerCase()}`}
