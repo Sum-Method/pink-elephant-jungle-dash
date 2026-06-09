@@ -123,13 +123,12 @@ export function TouchControls({
     event.stopPropagation();
     event.currentTarget.setPointerCapture?.(event.pointerId);
     joystickPointerRef.current = event.pointerId;
-    joystickOriginRef.current = { x: event.clientX, y: event.clientY };
 
     const joystick = joystickRef.current;
-    if (joystick) {
-      joystick.style.left = `${event.clientX}px`;
-      joystick.style.top = `${event.clientY}px`;
-    }
+    const joystickRect = joystick?.getBoundingClientRect();
+    joystickOriginRef.current = joystickRect
+      ? { x: joystickRect.left + joystickRect.width / 2, y: joystickRect.top + joystickRect.height / 2 }
+      : { x: event.clientX, y: event.clientY };
 
     setJoystickActive(true);
     updateJoystickFromPointer(event);
