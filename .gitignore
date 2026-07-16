@@ -1,4 +1,7 @@
 node_modules
+dist/
+docs/.vite/
+docs/assets/*.js.map
 
 # Local environment files. Keep .env.example committed as the safe template.
 .env
