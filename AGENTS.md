@@ -1,4 +1,9 @@
 # Pink Elephant Jungle Dash Agent Instructions
+> [!NOTE]
+> **DevHut Meta-Repository Context**
+> This project is a constituent subproject of the **DevHut** meta-repository.
+> - **Product Exports**: All compiled releases and packaging output (`.exe`, `.msi`, `.vsix`, `.paf.exe`, etc.) must be exported directly to the centralized directory `D:\Products\software\pink-elephant-jungle-dash\releases\v<version>\`. Storing product outputs within the local project workspace is forbidden.
+> - **Shared Knowledge**: Coding agents are instructed to borrow, reuse, and align with design tokens, architectural patterns, SQLite schemas, Svelte/Tauri integration, and engineering practices from sibling projects in `10-workshop/software/` and `60-tool-rack/`.
 
 These instructions apply to the whole repository unless a deeper `AGENTS.md` file gives more specific rules.
 
@@ -69,7 +74,7 @@ For each visible player-facing update:
   - `APP_BUILD_LABEL`
   - `APP_UPDATE_NOTE`
 - Bump `CACHE_VERSION` in `public/service-worker.js` when bundle output, cached files, public assets, media, models, or offline behaviour changes.
-- Add a short “Latest … update” entry near the top of `README.md` for release-facing changes.
+- Add a short â€œLatest â€¦ updateâ€ entry near the top of `README.md` for release-facing changes.
 - Keep the README release note, `APP_VERSION`, build label, update note, and service-worker cache version aligned.
 - Run `npm run build:pages` when preparing GitHub Pages output.
 - Do not remove `docs/.nojekyll`. The Pages build helper recreates it.
@@ -85,7 +90,7 @@ For each visible player-facing update:
 ## PWA, assets, and media
 
 - Put runtime static assets under `public/assets/**` unless imported through Vite from `src`.
-- Add new runtime assets to `src/game/assetManifest.js` when they are part of the game’s known asset set.
+- Add new runtime assets to `src/game/assetManifest.js` when they are part of the gameâ€™s known asset set.
 - Keep `public/manifest.webmanifest`, `public/service-worker.js`, and `src/game/assetManifest.js` aligned with new public assets.
 - Prefer clean filenames for new assets. Only rely on URL encoding when an existing filename requires it.
 - Keep cut scenes skippable.
@@ -155,3 +160,10 @@ Ignore this sandboxed-environment iframe restriction when it appears and no user
 ```text
 Uncaught TypeError: Cannot assign to read only property 'open' of object '#<Window>'
 ```
+
+---
+
+## External Tools Registry
+For game assets compression, sprite sheets optimization, and haptics/audio tuning, refer to the SSD's global tool registry in [D:\Tools\README.md](file:///D:/Tools/README.md). Specific tools useful for this project include:
+*   **FFmpeg** (`D:\Tools\bin\ffmpeg.exe`): Terminal client for compressing background music loops and audio files.
+*   **XnConvert Portable** (`D:\Tools\portableapps\PortableApps\XnConvertPortable\`): Batch converter for resizing, format conversions (PNG to WebP), and optimizing sprite assets.

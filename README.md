@@ -1,4 +1,9 @@
-# Pink Elephant Jungle Dash
+﻿# Pink Elephant Jungle Dash
+> [!NOTE]
+> **DevHut Meta-Repository Context**
+> This project is a constituent subproject of the **DevHut** meta-repository.
+> - **Product Exports**: All compiled releases and packaging output (`.exe`, `.msi`, `.vsix`, `.paf.exe`, etc.) must be exported directly to the centralized directory `D:\Products\software\pink-elephant-jungle-dash\releases\v<version>\`. Storing product outputs within the local project workspace is forbidden.
+> - **Shared Knowledge**: Coding agents are instructed to borrow, reuse, and align with design tokens, architectural patterns, SQLite schemas, Svelte/Tauri integration, and engineering practices from sibling projects in `10-workshop/software/` and `60-tool-rack/`.
 
 ## Play the game
 
@@ -236,14 +241,14 @@ The belly-slide Snake Gate now uses a real GLB 3D model while keeping the same s
 - This fixes the local `Cannot access 'hudRefresh' before initialization` crash during the Level 1 to Level 2 transition without changing level data, caching, or chunk mode.
 
 
-### Latest Level 1 → Level 2 PWA cache refresh (2026-05-29)
+### Latest Level 1 â†’ Level 2 PWA cache refresh (2026-05-29)
 
 - Updated the service worker cache from `v5` to `v6` so installed PWA users get a clean cache refresh instead of older cached game files.
 - Changed JavaScript and CSS files to load network-first, with cache fallback only when offline. This helps GitHub Pages serve the newest game bundle after deployment.
 - Updated the app release marker to `1.0.6` and made service-worker registration use that app marker so future releases request the newest service worker URL.
-- Previously added a small live transition debug marker on the complete screen for Level 1 → Level 2 checks; that marker has since been removed from player-facing screens.
+- Previously added a small live transition debug marker on the complete screen for Level 1 â†’ Level 2 checks; that marker has since been removed from player-facing screens.
 
-### Latest Level 1 → Level 2 transition parse-fix update (2026-05-26)
+### Latest Level 1 â†’ Level 2 transition parse-fix update (2026-05-26)
 
 - Fixed `src/App.jsx` duplicate/dead code introduced in complete-screen state and button markup that could break production parsing/minification during level transitions.
 - Kept the change minimal and scoped to transition/complete action rendering only (no gameplay or level-data changes).
@@ -298,16 +303,16 @@ The belly-slide Snake Gate now uses a real GLB 3D model while keeping the same s
 ### Latest Level transition crash-guard update (2026-05-26)
 
 - Updated `src/App.jsx` so scene renderer creation failures now flow through the same transition-safe error handler (`[scene-create-failed]`) instead of returning silently.
-- This ensures level transition state clears correctly (`isLevelTransitioning` and pending level start) when scene setup fails during Level 1 → Level 2 startup.
+- This ensures level transition state clears correctly (`isLevelTransitioning` and pending level start) when scene setup fails during Level 1 â†’ Level 2 startup.
 - Kept the change minimal and scoped to transition error handling only.
 
 
-### Latest Level 1 → Level 2 transition safety update (2026-05-29)
+### Latest Level 1 â†’ Level 2 transition safety update (2026-05-29)
 
-- Added one transition id across Level 1 → Level 2 debug logs so the Continue button, old-scene cleanup, new-scene creation, scene readiness, and pending start consumption can be traced together.
+- Added one transition id across Level 1 â†’ Level 2 debug logs so the Continue button, old-scene cleanup, new-scene creation, scene readiness, and pending start consumption can be traced together.
 - Wrapped scene setup in a transition-safe failure path so setup errors clear the transition state, show a useful scene error, and clean up partial renderer/scene resources instead of leaving the complete screen stuck.
 - Added local development direct boot checks: `?debugLevel=level-1` and `?debugLevel=level-2` start those levels after the save system is ready.
-- Kept Levels 1–3 on the existing `loopPlan` gameplay path; chunk mode remains planned-only for future Level 4+ work.
+- Kept Levels 1â€“3 on the existing `loopPlan` gameplay path; chunk mode remains planned-only for future Level 4+ work.
 - Updated the service worker cache to `v7` and kept JavaScript/CSS network-first so GitHub Pages does not keep serving stale Vite chunks after deploy.
 
 ## Deployment note
@@ -317,7 +322,7 @@ The belly-slide Snake Gate now uses a real GLB 3D model while keeping the same s
 
 ### Latest chunk README note (2026-05-26)
 
-- Added `src/game/chunks/README.md` with beginner-friendly guidance: current demo stays on Levels 1–3 `loopPlan`, chunk mode is for future Level 4+, chunk buffering is planned-only, and no `App.jsx` wiring yet.
+- Added `src/game/chunks/README.md` with beginner-friendly guidance: current demo stays on Levels 1â€“3 `loopPlan`, chunk mode is for future Level 4+, chunk buffering is planned-only, and no `App.jsx` wiring yet.
 
 
 ### Latest chunk schema validation helper addition (2026-05-26)
@@ -339,7 +344,7 @@ The belly-slide Snake Gate now uses a real GLB 3D model while keeping the same s
 
 - Extended `src/game/levels/levelLoader.js` with `isChunkLevel(levelId)` so chunk-mode levels can be checked safely.
 - Tightened `hasNextLevel(levelId)` so it only returns `true` when `nextLevel` is a non-empty string.
-- Kept level runtime behavior unchanged for Levels 1–3 by not wiring new helpers into the gameplay loop.
+- Kept level runtime behavior unchanged for Levels 1â€“3 by not wiring new helpers into the gameplay loop.
 
 ### Latest level schema chunk-mode safety update (2026-05-26)
 
@@ -357,7 +362,7 @@ The belly-slide Snake Gate now uses a real GLB 3D model while keeping the same s
 
 ### Latest complete-screen state debug log update (2026-05-26)
 
-- Added a focused `[complete-screen-state]` debug log in `src/App.jsx` that only fires when the complete screen first opens (false → true) or when the level ID changes while complete is active.
+- Added a focused `[complete-screen-state]` debug log in `src/App.jsx` that only fires when the complete screen first opens (false â†’ true) or when the level ID changes while complete is active.
 - Captures current/next level names and IDs, transition flags, final reward flag, lock timestamp, and lock-state result without per-frame console noise.
 
 ### Latest complete-screen continue button state cleanup (2026-05-26)
@@ -379,7 +384,7 @@ The belly-slide Snake Gate now uses a real GLB 3D model while keeping the same s
 
 ### Latest self-test coverage update (2026-05-26)
 
-- Expanded `src/game/selfTests.js` level tests to verify the Level 1 → Level 2 → Level 3 chain ends at `null` exactly, with no required playable level after Level 3.
+- Expanded `src/game/selfTests.js` level tests to verify the Level 1 â†’ Level 2 â†’ Level 3 chain ends at `null` exactly, with no required playable level after Level 3.
 - Added explicit level-loader assertions so `loadLevelConfigStrict('unknown-id')` returns `null` and `loadLevelConfig('unknown-id')` safely falls back to `level-1`.
 - Added deterministic chunk-schema checks so a clearly invalid chunk fails `validateChunkDefinition`, and all chunk type constants are present as non-empty strings.
 - Kept gameplay collision and progression assertions intact while retaining required build sections checks for all levels.
@@ -427,7 +432,7 @@ The belly-slide Snake Gate now uses a real GLB 3D model while keeping the same s
 ### Latest Level 1 continue runtime fix (2026-05-25)
 
 - Removed a duplicate early immersive callback block in `App.jsx` that could leave declarations in a bad order during runtime transitions.
-- Kept a single standalone-display `useEffect` and a single `tryImmersiveMode` callback source of truth, reducing Level 1 → Level 2 transition risk.
+- Kept a single standalone-display `useEffect` and a single `tryImmersiveMode` callback source of truth, reducing Level 1 â†’ Level 2 transition risk.
 - No level data, hazards, controls, or art assets were changed.
 ### Latest post-Level-1 crash fix (2026-05-25)
 
@@ -591,7 +596,7 @@ The belly-slide Snake Gate now uses a real GLB 3D model while keeping the same s
 
 
 - Startup fix: removed duplicate app version/build exports in `src/appInfo.js` that could break startup/build, and bumped release marker to `1.0.3 / docs-tablet-startup-fix-2026-05-25`.
-- Tablet polish pass: rotate overlay now says “phone or tablet” for clearer portrait guidance, tablet-landscape touch controls are slightly larger for easier taps, display settings now label **Balanced** as **Recommended for Tablets**, and tablet prompt positioning was raised to reduce overlap with bottom controls on medium tablets.
+- Tablet polish pass: rotate overlay now says â€œphone or tabletâ€ for clearer portrait guidance, tablet-landscape touch controls are slightly larger for easier taps, display settings now label **Balanced** as **Recommended for Tablets**, and tablet prompt positioning was raised to reduce overlap with bottom controls on medium tablets.
 - Fixed the startup crash `complete is not defined` by removing a misplaced pause callback from `AudioControls` and keeping pause logic in the main app scope.
 - Updated touch controls modes so `always` reliably shows controls during gameplay on desktop/laptop/2-in-1/phone/tablet, while `auto` now supports phone-landscape, tablet-landscape, and touch-capable 2-in-1 layouts.
 - Hid debug-only visual overlays in normal gameplay by making the dashed safe-zone frame and center pause label fully invisible while keeping their tap functionality.
@@ -622,7 +627,7 @@ The belly-slide Snake Gate now uses a real GLB 3D model while keeping the same s
 ### Latest short-height desktop/laptop title-fit update
 
 - Start-screen overlay now uses viewport-aware top/bottom padding plus overlay-level vertical scrolling to keep the title card fully visible on laptop/desktop heights without introducing internal card scrollbars.
-- Added height-aware desktop/laptop media queries for common short-height landscape viewports (including 1366×768, 1536×864, 1600×900, and 1920×1080).
+- Added height-aware desktop/laptop media queries for common short-height landscape viewports (including 1366Ã—768, 1536Ã—864, 1600Ã—900, and 1920Ã—1080).
 - Scoped changes to title/start-screen selectors only so gameplay and HUD selectors remain unchanged.
 
 
@@ -770,7 +775,7 @@ If you publish updates and a browser shows an older cached version, follow `OFFL
 
 - HUD safe-zone refactor: top HUD is now floating/translucent instead of full-width bars, critical gameplay HUD is kept inside an inner safe-zone rectangle, score moved to top-left, pause/settings stays top-right, movement stays bottom-left, and action controls stay bottom-right for better tablet and wide-screen consistency.
 
-- Tablet comfort/accessibility pass: enlarged touch targets for gameplay and HUD utility controls (48px minimum, 56px+ on primary controls), increased HUD text scale into an 18–28px-friendly range with heavier readable weights, added larger control spacing/invisible hitbox padding, and kept primary gameplay center clear by pinning utility controls to safe edge zones.
+- Tablet comfort/accessibility pass: enlarged touch targets for gameplay and HUD utility controls (48px minimum, 56px+ on primary controls), increased HUD text scale into an 18â€“28px-friendly range with heavier readable weights, added larger control spacing/invisible hitbox padding, and kept primary gameplay center clear by pinning utility controls to safe edge zones.
 
 - Mobile/PWA viewport hardening pass: gameplay wrappers now use modern dynamic viewport units (`100svh` fallback + `100dvh`), safe-area padding is enforced on the game frame + HUD edges, and portrait on phones/tablets now shows rotate guidance instead of cramped play.
 
@@ -787,7 +792,7 @@ If you publish updates and a browser shows an older cached version, follow `OFFL
 - Added explicit orientation behavior rules: portrait/landscape detection is now always tracked, normal menus remain usable in both orientations, and active gameplay on touch devices shows a clear rotate-device overlay in portrait while preserving your current run state through rotation changes.
 - Standardized interactive touch targets to a 48px minimum across buttons and form controls, added visible keyboard focus rings, and increased mobile control spacing so nearby controls keep at least an 8px gap.
 - Added explicit safe-area protection coverage across the main app shell and bottom HUD anchors so top and bottom UI stay clear of notches and iOS home indicators, including standalone PWA display mode handling.
-- Audited the layout for mobile-first responsiveness and added exact breakpoint tiers for small phones (320–480px), large phones (481–767px), tablets (768–1023px), and desktop (1024px+), backed by shared CSS variables for spacing, fonts, radii, and max layout width.
+- Audited the layout for mobile-first responsiveness and added exact breakpoint tiers for small phones (320â€“480px), large phones (481â€“767px), tablets (768â€“1023px), and desktop (1024px+), backed by shared CSS variables for spacing, fonts, radii, and max layout width.
 - Strengthened viewport safety rules with flexible units (`rem`, `%`, `vw`, `svh`, `dvh`, `min()`, `max()`, `clamp()`) so major containers avoid fixed widths, stay centered on large displays, and prevent horizontal scrolling.
 - Added a dedicated **Level 3: Night Run** base theme with a purple night sky plus a white moon backdrop so the third level now has its own clear nighttime look.
 - Reduced expected browser permission noise: fullscreen and audio resume calls now run only from user gestures, and rejected permission attempts are logged as short development-only debug messages so gameplay continues without noisy console warnings.
@@ -842,7 +847,7 @@ If you publish updates and a browser shows an older cached version, follow `OFFL
 - Added a short `OFFLINE_TESTING.md` checklist for verifying install, offline play, and update behavior.
 
 - Simplified PWA icon setup to reuse the existing `public/favicon.png` directly in the manifest and service worker cache, so no generated PNG files are required in Codex workflows.
-- Added a shared level theme constant for the “sunset-temple-run” palette and wired Levels 2 and 3 to reuse it, keeping gameplay behavior unchanged.
+- Added a shared level theme constant for the â€œsunset-temple-runâ€ palette and wired Levels 2 and 3 to reuse it, keeping gameplay behavior unchanged.
 - Reworked the in-game side HUD into one responsive row that wraps safely and stacks on smaller screens, so Energy and Trail Depth cards stay readable and never overlap Time/Score center HUD elements.
 - Fixed Snake Gate accent data so each snake registers only one complete accent object (including tongue/eye/head/segments), and added defensive animation checks to prevent optional mesh errors near branch obstacles.
 - Upgraded the Snake Gate look to better match the target style with denser hanging vines, branch offshoots, snake belly/tongue details, plus animated head bob/eye glow/tongue flick and a one-time proximity warning sting in the slide telegraph window.
@@ -977,16 +982,16 @@ Before release, re-test every fixed mobile issue on at least **two real devices*
 
 ## Controls
 
-- **Move left/right:** `←` / `→`
-- **Run faster (charge):** hold `↑`
+- **Move left/right:** `â†` / `â†’`
+- **Run faster (charge):** hold `â†‘`
 - **Jump:** tap `Space`
 - **Slide:** hold `Space`
 - **Trunk smash:** `Shift`
 - **Phone/mobile (landscape):** controls appear after you press **Begin the Trail** when Touch mode is Auto or Always. Left thumb: floating joystick for forward, back-up, and steering. Right thumb: Jump and Smash buttons.
 - **Tablet:** touch controls use the same floating joystick with tablet-friendly spacing and button sizing.
 - **Desktop:** **keyboard-first controls are preserved** (same key mappings as before).
-- **2-in-1 laptops:** default behavior is **Auto** (touch controls on tablet/phone-like layouts, keyboard-first on desktop-wide layouts). You can override this in **Settings → Controls** with **Touch: Auto / Always / Off**.
-- **How to turn on Always mode:** open **Settings** (title screen or pause menu) → **Controls** → set **Touch** to **Always**.
+- **2-in-1 laptops:** default behavior is **Auto** (touch controls on tablet/phone-like layouts, keyboard-first on desktop-wide layouts). You can override this in **Settings â†’ Controls** with **Touch: Auto / Always / Off**.
+- **How to turn on Always mode:** open **Settings** (title screen or pause menu) â†’ **Controls** â†’ set **Touch** to **Always**.
 - **What Always mode does:** on-screen touch controls stay visible during active gameplay on touch phone/tablet layouts, while desktop keyboard-first play stays uncluttered.
 
 ## Mobile layout notes
@@ -1081,7 +1086,7 @@ Notes:
 - Continue and Try Again buttons now use the same state-driven lock, so they switch from `Get Ready...` to active actions without requiring extra re-render triggers.
 - Kept existing level chain and gameplay behavior unchanged; this is a focused UI input-lock reliability fix.
 
-### Latest Level 1→2 crash guard update (2026-05-26)
+### Latest Level 1â†’2 crash guard update (2026-05-26)
 
 - Renamed complete-screen lock state in `src/App.jsx` to `completeActionLocked` to avoid any possible shadowing/minification initialization conflicts.
 - Kept a single state-based lock source for complete/game-over buttons and handlers.
@@ -1095,7 +1100,124 @@ Notes:
 
 ### Latest temporary source-map debugging update (2026-05-26)
 
-- Enabled production sourcemaps in `vite.config.js` with `build.sourcemap = true` to map minified GitHub Pages errors back to source files while investigating the Level 1 → Level 2 transition crash.
+- Enabled production sourcemaps in `vite.config.js` with `build.sourcemap = true` to map minified GitHub Pages errors back to source files while investigating the Level 1 â†’ Level 2 transition crash.
+- This is temporary and can be turned off after transition debugging is complete.
+
+
+### Latest transition crash isolation update (2026-05-26)
+
+- Added targeted scene-creation failure handling in `src/App.jsx` around `createSceneBasics`, `createCourseGeometry`, and `createSharedResources`.
+- On setup failure, the app now logs `[scene-create-failed]` with level id + stack, clears transition state, clears pending level start, and shows the error message for easier source-map debugging.
+
+### Latest complete-screen input-lock build fix (2026-05-26)
+
+## Mobile layout notes
+
+- The mobile UI is optimized for **landscape play** so your thumbs have more room and the center view stays clear.
+- In phone-landscape gameplay, the app uses a **minimal HUD** to keep the elephant path visible: top-left fruit/lives, top-center state, top-right timer/pause, and a small bottom prompt only when needed.
+- Controls and HUD respect **safe-area insets** (notch/cutout areas), so important buttons and stats stay visible and tappable on modern phones.
+
+## Main features
+
+- Mobile-native tuning: landscape orientation lock attempt, immersive fullscreen request on first touch, notch/safe-area padding, and zoom-disabled viewport for stable game controls
+- 3D jungle runner gameplay with a pink elephant character
+- Softer monkey enemy look (removed banana-like hand shapes for a friendlier silhouette)
+- Animated crocodiles that snap open and closed with visible white teeth when you get close
+- HUD polish to keep energy/charge labels and bars readable on smaller screens
+- Refined menu logo glow and in-game charge badge styling for cleaner readability
+- Fruit collection, hazard dodging, and life-based runs
+- Belly-slide tree gate obstacles with interwoven branches, hanging vines, and snakes
+- Fruit collection with redesigned edible-looking peaches, sugar cane, and golden pineapples
+- Hazard dodging and life-based runs
+- Fruit collection, hazard dodging, and life-based runs with fallen-tree jump obstacles wrapped in vines and moss
+- Multiple levels with increasing distance and speed
+- Level 2 and Level 3 now share the same sunset color palette for a consistent look
+- Keyboard and touch controls for desktop and mobile
+- Pause/settings overlay and audio controls
+
+## Run locally
+
+1. Install dependencies:
+
+```bash
+npm install
+```
+
+2. Start the development server:
+
+```bash
+npm run dev
+```
+
+3. Open the local URL shown in your terminal (usually `http://localhost:5173/`).
+
+## Deploy to GitHub Pages (single method)
+
+This project uses **one deployment method only**:
+
+- **Source:** `main` branch
+- **Folder:** `/docs`
+- **GitHub Actions deploy workflows:** not used for deployment
+
+Steps:
+
+1. Build the Pages output:
+
+```bash
+npm run build:pages
+```
+
+2. Commit and push your changes, including the updated `docs/` folder.
+
+Notes:
+
+- `build:pages` creates a production build directly in `docs/`.
+- Deployment does **not** use GitHub Actions workflows.
+- `docs/.nojekyll` must stay in the repo as an empty file.
+
+
+- Touch quick pause: tap/click center gameplay area to open pause menu with quick audio controls.
+
+## Verification snapshot (2026-05-25)
+
+- Confirmed from source logic that touch controls are only mounted during active gameplay (`isGameplayActive`) and therefore do not render over the title screen.
+- Confirmed `Touch: Always` mode forces touch controls visible during gameplay across desktop/laptop, touch 2-in-1, and phone/tablet layouts.
+- Confirmed keyboard input handling remains active and unchanged for gameplay input.
+- Ran `npm run test` and `npm run build` successfully.
+
+
+## Developer notes
+
+- Added level schema validation helpers in `src/game/levels/levelSchema.js` to validate and normalize level configuration objects.
+
+
+### Latest scene transition context-loss gating update (2026-05-26)
+
+- Updated `src/game/scene/createSceneCleanup.js` so normal level cleanup still disposes scene resources, listeners, and renderer internals, but no longer forces WebGL context loss by default.
+- Added an optional `hardDispose` flag to run `renderer.forceContextLoss?.()` only for full app-exit cleanup paths when explicitly requested.
+- Updated `src/App.jsx` level-transition cleanup call to use the normal (non-hard) cleanup path and kept existing `[scene-cleanup-start]` / `[scene-cleanup-end]` debug logs intact.
+
+### Latest complete-screen unlock fix (2026-05-26)
+
+- Updated `src/App.jsx` to move complete/game-over input locking to React state so the lock automatically expires after 900 ms.
+- Continue and Try Again buttons now use the same state-driven lock, so they switch from `Get Ready...` to active actions without requiring extra re-render triggers.
+- Kept existing level chain and gameplay behavior unchanged; this is a focused UI input-lock reliability fix.
+
+### Latest Level 1â†’2 crash guard update (2026-05-26)
+
+- Renamed complete-screen lock state in `src/App.jsx` to `completeActionLocked` to avoid any possible shadowing/minification initialization conflicts.
+- Kept a single state-based lock source for complete/game-over buttons and handlers.
+- Added a focused `[complete-screen-lock]` debug log to confirm lock state during complete/game-over transitions.
+
+### Latest transition race-safety update (2026-05-26)
+
+- Updated `src/App.jsx` continue action flow so Level Complete "Continue" defers `startLevelById(...)` by one animation frame.
+- This keeps the existing lock/UI behavior but avoids same-tick overlay transition races that could trigger fragile startup timing in minified builds.
+
+
+### Latest temporary source-map debugging update (2026-05-26)
+
+- Enabled production sourcemaps in `vite.config.js` with `build.sourcemap = true` to map minified GitHub Pages errors back to source files while investigating the Level 1 â†’ Level 2 transition crash.
 - This is temporary and can be turned off after transition debugging is complete.
 
 
@@ -1114,3 +1236,21 @@ Notes:
 
 - Fixed a runtime error by standardizing the complete-screen lock state naming in `src/App.jsx` to `completeInputLocked` / `setCompleteInputLocked`.
 
+---
+
+## Looking Forward
+
+Upcoming features planned for Pink Elephant Jungle Dash visual assets and PWA client include:
+*   **Lightweight Local Scoreboard:** Storing player run statistics (distance, time-to-goal) locally in `localStorage` and presenting a high-score shelf overlay.
+*   **3D Visual Obstacle Shaders:** Enhancing the Three.js mesh models with custom vertex shaders to render dynamic jungle atmosphere (wind-bent trees, glowing dust particles).
+*   **Automated Release Packaging:** A build script configuration executing after `npm run build:pages` to package the compiled static assets into release ZIPs and copy them directly to the SSD's global `D:\Products\releases\` directory.
+
+## Documentation index
+
+- [Build plan](build-plan.md)
+- [Device testing](DEVICE_TESTING.md)
+- [Device testing matrix](DEVICE_TESTING_MATRIX.md)
+- [Offline testing](OFFLINE_TESTING.md)
+- [PWA testing](PWA_TESTING.md)
+- [Start-screen QA record](START_SCREEN_QA_2026-05-25.md)
+- [Template defaults](TEMPLATE_DEFAULTS.md)
