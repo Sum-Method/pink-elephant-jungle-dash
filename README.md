@@ -319,7 +319,7 @@ The belly-slide Snake Gate now uses a real GLB 3D model while keeping the same s
 
 This project shares browser-game delivery patterns with sibling game projects:
 - [Getaway Driver](../getaway-driver/README.md) — shared Vite/static deployment, asset validation, and PWA conventions
-- [Software portfolio map](../../00-system/architecture/software-portfolio-map.md) — project roles, shared capabilities, and browser-game delivery toolkit
+- [Software portfolio map](../../../00-system/architecture/software-portfolio-map.md) — project roles, shared capabilities, and browser-game delivery toolkit
 
 ## Deployment note
 - The live game is deployed with **GitHub Pages** at the link above.
