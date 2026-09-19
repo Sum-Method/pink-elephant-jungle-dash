@@ -1,5 +1,7 @@
 schema_version: 1
 
+dependency_assessment: not-assessed
+
 project:
   id: pink-elephant-jungle-dash
   name: 'Pink Elephant Jungle Dash'
