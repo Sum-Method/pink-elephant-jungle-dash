@@ -1,6 +1,24 @@
 schema_version: 1
 
-dependency_assessment: not-assessed
+dependency_assessment: reviewed
+dependency_review:
+  date: '2026-09-19'
+  scope: Browser-shipped game; explicit project-owned npm build/development contract checked against
+    package scripts. npm is build tooling, not a shipped runtime; framework packages and generic
+    browsers are excluded.
+  evidence:
+  - README.md
+  - AGENTS.md
+  - package.json
+direct_dependencies:
+- target: tool:npm
+  required: true
+  purpose: Build/development command runner prescribed by this project; not required to play the
+    built browser game.
+  evidence:
+  - AGENTS.md
+  - package.json
+  interface: cli
 
 project:
   id: pink-elephant-jungle-dash
