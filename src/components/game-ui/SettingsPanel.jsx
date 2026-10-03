@@ -20,7 +20,7 @@ const settingsTabs = [
 
 const aboutTabs = [
   ["progress", "Progress"],
-  ["template", "Template"],
+  ["about", "About"],
 ];
 
 function segmentedClass(active, extraClass = "") {
@@ -105,8 +105,9 @@ export function SettingsPanel({
             <div className={infoCardClass}>
               <p className="settings-info-title">Desktop</p>
               <p>Move: WASD / Arrows</p>
+              <p>Charge: Hold Up / W</p>
               <p>Jump / Slide: Space</p>
-              <p>Smash: F</p>
+              <p>Smash: F · Spin: E</p>
             </div>
             <div className={infoCardClass}>
               <p className="settings-info-title">Mobile</p>
@@ -258,24 +259,20 @@ export function SettingsPanel({
               aria-labelledby={`settings-about-tab-${currentAboutTab[0]}`}
               className="settings-about-active-panel"
             >
-              {activeAboutSection === "template" ? (
+              {activeAboutSection === "about" ? (
                 <div className="settings-panel-grid settings-panel-grid-two">
                   <div className={sectionCardClass}>
-                    <h3 className="settings-section-title">Credits & Template</h3>
+                    <h3 className="settings-section-title">About this game</h3>
                     <dl className="settings-stack">
                       <div className={infoCardClass}>
-                        <dt>Game</dt>
-                        <dd>Pink Elephant Jungle Dash</dd>
-                      </div>
-                      <div className={infoCardClass}>
-                        <dt>Template Defaults</dt>
-                        <dd>PWA install, offline cache, save tools, audio, touch controls, and menu defaults.</dd>
+                        <dt>A jungle adventure</dt>
+                        <dd>Three handcrafted runs, collectable fruit, and a brave pink elephant.</dd>
                       </div>
                     </dl>
                   </div>
                   <div className={sectionCardClass}>
-                    <h3 className="settings-section-title">Full Credits</h3>
-                    <p className="settings-section-copy">Open the Credits screen for game, audio, engine, and attribution notes.</p>
+                    <h3 className="settings-section-title">Credits & media</h3>
+                    <p className="settings-section-copy">Created by Jed / Sum Method for Georgia. See the Credits screen for media and technology notes.</p>
                     <button type="button" onClick={onOpenCredits} className="jungle-focus-ring jungle-menu-button-secondary settings-wide-action">
                       Open Credits
                     </button>

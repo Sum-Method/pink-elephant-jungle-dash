@@ -1,9 +1,9 @@
 export const ASSET_MANIFEST = Object.freeze({
   music: {
-    title: { id: "title-theme", generated: true, description: "Generated 8-bit title melody" },
-    level1: { id: "main-theme", generated: true, description: "Default gameplay loop" },
-    level2: { id: "sunset-temple-run-theme", generated: true, description: "Per-level variation hook" },
-    level3: { id: "night-run-theme", generated: true, description: "Per-level variation hook" },
+    title: { id: "title-theme", generated: true, description: "Web Audio title melody synthesized in the browser" },
+    level1: { id: "main-theme", generated: true, description: "Web Audio gameplay loop synthesized in the browser" },
+    level2: { id: "sunset-temple-run-theme", generated: true, description: "Synthesized gameplay variation" },
+    level3: { id: "night-run-theme", generated: true, description: "Synthesized gameplay variation" },
   },
   sfx: {
     uiClick: { id: "ui-click", generated: true },
@@ -33,7 +33,7 @@ export const ASSET_MANIFEST = Object.freeze({
       description: "Skippable opening cut scene shown from the title-screen new-game path before Level 1 starts.",
     },
     level1BlueButterflyReward: {
-      path: "/assets/videos/Blue-Butterly-cutscene. mp4.mp4",
+      path: "/assets/videos/blue-butterfly-reward.mp4",
       role: "level-1-reward-cutscene",
       format: "mp4",
       description: "Skippable reward cut scene shown after Level 1 completion before Level 2 starts.",

@@ -1,0 +1,32 @@
+name: Quality checks
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - name: Install locked dependencies
+        run: npm ci
+      - name: Run checks and game self-tests
+        run: npm test
+      - name: Build production app
+        run: npm run build
+      - name: Build GitHub Pages site
+        run: npm run build:pages
+      - name: Verify committed Pages output is current
+        run: git diff --ignore-blank-lines --exit-code -- docs

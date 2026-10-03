@@ -1,7 +1,7 @@
 # PWA Browser QA Checklist (tablet game focus)
 
 Use this checklist after deploying the latest build to GitHub Pages:
-`https://jedbcov-coder.github.io/pink-elephant-jungle-dash/`
+`https://sum-method.github.io/pink-elephant-jungle-dash/`
 
 ---
 

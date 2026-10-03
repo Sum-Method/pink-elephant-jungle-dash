@@ -29,6 +29,10 @@ export function obstacleBox(obs, target = {}) {
   return makeBoxCollider(obs, target);
 }
 
+export function getCollisionDamage(isCroc = false) {
+  return isCroc ? CONFIG.crocDamage : CONFIG.obstacleDamage;
+}
+
 export function radiusBox(item, target = {}) {
   target.minX = item.x - item.radius;
   target.maxX = item.x + item.radius;

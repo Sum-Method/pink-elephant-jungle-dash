@@ -1,0 +1,4 @@
+paths-ignore:
+  - docs/**
+  - dist/**
+  - node_modules/**

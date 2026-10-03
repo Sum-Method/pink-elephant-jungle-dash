@@ -8,7 +8,7 @@ export const LEVEL_1 = {
   id: "level-1",
   name: "Level 1",
   background: "jungle-day",
-  speed: { ...MOVEMENT },
+  speed: { ...MOVEMENT, startAssistDuration: 2.2 },
   loops: [0, 245, 490],
   loopPlans: [
     {

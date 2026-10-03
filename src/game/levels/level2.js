@@ -9,7 +9,7 @@ export const LEVEL_2 = {
   name: "Sunset Temple Run",
   background: "sunset-temple-run",
   theme: SUNSET_TEMPLE_RUN_THEME,
-  speed: { ...MOVEMENT, maxSpeed: 42 },
+  speed: { ...MOVEMENT, maxSpeed: 40, startAssistDuration: 2.2 },
   course: {
     floorLength: 1500,
     gateZ: -1330,

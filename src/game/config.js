@@ -84,6 +84,9 @@ export const COLLISION = {
   smashRange: 2.5,
   smashForwardScale: 1.4,
   smashBackScale: 0.35,
+  obstacleDamage: 18,
+  crocDamage: 28,
+  hurtInvulnerabilityDuration: 0.55,
 };
 
 export const CAMERA_FEEDBACK = {

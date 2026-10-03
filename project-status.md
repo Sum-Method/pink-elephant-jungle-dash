@@ -1,22 +1,22 @@
-# Project Status — pink-elephant-jungle-dash
+# Project Status
 
-## Project Identity
-*   **Role:** 2D browser side-scroller game prototype.
-*   **Path:** `10-workshop/games/pink-elephant-jungle-dash`
-*   **Primary Stack:** React 19, Vite 8, HTML5 Canvas, Three.js, TypeScript.
+**Project:** Pink Elephant Jungle Dash  
+**Current portfolio baseline:** v1.1.0  
+**Type:** Three-level 3D browser runner and installable PWA  
+**Stack:** React, Three.js, and Vite
 
-## Current State
-*   **Status:** Prototype Complete (Offline / PWA Hardening)
-*   **Completed Milestones:**
-    *   **2D Canvas Loop:** Parallax scrolling backgrounds, player jump/duck physics controls, and obstacle collision calculations.
-    *   **PWA Setup:** Offline manifest registration, service-worker asset caching, and offline play capabilities.
-    *   **Device Testing:** Device orientation lock controls and touch controls support mapped (see `DEVICE_TESTING.md`).
-*   **Active Focus:**
-    *   Asset size optimization (converting sprite assets from PNG to compact WebP).
-    *   Hardening the PWA responsive layouts to prevent vertical overflows on small browser viewport limits.
-*   **Blockers:** None.
+## Current state
 
-## Active Todo List
-- [ ] Convert game audio loops to highly compressed formats.
-- [/] Set up responsive CSS scale constraints for the canvas container.
-- [ ] Configure automatic deploy pipelines to package outputs directly to `D:\Products`.
+The game has a complete title-to-finale flow, three playable levels, touch/keyboard/gamepad controls, saved progress, accessibility settings, browser-synthesized audio, and skippable story scenes. The v1.1.0 pass focuses on a reliable portfolio baseline: accurate project information, repeatable checks, smaller media, clearer early-game guidance, and more readable gameplay sightlines.
+
+## Baseline gates
+
+- `npm run lint` checks the JavaScript and React source.
+- `npm test` runs CSS/TypeScript checks and deterministic gameplay self-tests.
+- `npm run build` creates the regular production bundle.
+- `npm run build:pages` prepares the GitHub Pages build in `docs/`.
+- Manual acceptance remains separate: play through the title, opening, both level transitions, pause/settings/credits, a retry, and the finale; verify phone landscape and gamepad input where available.
+
+## Next
+
+Continue refining the game from player feedback while keeping the level chain, controls, saved-data compatibility, and accessibility settings intact. Keep this status file factual as each release changes the baseline.

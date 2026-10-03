@@ -1,8 +1,0 @@
-# DevHut developer creative workspace.
-# Ignore workspace contents by default.
-
-*
-
-# Track the workspace contract itself.
-!.gitignore
-!README.md
