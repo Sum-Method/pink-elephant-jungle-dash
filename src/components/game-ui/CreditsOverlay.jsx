@@ -2,10 +2,10 @@ import React, { useEffect, useState } from "react";
 
 const creditsTabs = [
   ["game", "Game"],
-  ["template", "Template"],
-  ["audio", "Audio"],
-  ["engine", "Engine"],
-  ["attribution", "Credits"],
+  ["controls", "Controls"],
+  ["media", "Media"],
+  ["technology", "Technology"],
+  ["credits", "Credits"],
 ];
 
 export function CreditsOverlay({ open, onClose }) {
@@ -33,55 +33,55 @@ export function CreditsOverlay({ open, onClose }) {
 
   const renderActiveSection = () => {
     switch (activeSection) {
-      case "template":
+      case "controls":
         return (
           <div className="credits-panel-grid credits-panel-grid-two">
             <article className="credits-card">
-              <h3>Template Defaults</h3>
-              <p>Start, settings, pause, level complete, game over, credits, save tools, PWA install, offline cache, and update prompts.</p>
+              <h3>Choose your controls</h3>
+              <p>Play with keyboard, touch controls, or a connected gamepad. Open Settings for the full control mapping and accessibility options.</p>
             </article>
             <article className="credits-card">
-              <h3>Reusable Shell</h3>
-              <p>This screen stays ready for future game credits without making the menu scroll.</p>
+              <h3>Made to be playable</h3>
+              <p>Touch movement and action buttons stay within reach on phones and tablets. Keyboard and gamepad play remain supported.</p>
             </article>
           </div>
         );
-      case "audio":
+      case "media":
         return (
           <div className="credits-panel-grid credits-panel-grid-two">
             <article className="credits-card">
-              <h3>Audio</h3>
-              <p>Generated title music and gameplay sound effects are wired through the local AudioManager.</p>
+              <h3>Cut scenes</h3>
+              <p>The opening, blue butterfly reward, and finale videos were generated with Google Gemini.</p>
             </article>
             <article className="credits-card">
-              <h3>Sound Slots</h3>
-              <p>Replace or expand these notes with final music, SFX, and license credits before shipping a new game.</p>
+              <h3>Snake Gate model</h3>
+              <p>Created with Microsoft Copilot image-to-3D experiments using reference images generated with ChatGPT.</p>
             </article>
           </div>
         );
-      case "engine":
+      case "technology":
         return (
           <div className="credits-panel-grid credits-panel-grid-two">
             <article className="credits-card">
-              <h3>Engine</h3>
-              <p>React, Vite, Three.js, browser storage, and a service worker form the current web game shell.</p>
+              <h3>Built for the browser</h3>
+              <p>React, Vite, and Three.js power the menus and real-time 3D trail.</p>
             </article>
             <article className="credits-card">
-              <h3>Browser Game</h3>
-              <p>The UI is DOM-based over the 3D scene so menus stay readable and quick to adjust.</p>
+              <h3>Sound and saves</h3>
+              <p>The score and sound effects are synthesized with the Web Audio API. Browser storage and a service worker support saved progress and offline play.</p>
             </article>
           </div>
         );
-      case "attribution":
+      case "credits":
         return (
           <div className="credits-panel-grid credits-panel-grid-two">
             <article className="credits-card">
-              <h3>Attribution Slots</h3>
-              <p>Replace this section with final art, music, SFX, font, model, and license credits before shipping a new game.</p>
+              <h3>Made with love</h3>
+              <p>Created by Jed / Sum Method for Georgia.</p>
             </article>
             <article className="credits-card">
-              <h3>Project Notes</h3>
-              <p>Keep third-party asset names, license links, and creator credits here when final assets are chosen.</p>
+              <h3>Reuse and attribution</h3>
+              <p>Code and media have separate reuse terms. See the project’s license and media notes for details.</p>
             </article>
           </div>
         );
@@ -91,11 +91,11 @@ export function CreditsOverlay({ open, onClose }) {
           <div className="credits-panel-grid credits-panel-grid-two">
             <article className="credits-card">
               <h3>Game</h3>
-              <p>Pink Elephant Jungle Dash is made with love for Georgia, by Uncle Jed.</p>
+              <p>Created by Jed / Sum Method. Made with love for Georgia.</p>
             </article>
             <article className="credits-card">
               <h3>About</h3>
-              <p>A playful 3D jungle runner with fruit, hazards, handcrafted trails, touch controls, and a reusable web-game shell.</p>
+              <p>A colorful three-level adventure with fruit to gather, hazards to outsmart, and a jungle trail to explore.</p>
             </article>
           </div>
         );
@@ -109,7 +109,7 @@ export function CreditsOverlay({ open, onClose }) {
           <div>
             <div className="game-modal-kicker">Credits & About</div>
             <h2 id="credits-title" className="display-title game-modal-title">Pink Elephant Jungle Dash</h2>
-            <p className="game-modal-copy">A reusable credits screen for game, template, music, SFX, art, engine, and license notes.</p>
+            <p className="game-modal-copy">A three-level browser runner created by Jed / Sum Method for Georgia.</p>
           </div>
           <button type="button" onClick={onClose} className="jungle-focus-ring jungle-menu-button-secondary game-modal-close">Close</button>
         </div>

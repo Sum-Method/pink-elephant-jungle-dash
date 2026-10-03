@@ -16,13 +16,13 @@ homepage_parent: "../../../00-system/devhut-home.md"
 
 # Pink Elephant Jungle Dash
 
-> Beginner-friendly 3D browser runner game.
+> Three-level 3D browser runner made by Jed / Sum Method for Georgia.
 
 [**Open Workspace**](vscode://file/D:/DevHut/10-workshop/games/pink-elephant-jungle-dash/pink-elephant-jungle-dash.code-workspace) · [Back To DevHut Home](../../../00-system/devhut-home.md) · [README](README.md) · [Project Status](project-status.md) · [Roadmap](roadmap.md) · [Agent Instructions](AGENTS.md) · [Security](SECURITY.md) · [DEVLOG](devlog.md)
 
 ## Overview
 
-Guide a pink elephant through jungle paths, collect fruit, avoid hazards, and progress through three levels with skippable cut scenes. Built with React, Vite, Three.js, and Phaser.
+Guide a pink elephant through jungle paths, collect fruit, avoid hazards, and progress through three levels with skippable cut scenes. Built with React, Vite, and Three.js.
 
-**Live playable:** https://jedbcov-coder.github.io/pink-elephant-jungle-dash/
+**Live playable:** https://sum-method.github.io/pink-elephant-jungle-dash/
 

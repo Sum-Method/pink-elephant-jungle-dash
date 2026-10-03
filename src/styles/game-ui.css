@@ -2211,6 +2211,11 @@ button:disabled {
   white-space: nowrap;
 }
 
+.title-secondary-actions button:only-child {
+  grid-column: 1 / -1;
+  justify-self: center;
+}
+
 .title-card .hud-settings-button,
 .title-card button[class*="Begin"],
 .title-card .px-10.py-4 {

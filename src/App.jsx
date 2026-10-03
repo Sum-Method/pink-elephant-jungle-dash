@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import { flushSync } from "react-dom";
 import * as THREE from "three";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
+import { MeshoptDecoder } from "three/addons/libs/meshopt_decoder.module.js";
 import { SpeedInsights } from "@vercel/speed-insights/react";
 import { Analytics } from "@vercel/analytics/react";
 
@@ -12,10 +13,11 @@ import { RotateOverlay } from "./components/game-ui/RotateOverlay.jsx";
 import { SettingsPanel } from "./components/game-ui/SettingsPanel.jsx";
 import { TouchControls } from "./components/game-ui/TouchControls.jsx";
 import { usePwaInstallPrompt } from "./hooks/usePwaInstallPrompt.js";
-import { CAMERA_FEEDBACK, CONFIG, HUD_TIMING, MOVEMENT, PARTICLES, PERFORMANCE, PICKUPS, SCORING } from "./game/config.js";
+import { CAMERA_FEEDBACK, COLLISION, CONFIG, HUD_TIMING, MOVEMENT, PARTICLES, PERFORMANCE, PICKUPS, SCORING } from "./game/config.js";
 import {
   canRetreatFromObstacle,
   enemyBox,
+  getCollisionDamage,
   handleBranchCollision,
   handleCrateCollision,
   handleCrocCollision,
@@ -83,10 +85,11 @@ import { createRenderer } from "./game/scene/createRenderer.js";
 import { createSceneBasics } from "./game/scene/createSceneBasics.js";
 import { createSceneCleanup } from "./game/scene/createSceneCleanup.js";
 import { createSharedResources } from "./game/scene/createSharedResources.js";
+import { getFoliageCenterOffset } from "./game/foliagePlacement.js";
 
 const SNAKE_GATE_MODEL_PATH = "assets/models/obstacles/snake-gate.glb";
 const OPENING_CUTSCENE_VIDEO_PATH = "assets/videos/Home_in_the_Herd_.mp4";
-const LEVEL_1_REWARD_CUTSCENE_VIDEO_PATH = "assets/videos/Blue-Butterly-cutscene.%20mp4.mp4";
+const LEVEL_1_REWARD_CUTSCENE_VIDEO_PATH = "assets/videos/blue-butterfly-reward.mp4";
 const FINALE_CUTSCENE_VIDEO_PATH = "assets/videos/finale.mp4";
 const CUTSCENE_CONTROL_SELECTOR = "[data-cutscene-control]";
 const TOUCH_JOYSTICK_ZERO = Object.freeze({ x: 0, y: 0, strength: 0 });
@@ -111,6 +114,7 @@ function prepareSnakeGateTemplate(template) {
 
 function loadSnakeGateModelTemplate() {
   const loader = new GLTFLoader();
+  loader.setMeshoptDecoder(MeshoptDecoder);
   return loader.loadAsync(resolvePublicAssetUrl(SNAKE_GATE_MODEL_PATH)).then((gltf) => prepareSnakeGateTemplate(gltf.scene));
 }
 
@@ -1998,11 +2002,18 @@ export default function App() {
     addEdgeGuidanceProps();
     addJungleDepthProps();
 
+    const foliageBounds = new THREE.Box3();
+    const foliageHalfWidthFromOrigin = (object) => {
+      foliageBounds.setFromObject(object);
+      return Math.max(Math.abs(foliageBounds.min.x), Math.abs(foliageBounds.max.x));
+    };
+
     for (let z = 16; z > courseVisualEndZ; z -= 8) {
       [-1, 1].forEach((side) => {
         const jitterZ = z + jungleRng() * 5 - 2.5;
         const nearTree = makeLowPolyTree(trunkMat, leafMats, sharedTreeGeometries, jungleRng, 0.95 + jungleRng() * 0.35, true, jungleMistMat);
-        nearTree.position.set(worldX(side * (7.1 + jungleRng() * 3.1), jitterZ), 0, jitterZ);
+        const nearTreeOffset = getFoliageCenterOffset(safeHalfWidth, foliageHalfWidthFromOrigin(nearTree), 0.8) + jungleRng() * 1.7;
+        nearTree.position.set(worldX(side * nearTreeOffset, jitterZ), 0, jitterZ);
         treeGroup.add(nearTree);
 
         const backTreeZ = jitterZ - 2 + jungleRng() * 4;
@@ -2011,21 +2022,25 @@ export default function App() {
         treeGroup.add(backTree);
 
         const bush = makeLowPolyBush(leafMats, sharedTreeGeometries, jungleRng, 0.9 + jungleRng() * 0.55, true, jungleMistMat);
-        bush.position.set(worldX(side * (6.45 + jungleRng() * 2.0), jitterZ + 1.4), 0.02, jitterZ + 1.4);
+        const bushOffset = getFoliageCenterOffset(safeHalfWidth, foliageHalfWidthFromOrigin(bush), 0.65) + jungleRng() * 1.2;
+        bush.position.set(worldX(side * bushOffset, jitterZ + 1.4), 0.02, jitterZ + 1.4);
         treeGroup.add(bush);
 
         if (Math.abs(z % 24) < 0.1) {
           const foregroundTree = makeLowPolyTree(trunkMat, leafMats, sharedTreeGeometries, jungleRng, 1.55 + jungleRng() * 0.35, true, jungleMistMat);
-          foregroundTree.position.set(worldX(side * (8.8 + jungleRng() * 2.5), jitterZ), 0, jitterZ);
+          const foregroundTreeOffset = getFoliageCenterOffset(safeHalfWidth, foliageHalfWidthFromOrigin(foregroundTree), 1.0) + 1.4;
+          foregroundTree.position.set(worldX(side * foregroundTreeOffset, jitterZ), 0, jitterZ);
           treeGroup.add(foregroundTree);
         }
 
         if (Math.abs(z % 32) < 0.1) {
           const canopyRadius = 2.0 + jungleRng() * 1.2;
           const canopy = new THREE.Mesh(sharedGeometries.canopy, leafMats[Math.floor(jungleRng() * leafMats.length)]);
-          canopy.position.set(worldX(side * (5.9 + jungleRng() * 2.8), jitterZ), 7.0 + jungleRng() * 1.8, jitterZ);
+          canopy.position.set(0, 7.0 + jungleRng() * 1.8, jitterZ);
           canopy.scale.set(canopyRadius * 1.25, canopyRadius * 0.62, canopyRadius * 0.9);
           canopy.rotation.y = jungleRng() * Math.PI;
+          const canopyOffset = getFoliageCenterOffset(safeHalfWidth, foliageHalfWidthFromOrigin(canopy), 0.85) + 0.8;
+          canopy.position.x = worldX(side * canopyOffset, jitterZ);
           canopy.castShadow = true;
           treeGroup.add(canopy);
         }
@@ -3094,8 +3109,8 @@ export default function App() {
     function hurt(croc = false) {
       if (performance.now() < resumeSafetyUntilRef.current) return;
       if (body.hurtTimer > 0 || body.completed || body.lives <= 0) return;
-      body.health = Math.max(0, body.health - (croc ? 34 : 22));
-      body.hurtTimer = 0.45;
+      body.health = Math.max(0, body.health - getCollisionDamage(croc));
+      body.hurtTimer = COLLISION.hurtInvulnerabilityDuration;
       body.speed = Math.max(0, body.speed * 0.15);
       burst(body.x, body.y + 1.1, body.z, croc ? "#53a653" : "#ff3f58", PARTICLES.defaultBurstCount, PARTICLES.hurtBurstScale);
       popText(croc ? "SNAP!" : "OOPS!", body.x, body.y + 3.2, body.z, croc ? "#9aff99" : "#ff8794");
@@ -4279,7 +4294,7 @@ export default function App() {
         <div className="hud-prompt-layer hud-safe-top-center pointer-events-none absolute left-1/2 z-20 flex flex-col items-center gap-2">
           <div ref={ui.prompt}
             className="hud-prompt overflow-hidden text-ellipsis whitespace-nowrap rounded-full px-5 py-2 text-center text-sm font-black tracking-wide text-amber-50">
-            Hold ↑ to build Elephant Charge.
+            Hold ↑ or push the joystick up to charge.
           </div>
           <canvas ref={ui.speedo} className="hud-speedometer" width={120} height={120} />
         </div>
@@ -4350,7 +4365,7 @@ export default function App() {
               <div className="text-[11px] font-black uppercase tracking-[0.22em] text-emerald-200/80">Level Briefing</div>
               <h3 className="mt-1 text-base font-black text-amber-100">{currentLevelConfig.name}</h3>
               <p className="mt-1 text-xs leading-relaxed text-amber-50/70">
-                Objective: reach the Jungle Gate with fruit, lives, and score intact.
+                Hold ↑ or push the joystick up to run, then steer around the jungle hazards.
               </p>
               <p className="mt-1 text-[11px] font-bold uppercase tracking-[0.14em] text-pink-200/80">Difficulty: Intro Trail</p>
             </section>

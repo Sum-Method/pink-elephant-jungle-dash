@@ -4,6 +4,7 @@ import {
   handleBranchCollision,
   handleCrateCollision,
   handleGateCollision,
+  getCollisionDamage,
   handleLogCollision,
   makeBoxCollider,
   obstacleBox,
@@ -29,6 +30,7 @@ import { GAME_TEMPLATE_CONFIG, isTemplateFeatureEnabled } from "./templateConfig
 import { TITLE_THEME, noteNameToFrequency } from "./audio/titleTheme.js";
 import { trackAngle, trackCenter, worldPosition, worldX } from "./track.js";
 import { CONFIG, MOVEMENT, PICKUPS, SCORING } from "./config.js";
+import { getFoliageCenterOffset } from "./foliagePlacement.js";
 import { buildLevelById, LEVEL } from "./level.js";
 import { LEVEL_REGISTRY, getAllLevelConfigs, getLevelConfig, getLevelConfigStrict } from "./levels/index.js";
 import { loadLevelConfig, loadLevelConfigStrict } from "./levels/levelLoader.js";
@@ -61,6 +63,34 @@ export function runSelfTests() {
   assert("clamp caps high values", clamp(12, 0, 10) === 10);
   assert("clamp caps low values", clamp(-2, 0, 10) === 0);
   assert("lerp halfway", lerp(0, 10, 0.5) === 5);
+
+  assert(
+    "gentle damage tuning leaves room for recovery",
+    getCollisionDamage(false) === 18
+      && getCollisionDamage(true) === 28
+      && CONFIG.hurtInvulnerabilityDuration === 0.55,
+  );
+
+  const protectedFoliageCenter = getFoliageCenterOffset(5.6, 3.1);
+  assert(
+    "foreground foliage bounds stay outside the running lane",
+    protectedFoliageCenter - 3.1 > 5.6,
+  );
+
+  assert(
+    "first two levels offer a gentler startup",
+    LEVEL_REGISTRY["level-1"].speed.startAssistDuration === 2.2
+      && LEVEL_REGISTRY["level-2"].speed.startAssistDuration === 2.2
+      && LEVEL_REGISTRY["level-2"].speed.maxSpeed === 40,
+  );
+
+  assert(
+    "smash tutorial hints match the F-key control",
+    LOOP_PROMPT_PLANS.slice(0, 2).every((plan) => {
+      const smashPrompt = plan.prompts.find((prompt) => prompt.cues.includes("crate"));
+      return smashPrompt?.text.includes("F") && !smashPrompt.text.includes("Z");
+    }),
+  );
 
   const seededA = createSeededRandom(1234);
   const seededB = createSeededRandom(1234);
@@ -705,7 +735,7 @@ export function runSelfTests() {
       && assetSummary.levelCount === levelIds.length
       && ASSET_MANIFEST.models.snakeGate.path === "/assets/models/obstacles/snake-gate.glb"
       && ASSET_MANIFEST.videos.openingHomeInTheHerd.path === "/assets/videos/Home_in_the_Herd_.mp4"
-      && ASSET_MANIFEST.videos.level1BlueButterflyReward.path === "/assets/videos/Blue-Butterly-cutscene. mp4.mp4"
+      && ASSET_MANIFEST.videos.level1BlueButterflyReward.path === "/assets/videos/blue-butterfly-reward.mp4"
       && ASSET_MANIFEST.videos.finale.path === "/assets/videos/finale.mp4"
       && ASSET_MANIFEST.recommendedFolders.includes("/assets/audio/music")
       && ASSET_MANIFEST.recommendedFolders.includes("/assets/models/obstacles")

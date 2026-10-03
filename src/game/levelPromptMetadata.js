@@ -32,14 +32,14 @@ export const LOOP_PROMPT_PLANS = Object.freeze([
   Object.freeze({
     sectionLabel: "Learning Trail",
     prompts: Object.freeze([
-      { localStart: 0, localEnd: 14, text: "Hold ↑ to build Elephant Charge.", cues: ["start"] },
+      { localStart: 0, localEnd: 14, text: "Hold ↑ or push the joystick up to charge.", cues: ["start"] },
       { localStart: 14, localEnd: 42, text: "Follow the golden fruit and feel the big pink rhythm.", cues: ["fruit"] },
       { localStart: 42, localEnd: 64, text: "Monkey patrol ahead — tap E for a Spin Attack.", cues: ["monkey"] },
       { localStart: 64, localEnd: 96, text: "Use ← → to sway through the jungle trail.", cues: ["fruit"] },
       { localStart: 96, localEnd: 116, text: "Tap Space to leap the log. Watch the shadow, not the ears.", cues: ["log"] },
       { localStart: 116, localEnd: 126, text: "Tap Space again in the air for a BIG Bounce.", cues: ["fruit"] },
       { localStart: 126, localEnd: 148, text: "Low vines ahead — hold Space now to Belly-Slide.", cues: ["branch"] },
-      { localStart: 162, localEnd: 192, text: "Wooden crate ahead — press Z for a Trunk-Smash.", cues: ["crate"] },
+      { localStart: 162, localEnd: 192, text: "Wooden crate ahead — press F for a Trunk-Smash.", cues: ["crate"] },
       { localStart: 192, localEnd: 224, text: "Crocodile creek ahead. Stop, read the jaws, then charge.", cues: ["river"] },
       { localStart: 224, localEnd: 245, text: "Sugar cane restores energy after a jungle bump.", cues: ["health"] },
     ]),
@@ -47,13 +47,13 @@ export const LOOP_PROMPT_PLANS = Object.freeze([
   Object.freeze({
     sectionLabel: "Practice Grove",
     prompts: Object.freeze([
-      { localStart: 0, localEnd: 42, text: "Practice Grove: build a braver Elephant Charge.", cues: ["start"] },
+      { localStart: 0, localEnd: 42, text: "Practice Grove: hold ↑ or push up to charge.", cues: ["start"] },
       { localStart: 42, localEnd: 64, text: "Monkey patrol returning — tap E to Spin Attack.", cues: ["monkey"] },
       { localStart: 64, localEnd: 96, text: "Sway through the fruit trail. Big feet, gentle steering.", cues: ["fruit"] },
       { localStart: 96, localEnd: 116, text: "Leap the log. Keep the shadow clear.", cues: ["log"] },
       { localStart: 116, localEnd: 126, text: "Reach the high fruit with a BIG Bounce.", cues: ["fruit"] },
       { localStart: 126, localEnd: 148, text: "Belly-Slide low before the branch.", cues: ["branch"] },
-      { localStart: 162, localEnd: 192, text: "Trunk-Smash the crate with Z as it enters reach.", cues: ["crate"] },
+      { localStart: 162, localEnd: 192, text: "Trunk-Smash the crate with F as it enters reach.", cues: ["crate"] },
       { localStart: 192, localEnd: 224, text: "Crocodile creek again. Stop, read, then stampede.", cues: ["river"] },
       { localStart: 224, localEnd: 245, text: "Sugar cane ahead. Gather your elephant energy.", cues: ["health"] },
     ]),

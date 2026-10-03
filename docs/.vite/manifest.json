@@ -1,44 +1,44 @@
 {
-  "_react-BZfzXQPc.js": {
-    "file": "assets/react-BZfzXQPc.js",
+  "_react-Bmd0UWL6.js": {
+    "file": "assets/react-Bmd0UWL6.js",
     "name": "react",
     "imports": [
-      "_rolldown-runtime-jpDsebLB.js"
+      "_rolldown-runtime-CbXtAM7H.js"
     ]
   },
-  "_rolldown-runtime-jpDsebLB.js": {
-    "file": "assets/rolldown-runtime-jpDsebLB.js",
+  "_rolldown-runtime-CbXtAM7H.js": {
+    "file": "assets/rolldown-runtime-CbXtAM7H.js",
     "name": "rolldown-runtime"
   },
-  "_three-CaBG5vEd.js": {
-    "file": "assets/three-CaBG5vEd.js",
+  "_three-BuH0xrIm.js": {
+    "file": "assets/three-BuH0xrIm.js",
     "name": "three"
   },
   "index.html": {
-    "file": "assets/index-CbwV_6kW.js",
+    "file": "assets/index-Hdc99p9i.js",
     "name": "index",
     "src": "index.html",
     "isEntry": true,
     "imports": [
-      "_rolldown-runtime-jpDsebLB.js",
-      "_react-BZfzXQPc.js"
+      "_rolldown-runtime-CbXtAM7H.js",
+      "_react-Bmd0UWL6.js"
     ],
     "dynamicImports": [
       "src/App.jsx"
     ],
     "css": [
-      "assets/index-DdlULUm1.css"
+      "assets/index-BkiJ_9X6.css"
     ]
   },
   "src/App.jsx": {
-    "file": "assets/App-Or0e9ZSP.js",
+    "file": "assets/App-D6d-LC6m.js",
     "name": "App",
     "src": "src/App.jsx",
     "isDynamicEntry": true,
     "imports": [
-      "_rolldown-runtime-jpDsebLB.js",
-      "_react-BZfzXQPc.js",
-      "_three-CaBG5vEd.js"
+      "_rolldown-runtime-CbXtAM7H.js",
+      "_react-Bmd0UWL6.js",
+      "_three-BuH0xrIm.js"
     ]
   }
 }

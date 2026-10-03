@@ -1,37 +1,33 @@
-import js from '@eslint/js';
-import firebaseRulesPlugin from '@firebase/eslint-plugin-security-rules';
+import js from "@eslint/js";
+import globals from "globals";
+import react from "eslint-plugin-react";
+import reactHooks from "eslint-plugin-react-hooks";
 
 export default [
   {
-    ignores: ['dist/**/*']
+    ignores: ["coverage/**", "dist/**", "docs/**", "node_modules/**", "public/**"],
   },
   js.configs.recommended,
+  react.configs.flat.recommended,
+  reactHooks.configs.flat.recommended,
   {
-    files: ['**/*.{js,jsx,mjs,cjs,ts,tsx}'],
+    files: ["**/*.{js,jsx,mjs,cjs}"],
     languageOptions: {
+      ecmaVersion: "latest",
+      sourceType: "module",
       parserOptions: {
-        ecmaFeatures: {
-          jsx: true,
-        },
+        ecmaFeatures: { jsx: true },
       },
       globals: {
-        window: 'readonly',
-        document: 'readonly',
-        console: 'readonly',
-        requestAnimationFrame: 'readonly',
-        cancelAnimationFrame: 'readonly',
-        performance: 'readonly',
-        Math: 'readonly',
-        Date: 'readonly',
-        JSON: 'readonly',
-        setTimeout: 'readonly',
-        clearTimeout: 'readonly',
-        fetch: 'readonly',
+        ...globals.browser,
+        ...globals.node,
       },
     },
+    settings: {
+      react: { version: "detect" },
+    },
     rules: {
-      'no-unused-vars': 'warn',
+      "no-unused-vars": ["warn", { argsIgnorePattern: "^_", ignoreRestSiblings: true, varsIgnorePattern: "^_" }],
     },
   },
-  firebaseRulesPlugin.configs['flat/recommended']
 ];

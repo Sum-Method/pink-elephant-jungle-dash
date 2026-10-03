@@ -10,7 +10,7 @@ export default defineConfig({
   base: isPagesBuild ? repoBase : "/",
   build: {
     manifest: true,
-    sourcemap: true,
+    sourcemap: false,
     rollupOptions: {
       output: {
         manualChunks(id) {

@@ -1,26 +1,21 @@
-# Project Roadmap — pink-elephant-jungle-dash
+# Project Roadmap
 
-This roadmap outlines the development milestones for the side-scroller game.
+## Playable adventure — complete
 
-## Milestone Status
+- Three handcrafted 3D runner levels, with normal trail progression from Level 1 through the finale.
+- Fruit, hazards, rewards, achievements, save data, and retry/pause flows.
+- Keyboard, touch, and gamepad input with accessibility options.
+- Skippable opening, Level 1 reward, and finale scenes.
+- Installable PWA with offline fallback.
 
-### Milestone 1: Canvas Loop & Player Evasion (Complete)
-*   **Goal:** Create a smooth infinite scrolling environment with collision detection.
-*   **Tasks:**
-    *   Coded 2D HTML5 canvas double-buffered render loop.
-    *   Wired jump/duck mechanics and keyboard listener.
-    *   Integrated bounding-box collision logic with random obstacles.
+## Portfolio baseline — v1.1.0
 
-### Milestone 2: Offline PWA & Mobile Touch controls (Complete)
-*   **Goal:** Enable offline play and touch controls on mobile browsers.
-*   **Tasks:**
-    *   Registered minimal PWA manifest and custom service worker cache paths.
-    *   Mapped bottom corner touch buttons for mobile devices in landscape mode.
-    *   Added device orientation lock checks.
+- Make the project and credits accurately describe the shipped game and its media.
+- Clarify early-game controls and soften the first moments of play.
+- Keep the visible running lane clear of foreground foliage.
+- Reduce media weight and establish repeatable source, gameplay, and release checks.
+- Provide real gameplay screenshots for the project showcase.
 
-### Milestone 3: Asset Optimization & Releases (In Progress)
-*   **Goal:** Optimize file footprint and compile release builds.
-*   **Tasks:**
-    *   Convert sprites and audio loops to WebP/compressed formats.
-    *   Add responsive CSS scale clamps to fit multiple screen ratios.
-    *   Write output target scripts pointing builds directly to `D:\Products`.
+## Ongoing refinement
+
+Gather player feedback, tune challenge carefully, and improve presentation without breaking the existing three-level flow, familiar controls, accessibility settings, save compatibility, or browser/offline behavior.
