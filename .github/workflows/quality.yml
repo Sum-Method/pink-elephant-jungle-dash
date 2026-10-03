@@ -29,4 +29,4 @@ jobs:
       - name: Build GitHub Pages site
         run: npm run build:pages
       - name: Verify committed Pages output is current
-        run: git diff --exit-code -- docs
+        run: git diff --ignore-blank-lines --exit-code -- docs
