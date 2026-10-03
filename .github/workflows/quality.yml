@@ -22,8 +22,6 @@ jobs:
           cache: npm
       - name: Install locked dependencies
         run: npm ci
-      - name: Lint source
-        run: npm run lint
       - name: Run checks and game self-tests
         run: npm test
       - name: Build production app

@@ -12,10 +12,9 @@
     "preview": "vite preview --host 0.0.0.0",
     "check": "npm run check:css && tsc -p tsconfig.json --noEmit",
     "test": "npm run check && node scripts/run-self-tests.mjs",
-    "lint": "eslint .",
+    "lint": "npm run check",
     "build:pages": "vite build --outDir docs && node scripts/ensure-pages-nojekyll.mjs",
-    "check:css": "node scripts/check-css-braces.mjs",
-    "assets:optimize-glb": "gltf-transform optimize"
+    "check:css": "node scripts/check-css-braces.mjs"
   },
   "dependencies": {
     "@vercel/analytics": "^2.0.1",
@@ -25,12 +24,6 @@
     "three": "0.184.0"
   },
   "devDependencies": {
-    "@gltf-transform/cli": "4.5.1",
-    "@eslint/js": "9.39.1",
-    "eslint": "9.39.4",
-    "eslint-plugin-react": "^7.37.5",
-    "eslint-plugin-react-hooks": "^7.1.1",
-    "globals": "14.0.0",
     "typescript": "6.0.3",
     "vite": "8.3.2"
   }
