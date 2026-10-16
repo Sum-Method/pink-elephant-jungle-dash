@@ -20,3 +20,7 @@ Thumbs.db
 
 # Local editor folders that are not part of this repo.
 .idea/
+
+# Disposable project scratch: tests, temp and intermediate files (see DevHut AGENTS.md)
+scratch/*
+!scratch/README.md
