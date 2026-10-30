@@ -406,6 +406,9 @@ function SelfTestRunner() {
 export default function App() {
   const [presentationControlMode] = useState(() => typeof window !== "undefined"
     && new URLSearchParams(window.location.search).get("presentationControl") === "1");
+  const [presentationReducedMotion] = useState(() => typeof window !== "undefined"
+    && typeof window.matchMedia === "function"
+    && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
   const mountRef = useRef(null);
   const keyRef = useRef(createKeys());
   const startedRef = useRef(false);
@@ -1295,11 +1298,13 @@ export default function App() {
   }
 
   useEffect(() => {
+    if (presentationControlMode) return undefined;
     audioManagerRef.current?.setAudioState(audioState);
     writeStoredAudioState(audioState, saveSystemReadyRef.current);
-  }, [audioState]);
+  }, [audioState, presentationControlMode]);
 
   useEffect(() => {
+    if (presentationControlMode) return undefined;
     let disposed = false;
 
     const initializeSaveSystem = async () => {
@@ -1329,13 +1334,14 @@ export default function App() {
       disposed = true;
       if (achievementToastTimerRef.current) window.clearTimeout(achievementToastTimerRef.current);
     };
-  }, []);
+  }, [presentationControlMode]);
 
   useEffect(() => {
     hapticsEnabledRef.current = hapticsEnabled;
   }, [hapticsEnabled]);
 
   useEffect(() => {
+    if (presentationControlMode) return undefined;
     function beginTitleThemeFromGesture(event) {
       if (event?.type === "keydown" && event.code === "F12") return;
       const target = event?.target;
@@ -1352,7 +1358,7 @@ export default function App() {
       window.removeEventListener("keydown", beginTitleThemeFromGesture);
       audioManagerRef.current?.dispose();
     };
-  }, []);
+  }, [presentationControlMode]);
 
   useEffect(() => {
     const cutsceneOpen = openingCutsceneOpen || level1RewardCutsceneOpen || finaleCutsceneOpen;
@@ -1362,7 +1368,7 @@ export default function App() {
 
 
   useEffect(() => {
-    if (!saveSystemReady) return undefined;
+    if (!presentationControlMode && !saveSystemReady) return undefined;
     const mount = mountRef.current;
     if (!mount) return undefined;
 
@@ -1449,7 +1455,14 @@ export default function App() {
       const sceneBasics = createSceneBasics({ mount, currentLevelConfig });
 
       ({ scene, camera, sun, activeCourse, activeTheme, courseFloorLength, courseFinishZ, courseVisualEndZ } = sceneBasics);
-      if (presentationControlMode) presentationControl = createPresentationControl({ root: mount, camera });
+      if (presentationControlMode) {
+        presentationControl = createPresentationControl({
+          root: mount,
+          camera,
+          reducedMotion: presentationReducedMotion,
+          getTrackCenter: trackCenter,
+        });
+      }
       const levelSpeed = currentLevelConfig.speed ?? MOVEMENT;
       const levelMaxSpeed = levelSpeed.maxSpeed ?? MOVEMENT.maxSpeed;
 
@@ -3912,6 +3925,12 @@ export default function App() {
       }
       perfState.frameWindowMs += dt * 1000;
       perfState.frameWindowCount += 1;
+      if (presentationControl) {
+        presentationControl.update(dt);
+        renderFrame();
+        frame = requestAnimationFrame(animate);
+        return;
+      }
       if (perfState.frameWindowMs >= PERFORMANCE.sampleWindowMs) {
         perfState.windowFps = Math.round((perfState.frameWindowCount * 1000) / perfState.frameWindowMs);
         const heavyMoment = perfState.nearbyObstacleCount >= PERFORMANCE.obstacleHeavyCount;
@@ -3940,8 +3959,7 @@ export default function App() {
       });
       updatePhysics(dt);
       updateMeshes(dt, now);
-      if (presentationControl) presentationControl.update(dt);
-      else updateCamera(dt);
+      updateCamera(dt);
       updateDom(now);
       renderFrame();
       frame = requestAnimationFrame(animate);
@@ -4013,7 +4031,7 @@ export default function App() {
       failSceneCreate(error);
       return undefined;
     }
-  }, [currentLevelId, saveSystemReady]);
+  }, [currentLevelId, saveSystemReady, presentationControlMode, presentationReducedMotion]);
 
   function startNewGame() {
     setSceneError(null);
@@ -4183,18 +4201,22 @@ export default function App() {
     window.requestAnimationFrame(() => startLevelById(debugLevelId));
   }, [saveSystemReady]);
 
+  if (presentationControlMode) {
+    return (
+      <main className="relative h-screen w-screen overflow-hidden bg-[#04140a] text-white" style={{ width: "100%", height: "100dvh", fontFamily: "system-ui, -apple-system, sans-serif" }}>
+        <section className="absolute inset-0 h-full w-full" role="region" aria-label="Lesson presentation">
+          <div ref={mountRef} data-testid="presentation-root" className="absolute inset-0 h-full w-full" />
+        </section>
+      </main>
+    );
+  }
+
   return (
     <main className={`app-shell layout-${layoutMode} touch-mode-${touchControlsMode} ${accessibilityClassNames} ${touchControlsVisible ? "touch-controls-active" : ""} relative h-screen w-screen overflow-hidden bg-[#04140a] text-white ${immersiveReady ? "immersive-ready" : ""} ${paused ? "pause-overlay-active" : ""}`} data-game-state={gameShellState} data-template-title={GAME_TEMPLATE_CONFIG.title} data-orientation={isPortrait ? "portrait" : "landscape"} style={{ fontFamily: "system-ui, -apple-system, sans-serif", width: "100%", maxWidth: "100%", height: "100dvh", minHeight: viewportHeight ? `${Math.round(viewportHeight)}px` : "100dvh" }}>
       <SelfTestRunner />
       <div className="app-frame" data-orientation={isPortrait ? "portrait" : "landscape"} style={{ paddingTop: "var(--hud-safe-top)", paddingRight: layoutMode === "phone-landscape" ? "0px" : "var(--hud-safe-right)", paddingBottom: "var(--hud-safe-bottom)", paddingLeft: layoutMode === "phone-landscape" ? "0px" : "var(--hud-safe-left)" }}>
         <div className="game-frame-stage" aria-hidden="true" />
-        {presentationControlMode ? (
-          <section className="absolute inset-0 h-full w-full" role="region" aria-label="Lesson presentation">
-            <div ref={mountRef} data-testid="presentation-root" className={`absolute inset-0 h-full w-full ${isGameplayActive ? "gameplay-touch-zone" : ""}`} />
-          </section>
-        ) : (
-          <div ref={mountRef} className={`absolute inset-0 h-full w-full ${isGameplayActive ? "gameplay-touch-zone" : ""}`} />
-        )}
+        <div ref={mountRef} className={`absolute inset-0 h-full w-full ${isGameplayActive ? "gameplay-touch-zone" : ""}`} />
 
       {started && !paused && !complete && !gameOver && !sceneError && (
         <button

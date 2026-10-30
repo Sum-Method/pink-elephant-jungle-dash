@@ -3,11 +3,11 @@ const AUTOPLAY_HOLD_SECONDS = 4.5;
 const COMMAND_EVENT = "devhut:presentation-command";
 
 export const PRESENTATION_STOPS = Object.freeze([
-  Object.freeze({ id: "jungle-overview", title: "Jungle overview", caption: "A winding trail crosses the jungle.", position: [0, 17, 25], target: [0, 1, -38], annotationIds: ["trail-direction"] }),
-  Object.freeze({ id: "trail-bend", title: "Trail bend", caption: "The path curves between the trees.", position: [-13, 8, 2], target: [-4, 1, -50], annotationIds: ["curving-trail"] }),
-  Object.freeze({ id: "river-crossing", title: "River crossing", caption: "The river interrupts the running lane.", position: [13, 9, -36], target: [0, 1, -83], annotationIds: ["river-hazard"] }),
-  Object.freeze({ id: "forest-canopy", title: "Forest canopy", caption: "The canopy frames the open trail.", position: [-2, 19, -74], target: [0, 2, -124], annotationIds: ["canopy-layer"] }),
-  Object.freeze({ id: "trail-horizon", title: "Trail horizon", caption: "The trail continues into the distance.", position: [12, 11, -135], target: [0, 1, -190], annotationIds: ["trail-horizon-label"] }),
+  Object.freeze({ id: "jungle-overview", title: "Jungle overview", caption: "A winding trail crosses the jungle.", cameraZ: 15, targetZ: -28, height: 17, xOffset: 0, annotationIds: ["trail-direction"] }),
+  Object.freeze({ id: "trail-bend", title: "Trail bend", caption: "The path curves between the trees.", cameraZ: -57, targetZ: -82, height: 10, xOffset: -13, annotationIds: ["curving-trail"] }),
+  Object.freeze({ id: "river-crossing", title: "River crossing", caption: "The river interrupts the running lane.", cameraZ: -173, targetZ: -202, height: 12, xOffset: 14, annotationIds: ["river-hazard"] }),
+  Object.freeze({ id: "forest-canopy", title: "Forest canopy", caption: "The canopy frames the open trail.", cameraZ: -292, targetZ: -326, height: 21, xOffset: -7, annotationIds: ["canopy-layer"] }),
+  Object.freeze({ id: "trail-horizon", title: "Trail horizon", caption: "The trail continues into the distance.", cameraZ: -411, targetZ: -450, height: 12, xOffset: 11, annotationIds: ["trail-horizon-label"] }),
 ]);
 
 export const PRESENTATION_ANNOTATIONS = Object.freeze([
@@ -42,6 +42,21 @@ export function isPresentationCommandDetail(detail) {
   return true;
 }
 
+export function getPresentationStopPose(stop, getTrackCenter = () => 0) {
+  return {
+    position: [getTrackCenter(stop.cameraZ) + stop.xOffset, stop.height, stop.cameraZ],
+    target: [getTrackCenter(stop.targetZ), 1.5, stop.targetZ],
+  };
+}
+
+export function getPresentationKeyboardCommand(key) {
+  if (key === "ArrowLeft") return { command: "previous" };
+  if (key === "ArrowRight") return { command: "next" };
+  if (key === "Home") return { command: "goto", stopId: PRESENTATION_STOPS[0].id };
+  if (key === "End") return { command: "goto", stopId: PRESENTATION_STOPS[PRESENTATION_STOPS.length - 1].id };
+  return null;
+}
+
 function setStateAttributes(root, state) {
   root.dataset.presentationCurrentStop = state.currentStop;
   root.dataset.presentationTransition = state.transition;
@@ -49,12 +64,10 @@ function setStateAttributes(root, state) {
   root.dataset.presentationActiveAnnotations = JSON.stringify([...state.activeAnnotations]);
 }
 
-export function createPresentationControl({ root, camera, reducedMotion } = {}) {
+export function createPresentationControl({ root, camera, reducedMotion, getTrackCenter } = {}) {
   if (!root || !camera) throw new TypeError("Presentation control requires a root element and Three.js camera.");
 
-  const prefersReducedMotion = reducedMotion ?? (typeof window !== "undefined"
-    && typeof window.matchMedia === "function"
-    && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+  const prefersReducedMotion = Boolean(reducedMotion);
   const state = {
     currentIndex: 0,
     transition: "complete",
@@ -67,15 +80,61 @@ export function createPresentationControl({ root, camera, reducedMotion } = {}) 
     toPosition: null,
     toTarget: null,
   };
+  root.tabIndex = 0;
   const caption = document.createElement("div");
   caption.setAttribute("aria-live", "polite");
   caption.setAttribute("aria-atomic", "true");
   caption.setAttribute("data-presentation-caption", "");
   Object.assign(caption.style, {
-    position: "absolute", width: "1px", height: "1px", padding: "0", margin: "-1px",
-    overflow: "hidden", clip: "rect(0, 0, 0, 0)", whiteSpace: "nowrap", border: "0",
+    position: "absolute", left: "16px", bottom: "16px", zIndex: "20", maxWidth: "min(640px, calc(100% - 32px))",
+    padding: "12px 16px", borderRadius: "10px", color: "#fff", background: "rgba(4, 20, 10, .88)",
+    border: "1px solid rgba(255,255,255,.55)", font: "600 16px/1.4 system-ui, sans-serif", pointerEvents: "none",
   });
-  root.appendChild(caption);
+  caption.textContent = "";
+
+  const controls = document.createElement("nav");
+  controls.setAttribute("aria-label", "Presentation controls");
+  controls.setAttribute("data-presentation-controls", "");
+  Object.assign(controls.style, {
+    position: "absolute", top: "16px", right: "16px", zIndex: "20", display: "flex", flexWrap: "wrap",
+    gap: "8px", padding: "10px", borderRadius: "10px", background: "rgba(4, 20, 10, .88)",
+    border: "1px solid rgba(255,255,255,.55)",
+  });
+  const makeButton = (label, command) => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.textContent = label;
+    button.setAttribute("aria-label", label);
+    button.setAttribute("data-presentation-control", command);
+    Object.assign(button.style, {
+      minHeight: "42px", padding: "8px 12px", border: "2px solid #fff", borderRadius: "7px",
+      color: "#07180d", background: "#f1f5f9", font: "700 14px system-ui, sans-serif", cursor: "pointer",
+    });
+    button.addEventListener("focus", () => { button.style.outline = "3px solid #facc15"; button.style.outlineOffset = "2px"; });
+    button.addEventListener("blur", () => { button.style.outline = ""; });
+    button.addEventListener("click", () => dispatchCommand({ command }));
+    controls.appendChild(button);
+    return button;
+  };
+  const previousButton = makeButton("Previous", "previous");
+  const nextButton = makeButton("Next", "next");
+  makeButton("Play", "play");
+  makeButton("Pause", "pause");
+  const annotationButton = document.createElement("button");
+  annotationButton.type = "button";
+  annotationButton.textContent = "Show annotation";
+  annotationButton.setAttribute("aria-label", "Show current annotation");
+  annotationButton.setAttribute("data-presentation-control", "annotation");
+  Object.assign(annotationButton.style, {
+    minHeight: "42px", padding: "8px 12px", border: "2px solid #fff", borderRadius: "7px",
+    color: "#07180d", background: "#f1f5f9", font: "700 14px system-ui, sans-serif", cursor: "pointer",
+  });
+  annotationButton.addEventListener("click", () => {
+    const annotationId = currentStop().annotationIds[0];
+    dispatchCommand({ command: state.activeAnnotations.has(annotationId) ? "closeAnnotation" : "openAnnotation", annotationId });
+  });
+  controls.appendChild(annotationButton);
+  root.append(caption, controls);
 
   const currentStop = () => PRESENTATION_STOPS[state.currentIndex];
   const updateCaption = () => {
@@ -83,7 +142,16 @@ export function createPresentationControl({ root, camera, reducedMotion } = {}) 
     const annotationText = [...state.activeAnnotations]
       .map((id) => ANNOTATION_BY_ID.get(id)?.label)
       .filter(Boolean);
-    caption.textContent = [stop.title, stop.caption, ...annotationText].join(". ");
+    const activeAnnotation = annotationText.length ? `Annotation: ${annotationText.join(". ")}` : "Use Show annotation for a scene label.";
+    caption.textContent = `${stop.title} — ${stop.caption} ${activeAnnotation}`;
+    annotationButton.textContent = state.activeAnnotations.has(stop.annotationIds[0]) ? "Hide annotation" : "Show annotation";
+    annotationButton.setAttribute("aria-label", `${state.activeAnnotations.has(stop.annotationIds[0]) ? "Hide" : "Show"} annotation for ${stop.title}`);
+    previousButton.disabled = state.currentIndex === 0;
+    nextButton.disabled = state.currentIndex === PRESENTATION_STOPS.length - 1;
+    for (const button of [previousButton, nextButton]) {
+      button.style.opacity = button.disabled ? "0.5" : "1";
+      button.style.cursor = button.disabled ? "not-allowed" : "pointer";
+    }
   };
   const publishState = () => {
     setStateAttributes(root, {
@@ -100,21 +168,27 @@ export function createPresentationControl({ root, camera, reducedMotion } = {}) 
     state.currentIndex = index;
     state.elapsed = 0;
     state.autoplayElapsed = 0;
+    state.activeAnnotations.clear();
     state.fromPosition = camera.position.clone();
     state.fromTarget = camera.getWorldDirection ? camera.position.clone().add(camera.getWorldDirection(camera.position.clone()).multiplyScalar(10)) : camera.position.clone();
-    state.toPosition = stop.position;
-    state.toTarget = stop.target;
+    const pose = getPresentationStopPose(stop, getTrackCenter);
+    state.toPosition = pose.position;
+    state.toTarget = pose.target;
     state.transition = prefersReducedMotion ? "complete" : "animating";
     if (prefersReducedMotion) {
-      camera.position.set(...stop.position);
-      camera.lookAt(...stop.target);
+      camera.position.set(...pose.position);
+      camera.lookAt(...pose.target);
     }
     publishState();
   };
+  const dispatchCommand = (detail) => {
+    root.dispatchEvent(new CustomEvent(COMMAND_EVENT, { detail }));
+  };
 
   // Establish a deterministic opening view only in the explicitly enabled presentation route.
-  camera.position.set(...PRESENTATION_STOPS[0].position);
-  camera.lookAt(...PRESENTATION_STOPS[0].target);
+  const openingPose = getPresentationStopPose(PRESENTATION_STOPS[0], getTrackCenter);
+  camera.position.set(...openingPose.position);
+  camera.lookAt(...openingPose.target);
   publishState();
 
   const onCommand = (event) => {
@@ -133,6 +207,16 @@ export function createPresentationControl({ root, camera, reducedMotion } = {}) 
     }
   };
   root.addEventListener(COMMAND_EVENT, onCommand);
+  const onKeyDown = (event) => {
+    if (event.altKey || event.ctrlKey || event.metaKey) return;
+    const target = event.target;
+    if (target?.isContentEditable || ["INPUT", "TEXTAREA", "SELECT"].includes(target?.tagName)) return;
+    const command = getPresentationKeyboardCommand(event.key);
+    if (!command) return;
+    event.preventDefault();
+    dispatchCommand(command);
+  };
+  window.addEventListener("keydown", onKeyDown);
 
   return {
     update(dt) {
@@ -176,11 +260,14 @@ export function createPresentationControl({ root, camera, reducedMotion } = {}) 
     },
     dispose() {
       root.removeEventListener(COMMAND_EVENT, onCommand);
+      window.removeEventListener("keydown", onKeyDown);
       caption.remove();
+      controls.remove();
       delete root.dataset.presentationCurrentStop;
       delete root.dataset.presentationTransition;
       delete root.dataset.presentationPlayback;
       delete root.dataset.presentationActiveAnnotations;
+      root.removeAttribute("tabindex");
     },
   };
 }

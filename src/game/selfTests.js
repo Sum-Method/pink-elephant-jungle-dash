@@ -57,6 +57,8 @@ import {
 } from "./movement.js";
 import {
   isPresentationCommandDetail,
+  getPresentationKeyboardCommand,
+  getPresentationStopPose,
   PRESENTATION_ANNOTATIONS,
   PRESENTATION_STOPS,
   resolvePresentationStopIndex,
@@ -83,6 +85,21 @@ export function runSelfTests() {
       && resolvePresentationStopIndex(PRESENTATION_STOPS.length - 1, "next") === PRESENTATION_STOPS.length - 1
       && resolvePresentationStopIndex(1, "next") === 2
       && resolvePresentationStopIndex(1, "previous") === 0,
+  );
+  const presentationPose = getPresentationStopPose(PRESENTATION_STOPS[1], (z) => z / 100);
+  assert(
+    "presentation camera poses stay aligned to the curved track",
+    presentationPose.position[0] === PRESENTATION_STOPS[1].cameraZ / 100 + PRESENTATION_STOPS[1].xOffset
+      && presentationPose.target[0] === PRESENTATION_STOPS[1].targetZ / 100
+      && presentationPose.position[2] === PRESENTATION_STOPS[1].cameraZ,
+  );
+  assert(
+    "presentation keyboard map uses only declared navigation commands",
+    getPresentationKeyboardCommand("ArrowLeft")?.command === "previous"
+      && getPresentationKeyboardCommand("ArrowRight")?.command === "next"
+      && getPresentationKeyboardCommand("Home")?.stopId === PRESENTATION_STOPS[0].id
+      && getPresentationKeyboardCommand("End")?.stopId === PRESENTATION_STOPS.at(-1).id
+      && getPresentationKeyboardCommand("Escape") === null,
   );
   assert(
     "presentation command contract accepts only declared typed payloads",
