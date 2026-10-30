@@ -66,6 +66,7 @@ import { triggerHapticFeedback, isHapticsSupported } from "./game/haptics.js";
 import { DEFAULT_INPUT_STATUS, createInputManager } from "./game/inputManager.js";
 import { GAME_TEMPLATE_CONFIG } from "./game/templateConfig.js";
 import { runSelfTests } from "./game/selfTests.js";
+import { createPresentationControl } from "./game/presentationControl.js";
 import {
   addProgressionEvent,
   addScoreEntry,
@@ -403,6 +404,8 @@ function SelfTestRunner() {
 }
 
 export default function App() {
+  const [presentationControlMode] = useState(() => typeof window !== "undefined"
+    && new URLSearchParams(window.location.search).get("presentationControl") === "1");
   const mountRef = useRef(null);
   const keyRef = useRef(createKeys());
   const startedRef = useRef(false);
@@ -1398,6 +1401,7 @@ export default function App() {
     let renderer;
     let postProcessing;
     let textures;
+    let presentationControl = null;
     let scenePhase = "basics";
 
     const logScenePhase = (phase) => {
@@ -1425,6 +1429,7 @@ export default function App() {
         transitionWatch.completed = true;
       }
       try {
+        presentationControl?.dispose();
         safeRemoveRendererDomElement(renderer, mount);
         renderer?.renderLists?.dispose?.();
         renderer?.dispose?.();
@@ -1444,6 +1449,7 @@ export default function App() {
       const sceneBasics = createSceneBasics({ mount, currentLevelConfig });
 
       ({ scene, camera, sun, activeCourse, activeTheme, courseFloorLength, courseFinishZ, courseVisualEndZ } = sceneBasics);
+      if (presentationControlMode) presentationControl = createPresentationControl({ root: mount, camera });
       const levelSpeed = currentLevelConfig.speed ?? MOVEMENT;
       const levelMaxSpeed = levelSpeed.maxSpeed ?? MOVEMENT.maxSpeed;
 
@@ -3934,7 +3940,8 @@ export default function App() {
       });
       updatePhysics(dt);
       updateMeshes(dt, now);
-      updateCamera(dt);
+      if (presentationControl) presentationControl.update(dt);
+      else updateCamera(dt);
       updateDom(now);
       renderFrame();
       frame = requestAnimationFrame(animate);
@@ -3975,6 +3982,7 @@ export default function App() {
       if (cleanupDone) return;
       cleanupDone = true;
       disposed = true;
+      presentationControl?.dispose();
       createSceneCleanup({
         currentLevelId,
         cancelAnimationFrame,
@@ -4180,7 +4188,13 @@ export default function App() {
       <SelfTestRunner />
       <div className="app-frame" data-orientation={isPortrait ? "portrait" : "landscape"} style={{ paddingTop: "var(--hud-safe-top)", paddingRight: layoutMode === "phone-landscape" ? "0px" : "var(--hud-safe-right)", paddingBottom: "var(--hud-safe-bottom)", paddingLeft: layoutMode === "phone-landscape" ? "0px" : "var(--hud-safe-left)" }}>
         <div className="game-frame-stage" aria-hidden="true" />
-        <div ref={mountRef} className={`absolute inset-0 h-full w-full ${isGameplayActive ? "gameplay-touch-zone" : ""}`} />
+        {presentationControlMode ? (
+          <section className="absolute inset-0 h-full w-full" role="region" aria-label="Lesson presentation">
+            <div ref={mountRef} data-testid="presentation-root" className={`absolute inset-0 h-full w-full ${isGameplayActive ? "gameplay-touch-zone" : ""}`} />
+          </section>
+        ) : (
+          <div ref={mountRef} className={`absolute inset-0 h-full w-full ${isGameplayActive ? "gameplay-touch-zone" : ""}`} />
+        )}
 
       {started && !paused && !complete && !gameOver && !sceneError && (
         <button

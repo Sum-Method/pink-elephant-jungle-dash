@@ -55,10 +55,43 @@ import {
   updatePlayerSpeed,
   updatePlayerSteering,
 } from "./movement.js";
+import {
+  isPresentationCommandDetail,
+  PRESENTATION_ANNOTATIONS,
+  PRESENTATION_STOPS,
+  resolvePresentationStopIndex,
+} from "./presentationControl.js";
 
 export function runSelfTests() {
   const results = [];
   const assert = (name, condition) => results.push({ name, pass: Boolean(condition) });
+
+  assert(
+    "presentation adapter declares five stable, unique camera stops",
+    PRESENTATION_STOPS.length >= 5
+      && new Set(PRESENTATION_STOPS.map((stop) => stop.id)).size === PRESENTATION_STOPS.length
+      && PRESENTATION_STOPS.every((stop) => typeof stop.title === "string" && stop.title.length > 0 && stop.caption.length > 0),
+  );
+  assert(
+    "presentation annotation IDs are stable and referenced by stops",
+    new Set(PRESENTATION_ANNOTATIONS.map((annotation) => annotation.id)).size === PRESENTATION_ANNOTATIONS.length
+      && PRESENTATION_STOPS.every((stop) => stop.annotationIds.every((id) => PRESENTATION_ANNOTATIONS.some((annotation) => annotation.id === id))),
+  );
+  assert(
+    "presentation navigation clamps at declared sequence boundaries",
+    resolvePresentationStopIndex(0, "previous") === 0
+      && resolvePresentationStopIndex(PRESENTATION_STOPS.length - 1, "next") === PRESENTATION_STOPS.length - 1
+      && resolvePresentationStopIndex(1, "next") === 2
+      && resolvePresentationStopIndex(1, "previous") === 0,
+  );
+  assert(
+    "presentation command contract accepts only declared typed payloads",
+    isPresentationCommandDetail({ command: "goto", stopId: PRESENTATION_STOPS[0].id })
+      && isPresentationCommandDetail({ command: "openAnnotation", annotationId: PRESENTATION_ANNOTATIONS[0].id })
+      && !isPresentationCommandDetail({ command: "goto", stopId: "unknown" })
+      && !isPresentationCommandDetail({ command: "goto", stopId: PRESENTATION_STOPS[0].id, code: "window.location" })
+      && !isPresentationCommandDetail({ command: "arbitrary" }),
+  );
 
   assert("clamp caps high values", clamp(12, 0, 10) === 10);
   assert("clamp caps low values", clamp(-2, 0, 10) === 0);
